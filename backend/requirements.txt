@@ -1,0 +1,31 @@
+# Backend bağımlılıkları — Sprint 1'de pin'lenecek
+
+# Web framework
+fastapi
+uvicorn[standard]
+
+# Veri doğrulama & ayarlar
+pydantic
+pydantic-settings
+python-multipart
+
+# Veritabanı
+sqlalchemy
+alembic
+
+# Auth
+python-jose[cryptography]
+passlib[bcrypt]
+
+# AI & RAG
+langchain
+langchain-google-genai
+chromadb
+
+# PDF işleme
+pymupdf
+
+# Test
+pytest
+pytest-asyncio
+httpx
