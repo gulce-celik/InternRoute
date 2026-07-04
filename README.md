@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/images/internroute-logo.svg" alt="InternRoute — Student Career Kit" width="820"/>
+  <img src="docs/images/internroute-logo.png" alt="InternRoute — Student Career Kit" width="820"/>
 </p>
 
 <p align="center"><strong>Your AI-powered personal career &amp; internship command center</strong></p>
