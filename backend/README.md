@@ -1,20 +1,48 @@
 # FastAPI Backend — InternRoute
 
-Bu dizin FastAPI tabanlı backend uygulamasını içerir.
+## Sprint 1 setup
 
-## Alt Modüller
+```bash
+cd backend
+python -m venv .venv
 
-| Dizin | Açıklama |
-|-------|----------|
-| `app/api/` | REST endpoint tanımları |
-| `app/core/` | Konfigürasyon, güvenlik, bağımlılıklar |
-| `app/models/` | SQLAlchemy ORM modelleri |
-| `app/schemas/` | Pydantic request/response şemaları |
-| `app/services/` | İş mantığı katmanı |
-| `app/agents/` | Multi-Agent modülleri (LangChain) |
-| `app/rag/` | RAG pipeline (embedding, retriever, ingestion) |
-| `tests/` | Pytest test dosyaları |
+# Windows
+.venv\Scripts\activate
 
-## Kurulum
+pip install -r requirements.txt
+```
 
-Sprint 1'de tamamlanacak. Bkz. kök `README.md`.
+Copy env file from project root:
+
+```bash
+copy ..\.env.example ..\.env
+```
+
+## Run API
+
+```bash
+uvicorn app.main:app --reload --port 8000
+```
+
+- Swagger UI: http://localhost:8000/docs
+- Health: http://localhost:8000/api/v1/health
+
+## Run tests
+
+```bash
+pytest tests/ -v
+```
+
+## Sprint 1 endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/health` | Health check |
+| POST | `/api/v1/auth/register` | Register user |
+| POST | `/api/v1/auth/login` | Login (OAuth2 form: username=email) |
+| GET | `/api/v1/auth/me` | Current user (Bearer token) |
+
+## Models (Sprint 1)
+
+- `User` — active in auth flow
+- `Job`, `CV`, `Application` — defined for Sprint 2

@@ -5,9 +5,10 @@ fastapi
 uvicorn[standard]
 
 # Veri doğrulama & ayarlar
-pydantic
+pydantic[email]
 pydantic-settings
 python-multipart
+email-validator
 
 # Veritabanı
 sqlalchemy
@@ -15,7 +16,7 @@ alembic
 
 # Auth
 python-jose[cryptography]
-passlib[bcrypt]
+bcrypt
 
 # AI & RAG
 langchain
