@@ -346,4 +346,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 **Repository:** [github.com/gulce-celik/InternRoute](https://github.com/gulce-celik/InternRoute)
 
-**Contributors:** [Gülce Çelik](https://github.com/gulce-celik) · Muhammed Enes Andiç
+**Contributors:** [Gülce Çelik](https://github.com/gulce-celik) · [Muhammed Enes Andiç](https://github.com/enesand)
