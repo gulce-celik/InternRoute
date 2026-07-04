@@ -23,10 +23,10 @@
 
 | Name | Role |
 |------|------|
-| **Muhammed Enes Andiç** | Product Owner & Developer |
 | **Gülce Çelik** | Scrum Master & Developer |
+| **Muhammed Enes Andiç** | Product Owner & Developer |
 
-> **Note on team size:** We are officially a **5-person bootcamp team**, but we have been unable to reach our other teammates. For now, **Muhammed and Gülce are carrying the project forward** — roles above reflect who is actively contributing; the full five-person role split may be updated if others rejoin.
+> **Note on team size:** We are officially a **5-person bootcamp team**, but we have been unable to reach our other teammates. For now, **Gülce and Muhammed are carrying the project forward** — roles above reflect who is actively contributing; the full five-person role split may be updated if others rejoin.
 
 ---
 
