@@ -48,6 +48,7 @@ storage/
 
 # Node / Frontend
 node_modules/
+*.tsbuildinfo
 dist/
 build/
 .vite/
