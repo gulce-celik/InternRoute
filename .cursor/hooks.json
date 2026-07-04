@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "hooks": {
+    "postToolUse": [
+      {
+        "command": "python .cursor/hooks/run-tests-after-edit.py",
+        "matcher": "Write|StrReplace",
+        "timeout": 120
+      }
+    ],
+    "stop": [
+      {
+        "command": "python .cursor/hooks/run-tests-on-stop.py",
+        "timeout": 120
+      }
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "plugins": {
+    "railway": {
+      "enabled": true
+    },
+    "context7-plugin": {
+      "enabled": true
+    },
+    "linear": {
+      "enabled": true
+    },
+    "orchestrate": {
+      "enabled": true
+    }
+  }
+}
