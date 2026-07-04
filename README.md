@@ -1,6 +1,8 @@
-# InternRoute
+<p align="center">
+  <img src="docs/images/internroute-logo.svg" alt="InternRoute — Student Career Kit" width="820"/>
+</p>
 
-**Your AI-powered personal career & internship command center**
+<p align="center"><strong>Your AI-powered personal career &amp; internship command center</strong></p>
 
 📋 **Scrum Board:** [InternRoute Bootcamp 2026 on Trello](https://trello.com/b/yTUmFEoB/internroutebootcamp2026)
 
