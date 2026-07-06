@@ -134,11 +134,17 @@ The goal is simple: **stop losing applications in random notes** and walk into e
 
 **Dates:** 19 June – 5 July 2026
 
-- **Backlog organisation and story selection:** Our product backlog is ordered by priority on Trello (`Rejected → Backlog → To Do → In Progress → Done`). For each sprint, the Product Owner selects user stories into **To Do** without exceeding the team's planned capacity. Story points for Sprint 1: **US-1.1 (5)**, **US-1.2 (3)**, **US-1.3 (5)**, **US-1.4 (3)** — total **16 points**. No single story exceeds half of the sprint total (max story = 5, under half of 16).
+- **Backlog organisation and story selection:**  
+  Our product backlog on Trello is ordered by **business priority** for InternRoute: authentication and project foundation first, because every later feature (job board, CV locker, RAG memory, AI agents) depends on a logged-in student with a profile. Columns follow Kanban flow: `Rejected → Backlog → To Do → In Progress → Done`.  
+  **Sprint 1 selection:** The Product Owner pulled user stories into **To Do** for 19 Jun – 5 Jul without exceeding team capacity. Selected stories and points: **US-1.1 — User registration & login (5)**, **US-1.2 — FastAPI project setup (3)**, **US-1.3 — Database models (5)**, **US-1.4 — Student profile (3)** — **16 points total**. No single story exceeds half of the sprint total (max = 5, under half of 16).  
+  **Out of scope (Rejected):** LinkedIn auto-scraper — InternRoute is a *personal career OS* with **manual** job entry, not a scraping tool.  
+  **Story → task split:** Each blue-label **user story** (`US-x.x`) breaks into red-label **tasks** (API, UI, config, tests). Example: US-1.1 includes auth API, JWT middleware, login page, and register page as separate task cards.
 
-  User stories are split into technical **tasks**. On our Trello board, **blue labels** = user stories (`US-x.x`), **red labels** = tasks (API, UI, config, tests).
-
-- **Daily Scrum:** Due to team schedule constraints, daily standups were held **asynchronously via WhatsApp** instead of fixed video calls. The Scrum Master recorded standup notes and chat exports here: [Sprint 1 Daily Scrum Notes](ProjectManagement/Sprint1Documents/DailyScrumMeetingNotesSprint1.md) *(WhatsApp screenshot evidence to be appended)*.
+- **Daily Scrum:**  
+  Sprint 1 lasted **17 calendar days** (19 Jun – 5 Jul) → **17 async daily standups** on WhatsApp (one per day). Because of bootcamp schedules and our two-person active team, we could not hold fixed video calls; written standups were more sustainable.  
+  **Opening topic (Day 1):** We are officially a 5-person bootcamp team, but we could not reach the other members — Gülce (SM) and Muhammed (PO) carry planning, dev, and ceremonies together.  
+  **Format:** *Yesterday · Today · Blockers* — see full **Turkish dialogue transcripts** (one thread per day, aligned with Trello tasks): [Sprint 1 Daily Scrum Notes](ProjectManagement/Sprint1Documents/DailyScrumMeetingNotesSprint1.md).  
+  **Evidence:** WhatsApp screenshots will be appended to that file after export.
 
 - **Sprint board update:**
 
@@ -155,15 +161,23 @@ The goal is simple: **stop losing applications in random notes** and walk into e
   ![Student profile page](docs/images/ui/profile.png)
 
 - **Sprint Review:**  
-  **Decisions:** Auth flow (register, login, JWT, protected routes) was completed end-to-end. FastAPI project structure, SQLite models, and Swagger UI are working. Student profile (university, year, sectors) was added to support future AI personalization in Sprint 3. Job, CV, and Application models were scaffolded but full job-board and CV flows remain in **Sprint 2**. Automated tests (pytest + Vitest) pass with no critical issues in the demo.  
-  **Carried to Sprint 2:** Manual job posting, CV upload, job–CV matching, dashboard stats, and RAG pipeline.  
-  **Sprint Review participants:** Gülce Çelik, Muhammed Enes Andiç
+  At sprint close we demoed the **Sprint 1 increment** of InternRoute to ourselves (PO + SM): a student can sign up, log in, and land on a protected app shell with a profile that captures university, year, and target sectors — the data Sprint 3 AI agents will need later.  
+  **What we delivered:**  
+  - **Auth (US-1.1):** Register, login, JWT sessions, bcrypt passwords, protected routes — full end-to-end flow.  
+  - **Backend foundation (US-1.2):** FastAPI structure, health check, Swagger UI at `/docs`, environment config.  
+  - **Data layer (US-1.3):** SQLite + SQLAlchemy; `User` model live; `Job`, `CV`, and `Application` models scaffolded for Sprint 2.  
+  - **Student profile (US-1.4):** Profile API and UI so each applicant has a persistent identity beyond login.  
+  - **Quality:** `HOW_TO_START_APP.md`, GitHub repo evidence, pytest (10) + Vitest (5) passing.  
+  **Demo outcome:** Register → login → profile update ran without critical issues; API docs accessible; no blocking bugs in the demo.  
+  **Moved to Sprint 2:** Manual job posting & board, PDF CV upload & CV locker, job–CV matching / applications, dashboard stats, and RAG foundation — the core “track my applications in one place” features that define InternRoute’s value after auth.  
+  **Participants:** Gülce Çelik, Muhammed Enes Andiç
 
-- **Sprint Retrospective:**
-  - Team continues as a two-person active unit; role distribution between PO and SM was clarified for Sprint 2.
-  - Story point estimates should be reviewed at each sprint planning session with developer input.
-  - Test automation was added during Sprint 1; maintain test runs before each sprint review.
-  - Daily WhatsApp standups worked well; keep exporting key threads as sprint evidence.
+- **Sprint Retrospective:**  
+  - **Keep:** WhatsApp async dailies worked well for a two-person team across different schedules; exporting chat threads as sprint evidence is worth continuing.  
+  - **Keep:** Splitting each user story into small red task cards on Trello made progress visible day by day.  
+  - **Improve:** Review story-point estimates together at Sprint 2 planning — US-2.3 and US-2.4 are larger (8 pts each) and need realistic task breakdown.  
+  - **Improve:** Run pytest + Vitest before every sprint review; we added tests late in Sprint 1 and want that earlier in Sprint 2.  
+  - **Team:** We continue as a two-person active unit (official 5-person bootcamp team); PO owns backlog priority, SM owns ceremonies and board hygiene — roles clarified for Sprint 2 delivery.
 
 ### Sprint 1 — technical summary
 
