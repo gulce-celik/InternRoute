@@ -70,27 +70,27 @@ The goal is simple: **stop losing applications in random notes** and walk into e
 
 ## Product Features
 
-### Live today (Sprint 1 + early Sprint 2)
+### Delivered in Sprint 1
 
 | Feature | Description |
 |---------|-------------|
 | **Auth** | Register, login, JWT sessions, protected routes |
-| **Student profile** | University, year, major, target sectors — feeds future AI personalization |
-| **Job board** | Pin roles manually (title, company, location, description, status) |
-| **Application pipeline** | Visual flow per role: Saved → Applied → Interview → Offer |
-| **Dashboard** | Live stats (pinned applications); placeholders for CV & AI counts |
-| **Status tracking** | Applied, interview, rejected, offer badges on each role |
+| **Student profile** | University, year, major, target sectors — foundation for Sprint 3 AI personalization |
+| **React app shell** | Login, Register, layout, navigation, Sprint 2/3 placeholder screens |
 | **API docs** | Interactive Swagger UI at `/docs` |
 | **Tests** | Backend pytest (10) + frontend Vitest (5) |
+| **Database scaffold** | User model live; Job, CV, Application models prepared for Sprint 2 |
 
-### Coming in Sprint 2 (Jul 6 – 19)
+### Planned for Sprint 2 (Jul 6 – 19)
 
 | Feature | Description |
 |---------|-------------|
+| **Job board** | Manual job posting CRUD, pin roles, application status |
+| **Application pipeline** | Visual flow per role: Saved → Applied → Interview → Offer |
+| **Dashboard** | Summary stats for applications, CV versions, AI sessions |
 | **CV locker** | PDF upload, multiple versions per role, file storage |
 | **Job–CV matching** | Applications API — which CV was used for which job |
 | **RAG foundation** | ChromaDB, PDF → text, embeddings, memory context API |
-| **Full dashboard stats** | Real CV and application counts |
 
 ### Coming in Sprint 3 (Jul 20 – Aug 2)
 
@@ -116,26 +116,6 @@ The goal is simple: **stop losing applications in random notes** and walk into e
 
 📋 **[InternRoute Bootcamp 2026 — Trello Board](https://trello.com/b/yTUmFEoB/internroutebootcamp2026)**
 
-Stories are prioritized by sprint. Tasks (red labels) break down user stories (blue labels). No single story exceeds half of a sprint’s total story points.
-
-### Sprint board (Sprint 1 close-out)
-
-<p align="center">
-  <img src="docs/images/trello/board-overview.png" alt="Trello board overview — To Do, Doing, Done and Sprint 1" width="900"/>
-</p>
-
-<p align="center">
-  <img src="docs/images/trello/sprint-columns.png" alt="Trello sprint columns — Done, Sprint 1, Sprint 2, Sprint 3" width="900"/>
-</p>
-
-<p align="center">
-  <img src="docs/images/trello/sprint-backlog.png" alt="Trello backlog — Sprint 2 and Sprint 3 planned cards" width="900"/>
-</p>
-
-<p align="center">
-  <img src="docs/images/trello/sprint-roadmap.png" alt="Trello roadmap — RAG, deployment and delivery tasks" width="900"/>
-</p>
-
 ---
 
 ## Bootcamp Sprint Calendar
@@ -150,24 +130,42 @@ Stories are prioritized by sprint. Tasks (red labels) break down user stories (b
 
 ---
 
-## Sprint 1 — Completed ✅
+# Sprint 1
 
 **Dates:** 19 June – 5 July 2026
 
-### What we shipped
+- **Backlog organisation and story selection:** Our product backlog is ordered by priority on Trello (`Rejected → Backlog → To Do → In Progress → Done`). For each sprint, the Product Owner selects user stories into **To Do** without exceeding the team's planned capacity. Story points for Sprint 1: **US-1.1 (5)**, **US-1.2 (3)**, **US-1.3 (5)**, **US-1.4 (3)** — total **16 points**. No single story exceeds half of the sprint total (max story = 5, under half of 16).
 
-- FastAPI application with SQLite, modular routers, Pydantic settings  
-- User registration & login with JWT (`/auth/register`, `/auth/login`, `/auth/me`)  
-- Database models: `User`, `Job` (CV & Application models scaffolded for Sprint 2)  
-- Student profile API (`GET/PATCH /api/v1/profile`)  
-- Job postings CRUD API with auth-scoped access  
-- React 19 + Vite + TypeScript frontend with warm “student career kit” UI  
-- Pages: Login, Register, Dashboard, Job Board, Pipeline, Profile  
-- Sprint 2/3 placeholder screens: CVs, Analyze, Mock Interview, Cover Letter  
-- Swagger UI, `.env.example`, `HOW_TO_START_APP.md`  
-- Automated tests: **pytest** (backend) + **Vitest** (frontend)  
+  User stories are split into technical **tasks**. On our Trello board, **blue labels** = user stories (`US-x.x`), **red labels** = tasks (API, UI, config, tests).
 
-### Tech used in Sprint 1
+- **Daily Scrum:** Due to team schedule constraints, daily standups were held **asynchronously via WhatsApp** instead of fixed video calls. The Scrum Master recorded standup notes and chat exports here: [Sprint 1 Daily Scrum Notes](ProjectManagement/Sprint1Documents/DailyScrumMeetingNotesSprint1.md) *(WhatsApp screenshot evidence to be appended)*.
+
+- **Sprint board update:**
+
+  ![Sprint 1 board — start of sprint](ProjectManagement/Sprint1Documents/board-sprint1-start.png)
+
+  ![Sprint 1 board — mid sprint](ProjectManagement/Sprint1Documents/board-sprint1-mid.png)
+
+  ![Sprint 1 board — sprint close](ProjectManagement/Sprint1Documents/board-sprint1-close.png)
+
+- **Product status** (screenshots):
+
+  ![Login page](docs/images/ui/login.png)
+
+  ![Student profile page](docs/images/ui/profile.png)
+
+- **Sprint Review:**  
+  **Decisions:** Auth flow (register, login, JWT, protected routes) was completed end-to-end. FastAPI project structure, SQLite models, and Swagger UI are working. Student profile (university, year, sectors) was added to support future AI personalization in Sprint 3. Job, CV, and Application models were scaffolded but full job-board and CV flows remain in **Sprint 2**. Automated tests (pytest + Vitest) pass with no critical issues in the demo.  
+  **Carried to Sprint 2:** Manual job posting, CV upload, job–CV matching, dashboard stats, and RAG pipeline.  
+  **Sprint Review participants:** Gülce Çelik, Muhammed Enes Andiç
+
+- **Sprint Retrospective:**
+  - Team continues as a two-person active unit; role distribution between PO and SM was clarified for Sprint 2.
+  - Story point estimates should be reviewed at each sprint planning session with developer input.
+  - Test automation was added during Sprint 1; maintain test runs before each sprint review.
+  - Daily WhatsApp standups worked well; keep exporting key threads as sprint evidence.
+
+### Sprint 1 — technical summary
 
 | Layer | Stack |
 |-------|-------|
@@ -177,53 +175,32 @@ Stories are prioritized by sprint. Tasks (red labels) break down user stories (b
 | **Testing** | pytest, Vitest, Testing Library, jsdom |
 | **Tooling** | Git, Trello, local `.venv` + `npm` |
 
-### Product screenshots (Sprint 1)
-
-<p align="center">
-  <img src="docs/images/ui/login.png" alt="Login page" width="800"/>
-  <br/><em>Sign in — split-panel auth with bootcamp branding</em>
-</p>
-
-<p align="center">
-  <img src="docs/images/ui/dashboard.png" alt="Dashboard home" width="900"/>
-  <br/><em>Home — command desk with live application count and pipeline preview</em>
-</p>
-
-<p align="center">
-  <img src="docs/images/ui/job-board.png" alt="Job board" width="900"/>
-  <br/><em>Board — pin roles from any source and set application status</em>
-</p>
-
-<p align="center">
-  <img src="docs/images/ui/pipeline.png" alt="Application pipeline" width="900"/>
-  <br/><em>Pipeline — click a role to see its stage on the progress bar</em>
-</p>
-
-<p align="center">
-  <img src="docs/images/ui/profile.png" alt="Student profile" width="900"/>
-  <br/><em>Profile — university, year, major and target sectors for AI personalization</em>
-</p>
-
 ---
 
-## Sprint 2 — Planned 🚧
+# Sprint 2
 
 **Dates:** 6 July – 19 July 2026
 
 ### Goals
 
-Turn InternRoute from a tracking board into a **CV-aware application hub** with the RAG memory layer started.
+Deliver manual job tracking, CV upload, applications matching, and the RAG memory foundation.
+
+### Planned backlog (story points)
+
+| Story | Points |
+|-------|--------|
+| US-2.1: Manual job posting & application board | 5 |
+| US-2.2: PDF CV upload & CV locker | 5 |
+| US-2.3: Job–CV matching / applications | 8 |
+| US-2.4: RAG foundation (ChromaDB + embeddings) | 8 |
 
 ### Backlog highlights
 
-- **US-2.2** PDF CV upload (API + file storage) and CV locker UI  
-- **US-2.3** Job–CV matching / applications API and frontend list  
-- Application status workflow (applied, interview, rejected, offer) — *partially live on board*  
-- Dashboard summary stats wired to real CV/application data  
-- **ChromaDB** setup & collections  
-- PDF → text extraction pipeline  
-- CV embedding & RAG ingestion  
-- Memory context API endpoint  
+- Job CRUD API and job board UI  
+- Application status workflow (applied, interview, rejected, offer)  
+- PDF CV upload API + CV locker frontend  
+- Applications API and applications list UI  
+- ChromaDB setup, PDF extraction, CV embedding, memory context API  
 - Sprint 2 review, retro, GitHub evidence upload  
 
 ### UI preview (Sprint 2 screen — built as placeholder)
@@ -235,7 +212,7 @@ Turn InternRoute from a tracking board into a **CV-aware application hub** with 
 
 ---
 
-## Sprint 3 — Planned 🔮
+# Sprint 3
 
 **Dates:** 20 July – 2 August 2026 · **Delivery deadline: 2 Aug 23:59**
 
@@ -323,6 +300,8 @@ python scripts/run-all-tests.py
 InternRoute/
 ├── backend/                 # FastAPI app (auth, jobs, profile, agents, RAG)
 ├── frontend/                # React (Vite) SPA
+├── ProjectManagement/       # Sprint evidence (board screenshots, daily scrum notes)
+│   └── Sprint1Documents/
 ├── docs/                    # Architecture, API design, sprint plan, screenshots
 │   └── images/              # README & sprint evidence (ui/, trello/)
 ├── scripts/                 # Test runners, git helpers
