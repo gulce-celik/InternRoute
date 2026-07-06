@@ -263,7 +263,7 @@ Daily 🟢 / Sprint kapanış 🏁 Dün demo + review tamam. Bugün **Sprint Ret
 Daily 🟢 Dün review notları README'de. Bugün retro maddelerini ekleyip GitHub push — hoca mesaj at dedi bitince. Sprint 2 planning 6 Temmuz'da: US-2.1–2.4, 26 puan.
 
 **Gülce:**  
-17/17 daily tamam ✅ WhatsApp SS'lerini bu metinlere göre gruba yapıştırıp kanıt olarak da ekleriz. Engel yok. Sprint 2'de görüşürüz 💪
+17/17 daily tamam ✅ WhatsApp SS'lerini bu metinlere göre **gün gün** gruba yapıştırıp kanıt olarak da ekleriz (her güne 1 SS). Engel yok. Sprint 2'de görüşürüz 💪
 
 **Muhammed:**  
 Elinize sağlık — 2 kişiyle Sprint 1'i kapattık. Sprint 2'de job tracking geliyor, InternRoute'un asıl kısmı.
@@ -272,14 +272,27 @@ Elinize sağlık — 2 kişiyle Sprint 1'i kapattık. Sprint 2'de job tracking g
 
 ## WhatsApp screenshot kanıtları
 
-_Aşağıya WhatsApp sohbet ekran görüntüleri eklenecek (günlük standup mesajları ile eşleşen)._
+> **Henüz eklenmedi.** Aşağıdaki tablo plan dosyasıdır — her daily scrum günü için **1 WhatsApp SS** (toplam **17**), yukarıdaki diyalog metinleriyle birebir eşleşecek.  
+> _(Önceki “5 SS” önerisi sadece birkaç günlük mesajı tek ekranda toplamak içindi; resmi kayıt **17 günlük daily = 17 SS** olacak.)_
 
-| Dosya | Tarih | İçerik |
-|-------|-------|--------|
-| `daily-scrum-01.png` | 19–20 Haz | Takım durumu + planning |
-| `daily-scrum-02.png` | 22–24 Haz | Backend / FastAPI / DB |
-| `daily-scrum-03.png` | 26–28 Haz | Auth + React |
-| `daily-scrum-04.png` | 29 Haz – 1 Tem | Profile + testler |
-| `daily-scrum-05.png` | 3–5 Tem | README kanıt + sprint kapanış |
+| # | Dosya (plan) | Tarih | Günlük konu |
+|---|----------------|-------|-------------|
+| 1 | `daily-scrum-day01.png` | 19 Haz | Takım durumu (2 kişi) + Sprint 1 planning |
+| 2 | `daily-scrum-day02.png` | 20 Haz | Trello Kanban + GitHub / README |
+| 3 | `daily-scrum-day03.png` | 21 Haz | FastAPI kurulum + health endpoint |
+| 4 | `daily-scrum-day04.png` | 22 Haz | Router yapısı + Swagger |
+| 5 | `daily-scrum-day05.png` | 23 Haz | `.env` config + User model başlangıcı |
+| 6 | `daily-scrum-day06.png` | 24 Haz | JWT + register/login API |
+| 7 | `daily-scrum-day07.png` | 25 Haz | Scaffold modeller + `GET /me` |
+| 8 | `daily-scrum-day08.png` | 26 Haz | React/Vite + login API bağlantısı |
+| 9 | `daily-scrum-day09.png` | 27 Haz | Register sayfası + localStorage |
+| 10 | `daily-scrum-day10.png` | 28 Haz | Protected routes + redirect loop fix |
+| 11 | `daily-scrum-day11.png` | 29 Haz | Profile API (US-1.4) |
+| 12 | `daily-scrum-day12.png` | 30 Haz | Profile UI + Sprint 1 feature tamam |
+| 13 | `daily-scrum-day13.png` | 1 Tem | pytest + Vitest |
+| 14 | `daily-scrum-day14.png` | 2 Tem | `HOW_TO_START_APP.md` + test stabil |
+| 15 | `daily-scrum-day15.png` | 3 Tem | README Scrum + board SS |
+| 16 | `daily-scrum-day16.png` | 4 Tem | Sprint Review demo hazırlığı |
+| 17 | `daily-scrum-day17.png` | 5 Tem | Sprint Retrospective + sprint kapanış |
 
-<!-- SS dosyaları eklendikçe bu tablo güncellenecek -->
+<!-- SS dosyaları WhatsApp'tan alındıkça bu klasöre eklenir ve tabloya link verilir -->
