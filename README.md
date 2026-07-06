@@ -143,7 +143,7 @@ The goal is simple: **stop losing applications in random notes** and walk into e
 - **Daily Scrum:**  
   Sprint 1 lasted **17 calendar days** (19 Jun – 5 Jul) → **17 async daily standups** on WhatsApp (one per day). Because of bootcamp schedules and our two-person active team, we could not hold fixed video calls; written standups were more sustainable.  
   **Opening topic (Day 1):** We are officially a 5-person bootcamp team, but we could not reach the other members — Gülce (SM) and Muhammed (PO) carry planning, dev, and ceremonies together.  
-  **Format:** *Yesterday · Today · Blockers* — see full **Turkish dialogue transcripts** (one thread per day, aligned with Trello tasks): [Sprint 1 Daily Scrum Notes](ProjectManagement/Sprint1Documents/DailyScrumMeetingNotesSprint1.md).  
+  **Format:** *Yesterday · Today · Blockers* — see full **Turkish dialogue transcripts** (one thread per day, aligned with Trello tasks): [Sprint 1 Daily Scrum Notes](ProjectManagement/Sprint1Documents/DailyScrumMeetingNotesSprint1.md.  
   **Evidence:** WhatsApp screenshots will be appended to that file after export.
 
 - **Sprint board update:**
