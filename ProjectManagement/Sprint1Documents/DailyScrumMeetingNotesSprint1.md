@@ -263,7 +263,7 @@ Daily  / Sprint kapanış 🏁 Dün demo + review tamam. Bugün **Sprint Retrosp
 Daily  Dün review notları README'de. Bugün retro maddelerini ekleyip GitHub push — hoca mesaj at dedi bitince. Sprint 2 planning 6 Temmuz'da: US-2.1–2.4, 26 puan.
 
 **Gülce:**  
-17/17 daily tamam ✅ WhatsApp SS'lerini bu metinlere göre **gün gün** gruba yapıştırıp kanıt olarak da ekleriz (her güne 1 SS). Engel yok. Sprint 2'de görüşürüz 💪
+17/17 daily tamam WhatsApp SS'lerini bu metinlere göre **gün gün** gruba yapıştırıp kanıt olarak da ekleriz (her güne 1 SS). Engel yok. Sprint 2'de görüşürüz 
 
 **Muhammed:**  
 Elinize sağlık — 2 kişiyle Sprint 1'i kapattık. Sprint 2'de job tracking geliyor, InternRoute'un asıl kısmı.
