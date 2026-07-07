@@ -141,10 +141,7 @@ The goal is simple: **stop losing applications in random notes** and walk into e
   **Story → task split:** Each blue-label **user story** (`US-x.x`) breaks into red-label **tasks** (API, UI, config, tests). Example: US-1.1 includes auth API, JWT middleware, login page, and register page as separate task cards.
 
 - **Daily Scrum:**  
-  Sprint 1 lasted **17 calendar days** (19 Jun – 5 Jul) → **17 async daily standups** on WhatsApp (one per day). Because of bootcamp schedules and our two-person active team, we could not hold fixed video calls; written standups were more sustainable.  
-  **Opening topic (Day 1):** We are officially a 5-person bootcamp team, but we could not reach the other members — Gülce (SM) and Muhammed (PO) carry planning, dev, and ceremonies together.  
-  **Format:** *Yesterday · Today · Blockers* — see full **Turkish dialogue transcripts** (one thread per day, aligned with Trello tasks): [Sprint 1 Daily Scrum Notes](ProjectManagement/Sprint1Documents/DailyScrumMeetingNotesSprint1.md).  
-  **Evidence:** One WhatsApp screenshot per sprint day (**17 total**, not added yet) — see planned filenames in [Sprint 1 Daily Scrum Notes](ProjectManagement/Sprint1Documents/DailyScrumMeetingNotesSprint1.md#whatsapp-screenshot-kanıtları).
+  We ran dailies throughout Sprint 1 (19 Jun – 5 Jul) in **WhatsApp** and **voice calls** when schedules allowed — no fixed daily call time, but we synced by chat most days and jumped on a quick voice talk when something needed a faster decision. In these syncs we planned the sprint scope (US-1.1–US-1.4), broke user stories into Trello tasks, tracked progress, and prepared the **Sprint Review** and **Retrospective**. This README section is the concise record of what we aligned on (planning decisions, progress, and blockers) across the sprint.
 
 - **Sprint board update:**
 
@@ -173,7 +170,7 @@ The goal is simple: **stop losing applications in random notes** and walk into e
   **Participants:** Gülce Çelik, Muhammed Enes Andiç
 
 - **Sprint Retrospective:**  
-  - **Keep:** WhatsApp async dailies worked well for a two-person team across different schedules; exporting chat threads as sprint evidence is worth continuing.  
+  - **Keep:** WhatsApp and voice calls for dailies worked well for a two-person team across different schedules.  
   - **Keep:** Splitting each user story into small red task cards on Trello made progress visible day by day.  
   - **Improve:** Review story-point estimates together at Sprint 2 planning — US-2.3 and US-2.4 are larger (8 pts each) and need realistic task breakdown.  
   - **Improve:** Run pytest + Vitest before every sprint review; we added tests late in Sprint 1 and want that earlier in Sprint 2.  
@@ -314,7 +311,7 @@ python scripts/run-all-tests.py
 InternRoute/
 ├── backend/                 # FastAPI app (auth, jobs, profile, agents, RAG)
 ├── frontend/                # React (Vite) SPA
-├── ProjectManagement/       # Sprint evidence (board screenshots, daily scrum notes)
+├── ProjectManagement/       # Sprint evidence (board screenshots)
 │   └── Sprint1Documents/
 ├── docs/                    # Architecture, API design, sprint plan, screenshots
 │   └── images/              # README & sprint evidence (ui/, trello/)
