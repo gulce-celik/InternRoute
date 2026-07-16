@@ -119,6 +119,25 @@ npm test
 
 ---
 
+## Demo user (screenshots / full desk)
+
+Seed a filled student account (jobs, CVs, applications, notes):
+
+```powershell
+cd c:\Users\gulce\Desktop\bootcamp\backend
+.\.venv\Scripts\activate
+python ..\scripts\seed_demo_user.py
+```
+
+| | |
+|--|--|
+| **Email** | `demo@internroute.app` |
+| **Password** | `DemoStudent2026!` |
+
+Re-running the script resets this account to the same sample data.
+
+---
+
 ## Troubleshooting
 
 ### Browser shows connection error / blank page

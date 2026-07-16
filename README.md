@@ -340,8 +340,8 @@ InternRoute/
 │   ├── Sprint1Documents/
 │   └── Sprint2Documents/
 ├── docs/                    # Architecture, API design, sprint plan, screenshots
-│   └── images/              # README & sprint evidence (ui/, trello/)
-├── scripts/                 # Test runners, git helpers
+│   └── images/              # README evidence only (ui/, trello/) — not root “Trello ss/” dumps
+├── scripts/                 # Test runners, git helpers, demo seed
 ├── .cursor/                 # Project hooks & skills
 ├── HOW_TO_START_APP.md
 ├── .env.example

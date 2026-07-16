@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 
+import BrandMark from "../components/BrandMark";
 import { useAuth } from "../hooks/useAuth";
 
 export default function LoginPage() {
@@ -51,6 +52,13 @@ export default function LoginPage() {
         </section>
 
         <section className="auth-card">
+          <div className="auth-brand">
+            <BrandMark />
+            <div>
+              <p className="auth-brand-name">InternRoute</p>
+              <p className="auth-brand-tag">student career kit</p>
+            </div>
+          </div>
           <h2>Welcome back</h2>
           <p className="subtitle">Sign in to continue your application journey</p>
           <form onSubmit={handleSubmit} className="auth-form">

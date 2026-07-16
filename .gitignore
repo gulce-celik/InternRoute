@@ -82,3 +82,9 @@ logs/
 *.db
 *.sqlite
 *.sqlite3
+
+# Local screenshot dumps (README uses ProjectManagement/ + docs/images/)
+Trello ss/
+Trello ss FINAL/
+Trello ss Sprint2/
+UI ss/

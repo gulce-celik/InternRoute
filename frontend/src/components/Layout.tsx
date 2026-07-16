@@ -1,5 +1,6 @@
 import { NavLink, Outlet } from "react-router-dom";
 
+import BrandMark from "./BrandMark";
 import DeskBuddy from "./DeskBuddy";
 import MotivationTicker from "./MotivationTicker";
 import SceneBackdrop from "./SceneBackdrop";
@@ -28,9 +29,7 @@ export default function Layout() {
 
       <header className="topbar">
         <div className="topbar-start">
-          <div className="brand-mark" aria-hidden="true">
-            <span className="brand-arrow">→</span>
-          </div>
+          <BrandMark />
           <div className="brand-copy">
             <span className="brand-name">InternRoute</span>
             <span className="brand-tag">student career kit</span>

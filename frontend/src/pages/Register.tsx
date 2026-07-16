@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 
+import BrandMark from "../components/BrandMark";
 import { useAuth } from "../hooks/useAuth";
 
 type Step = "details" | "verify";
@@ -95,6 +96,13 @@ export default function RegisterPage() {
         </section>
 
         <section className="auth-card">
+          <div className="auth-brand">
+            <BrandMark />
+            <div>
+              <p className="auth-brand-name">InternRoute</p>
+              <p className="auth-brand-tag">student career kit</p>
+            </div>
+          </div>
           {step === "details" ? (
             <>
               <h2>Create account</h2>

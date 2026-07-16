@@ -176,6 +176,29 @@ button:disabled {
   background: #fffdf9;
 }
 
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.15rem;
+}
+
+.auth-brand-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  line-height: 1.1;
+}
+
+.auth-brand-tag {
+  margin: 0.15rem 0 0;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  font-weight: 700;
+}
+
 .auth-card h2 {
   margin: 0 0 0.35rem;
   font-family: var(--font-display);
@@ -288,8 +311,13 @@ button:disabled {
   border-radius: var(--radius);
   background: var(--mustard);
   box-shadow: var(--shadow-sm);
-  font-weight: 800;
-  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.brand-mark-icon {
+  width: 22px;
+  height: 22px;
+  display: block;
 }
 
 .brand-copy {
@@ -2032,11 +2060,6 @@ button:disabled {
 .page-main {
   position: relative;
   z-index: 2;
-}
-
-.brand-arrow {
-  display: inline-block;
-  animation: card-drift 4s ease-in-out infinite;
 }
 
 .page-kicker {
