@@ -7,7 +7,7 @@ import { useAuth } from "../hooks/useAuth";
 const coreNav = [
   { to: "/", label: "Home", end: true },
   { to: "/jobs", label: "Board", end: false },
-  { to: "/cvs", label: "CVs", end: false, soon: "2" as const },
+  { to: "/cvs", label: "CVs", end: false },
   { to: "/applications", label: "Pipeline", end: false },
 ] as const;
 

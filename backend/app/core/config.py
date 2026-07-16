@@ -1,5 +1,6 @@
 from functools import lru_cache
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -23,6 +24,10 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
 
     cors_origins: str = "http://localhost:5173,http://localhost:3000"
+
+    upload_dir: str = "uploads/cvs"
+    chroma_persist_dir: str = "chroma_data"
+    google_api_key: str | None = Field(default=None, validation_alias="GEMINI_API_KEY")
 
     @property
     def cors_origin_list(self) -> list[str]:

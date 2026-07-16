@@ -81,16 +81,15 @@ The goal is simple: **stop losing applications in random notes** and walk into e
 | **Tests** | Backend pytest (10) + frontend Vitest (5) |
 | **Database scaffold** | User model live; Job, CV, Application models prepared for Sprint 2 |
 
-### Planned for Sprint 2 (Jul 6 – 19)
+### Delivered in Sprint 2 (Jul 6 – 19)
 
 | Feature | Description |
 |---------|-------------|
 | **Job board** | Manual job posting CRUD, pin roles, application status |
-| **Application pipeline** | Visual flow per role: Saved → Applied → Interview → Offer |
-| **Dashboard** | Summary stats for applications, CV versions, AI sessions |
-| **CV locker** | PDF upload, multiple versions per role, file storage |
-| **Job–CV matching** | Applications API — which CV was used for which job |
-| **RAG foundation** | ChromaDB, PDF → text, embeddings, memory context API |
+| **Application pipeline** | Job–CV matching, status flow, notes + written screening Q&A |
+| **Dashboard** | Live summary stats for applications, CV versions, offers |
+| **CV locker** | PDF upload, view, delete; CV can be reassigned on applications |
+| **RAG foundation** | ChromaDB, PDF → text → chunks → embeddings, memory context API |
 
 ### Coming in Sprint 3 (Jul 20 – Aug 2)
 
@@ -195,34 +194,63 @@ The goal is simple: **stop losing applications in random notes** and walk into e
 
 **Dates:** 6 July – 19 July 2026
 
-### Goals
+- **Backlog organisation and story selection:**  
+  Sprint 2 continues the same Trello Kanban flow (`Rejected → Backlog → To Do → In Progress → Done`). After auth and profile (Sprint 1), the Product Owner selected the **application-tracking core** of InternRoute: students must be able to pin roles, store CV versions, link which CV went to which job, and build a RAG memory layer for Sprint 3 agents.  
+  **Sprint 2 selection:** **US-2.1 — Manual job posting & application board (5)**, **US-2.2 — PDF CV upload & CV locker (5)**, **US-2.3 — Job–CV matching / applications (8)**, **US-2.4 — RAG foundation / ChromaDB + embeddings (8)** — **26 points total**. No single story exceeds half of the sprint total (max = 8, under half of 26).  
+  **Story → task split:** Blue-label stories break into red-label tasks (Job CRUD API, Board UI, CV upload API, Applications API, ChromaDB setup, memory context, tests). Process cards (Review, Retro, GitHub evidence) tracked alongside delivery.
 
-Deliver manual job tracking, CV upload, applications matching, and the RAG memory foundation.
+- **Daily Scrum:**  
+  Sprint 2 lasted **14 calendar days** (6 Jul – 19 Jul) → **14 async daily standups** on WhatsApp (one per day). Same format as Sprint 1: *Yesterday · Today · Blockers*.  
+  **Typical topics this sprint:** Job CRUD & Board UI, PDF CV locker (upload / view / delete with pipeline CV clear), Applications matching + notes & written Q&A, Dashboard live stats, PDF extract → chunk → embed → ChromaDB memory.  
+  **Facilitator:** Gülce Çelik (Scrum Master). **Notes:** [Sprint 2 Daily Scrum Notes](ProjectManagement/Sprint2Documents/DailyScrumMeetingNotesSprint2.md).  
+  **Evidence:** One WhatsApp screenshot per sprint day (**14 total**, not added yet) — see planned filenames in the notes file.
 
-### Planned backlog (story points)
+- **Sprint board update:**
 
-| Story | Points |
-|-------|--------|
-| US-2.1: Manual job posting & application board | 5 |
-| US-2.2: PDF CV upload & CV locker | 5 |
-| US-2.3: Job–CV matching / applications | 8 |
-| US-2.4: RAG foundation (ChromaDB + embeddings) | 8 |
+  ![Sprint 2 board — start of sprint](ProjectManagement/Sprint2Documents/board-sprint2-start.png)
 
-### Backlog highlights
+  ![Sprint 2 board — mid sprint](ProjectManagement/Sprint2Documents/board-sprint2-mid.png)
 
-- Job CRUD API and job board UI  
-- Application status workflow (applied, interview, rejected, offer)  
-- PDF CV upload API + CV locker frontend  
-- Applications API and applications list UI  
-- ChromaDB setup, PDF extraction, CV embedding, memory context API  
-- Sprint 2 review, retro, GitHub evidence upload  
+  ![Sprint 2 board — sprint close](ProjectManagement/Sprint2Documents/board-sprint2-close.png)
 
-### UI preview (Sprint 2 screen — built as placeholder)
+- **Product status** (screenshots):
 
-<p align="center">
-  <img src="docs/images/ui/cv-locker.png" alt="CV locker coming in Sprint 2" width="900"/>
-  <br/><em>CV locker — multiple versions per role; upload ships in Sprint 2</em>
-</p>
+  ![Job board](docs/images/ui/job-board.png)
+
+  ![CV locker](docs/images/ui/cv-locker.png)
+
+  ![Application pipeline](docs/images/ui/pipeline.png)
+
+  ![Dashboard](docs/images/ui/dashboard.png)
+
+- **Sprint Review:**  
+  At sprint close we demoed the **Sprint 2 increment**: a student can pin a role on the Board, upload a PDF to the CV locker, link that CV to the role in Pipeline (with notes / written screening Q&A), and see live counts on the Dashboard — while CV text is indexed into RAG memory for Sprint 3.  
+  **What we delivered:**  
+  - **Job board (US-2.1):** Job CRUD API, Board UI, application status on roles, Pipeline stage strip, Dashboard job/application stats.  
+  - **CV locker (US-2.2):** PDF upload + file storage, list/view/delete; deleting a CV clears the CV link on applications but **keeps** the pipeline card so the user can reassign another CV.  
+  - **Applications (US-2.3):** Job–CV matching API/UI, status updates, application notes, written screening Q&A in the Application file panel.  
+  - **RAG foundation (US-2.4):** PDF → text → chunks → embeddings → ChromaDB (`internroute_cv`); `GET /memory/context`; technical preview on the CVs page (not a day-to-day student feature — for Sprint 3 agents).  
+  - **Quality:** Backend pytest + frontend Vitest expanded for CVs, applications, dashboard, and CV-delete / CV-reassign flows.  
+  **Demo outcome:** Board → CV upload → Pipeline link → status / notes / Q&A → Dashboard stats ran without critical blockers.  
+  **Moved to Sprint 3:** Analyzer, Writer, and HR Mock Interview agents; deploy, polish, demo video.  
+  **Participants:** Gülce Çelik, Muhammed Enes Andiç
+
+- **Sprint Retrospective:**  
+  - **Keep:** WhatsApp async dailies and blue story / red task cards on Trello.  
+  - **Keep:** Shipping vertical slices (API + UI per story) so the Pipeline becomes usable mid-sprint.  
+  - **Improve:** Clarify CV–application ownership early (delete CV must not wipe the whole application — fixed by nullable `cv_id` + reassign).  
+  - **Improve:** RAG preview copy must say clearly it is for Sprint 3 agents, not a student tool; PDF extraction from designed CVs can still look messy in snippets — View PDF remains the source of truth.  
+  - **Team:** Two-person active unit continues; Sprint 3 agent work needs earlier Gemini key / env checks in planning.
+
+### Sprint 2 — technical summary
+
+| Layer | Stack |
+|-------|-------|
+| **Backend** | FastAPI routes: `/jobs`, `/cvs`, `/applications`, `/dashboard/stats`, `/memory/context` |
+| **Files** | Local PDF storage under `uploads/cvs/` |
+| **RAG** | PyMuPDF extract · chunking · embeddings (Gemini if key set, else local) · ChromaDB |
+| **Frontend** | Board, CVs locker, Pipeline (match + Q&A), Dashboard live stats |
+| **Testing** | pytest (CVs, applications, auth, jobs, profile) · Vitest |
 
 ---
 
@@ -315,7 +343,8 @@ InternRoute/
 ├── backend/                 # FastAPI app (auth, jobs, profile, agents, RAG)
 ├── frontend/                # React (Vite) SPA
 ├── ProjectManagement/       # Sprint evidence (board screenshots, daily scrum notes)
-│   └── Sprint1Documents/
+│   ├── Sprint1Documents/
+│   └── Sprint2Documents/
 ├── docs/                    # Architecture, API design, sprint plan, screenshots
 │   └── images/              # README & sprint evidence (ui/, trello/)
 ├── scripts/                 # Test runners, git helpers

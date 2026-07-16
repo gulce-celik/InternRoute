@@ -18,9 +18,14 @@ vi.mock("../services/api", () => ({
   }),
   loginUser: vi.fn(),
   registerUser: vi.fn(),
-  listJobs: vi.fn().mockResolvedValue([
-    { id: 1, title: "Intern", company: "Acme", description: "Test", location: null, status: "applied", created_at: "2026-07-04T00:00:00Z" },
-  ]),
+  getDashboardStats: vi.fn().mockResolvedValue({
+    job_count: 1,
+    cv_count: 2,
+    application_count: 1,
+    interview_count: 0,
+    offer_count: 0,
+    furthest_pipeline_stage: "applied",
+  }),
 }));
 
 describe("DashboardPage", () => {
@@ -45,8 +50,8 @@ describe("DashboardPage", () => {
     expect(screen.getByLabelText("Application pipeline")).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText("Pinned roles on your board")).toBeInTheDocument();
-      expect(document.querySelector(".stat-value")?.textContent).toBe("1");
+      expect(screen.getByText(/ready in your locker for pipeline matching/i)).toBeInTheDocument();
+      expect(document.querySelectorAll(".stat-value")[0]?.textContent).toBe("1");
     });
   });
 });
