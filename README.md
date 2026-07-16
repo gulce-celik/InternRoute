@@ -201,9 +201,8 @@ The goal is simple: **stop losing applications in random notes** and walk into e
 
 - **Daily Scrum:**  
   Sprint 2 lasted **14 calendar days** (6 Jul – 19 Jul) → **14 async daily standups** on WhatsApp (one per day). Same format as Sprint 1: *Yesterday · Today · Blockers*.  
-  **Typical topics this sprint:** Job CRUD & Board UI, PDF CV locker (upload / view / delete with pipeline CV clear), Applications matching + notes & written Q&A, Dashboard live stats, PDF extract → chunk → embed → ChromaDB memory.  
-  **Facilitator:** Gülce Çelik (Scrum Master). **Notes:** [Sprint 2 Daily Scrum Notes](ProjectManagement/Sprint2Documents/DailyScrumMeetingNotesSprint2.md).  
-  **Evidence:** One WhatsApp screenshot per sprint day (**14 total**, not added yet) — see planned filenames in the notes file.
+  **Facilitator:** Gülce Çelik (Scrum Master). Notes file: [Sprint 2 Daily Scrum Notes](ProjectManagement/Sprint2Documents/DailyScrumMeetingNotesSprint2.md).  
+  **Evidence:** WhatsApp screenshots will be appended under `ProjectManagement/Sprint2Documents/` *(not added yet)*.
 
 - **Sprint board update:**
 
