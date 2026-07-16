@@ -152,9 +152,33 @@ The goal is simple: **stop losing applications in random notes** and walk into e
 
 - **Product status** (screenshots):
 
-  ![Login page](docs/images/ui/login.png)
+  <p align="center">
+    <img src="docs/images/ui/login.png" alt="Login page" width="48%"/>
+    &nbsp;
+    <img src="docs/images/ui/profile.png" alt="Student profile page" width="48%"/>
+  </p>
 
-  ![Student profile page](docs/images/ui/profile.png)
+  <p align="center">
+    <img src="docs/images/ui/dashboard.png" alt="Dashboard" width="48%"/>
+    &nbsp;
+    <img src="docs/images/ui/job-board.png" alt="Job board" width="48%"/>
+  </p>
+
+  <p align="center">
+    <img src="docs/images/ui/cv-locker.png" alt="CV locker" width="48%"/>
+    &nbsp;
+    <img src="docs/images/ui/pipeline.png" alt="Application pipeline" width="48%"/>
+  </p>
+
+  <p align="center">
+    <img src="docs/images/ui/analyze-preview.png" alt="Analyze preview" width="48%"/>
+    &nbsp;
+    <img src="docs/images/ui/mock-interview-preview.png" alt="Mock interview preview" width="48%"/>
+  </p>
+
+  <p align="center">
+    <img src="docs/images/ui/cover-letter-preview.png" alt="Cover letter studio preview" width="48%"/>
+  </p>
 
 - **Sprint Review:**  
   At sprint close we demoed the **Sprint 1 increment** of InternRoute to ourselves (PO + SM): a student can sign up, log in, and land on a protected app shell with a profile that captures university, year, and target sectors — the data Sprint 3 AI agents will need later.  
@@ -209,13 +233,7 @@ The goal is simple: **stop losing applications in random notes** and walk into e
 
 - **Product status** (screenshots):
 
-  ![Job board](docs/images/ui/job-board.png)
-
-  ![CV locker](docs/images/ui/cv-locker.png)
-
-  ![Application pipeline](docs/images/ui/pipeline.png)
-
-  ![Dashboard](docs/images/ui/dashboard.png)
+  Sprint 2 UI screenshots will be added here after capture *(pending)*.
 
 - **Sprint Review:**  
   At sprint close we demoed the **Sprint 2 increment**: a student can pin a role on the Board, upload a PDF to the CV locker, link that CV to the role in Pipeline (with notes / written screening Q&A), and see live counts on the Dashboard — while CV text is indexed into RAG memory for Sprint 3.  
@@ -267,22 +285,9 @@ Ship the **multi-agent AI layer**, connect it to RAG memory, deploy, and record 
 - Deploy to live URL · Update README · 3-minute YouTube demo  
 - Submit product delivery form · Sprint 3 review & retro  
 
-### UI previews (Sprint 3 screens — designed, not wired yet)
+### UI previews (Sprint 3 screens)
 
-<p align="center">
-  <img src="docs/images/ui/analyze-preview.png" alt="Analyzer gap scan preview" width="900"/>
-  <br/><em>Analyze — CV vs role gap scan (Analyzer Agent, Sprint 3)</em>
-</p>
-
-<p align="center">
-  <img src="docs/images/ui/mock-interview-preview.png" alt="Mock interview preview" width="900"/>
-  <br/><em>Interview — HR Mock Agent chat (Sprint 3)</em>
-</p>
-
-<p align="center">
-  <img src="docs/images/ui/cover-letter-preview.png" alt="Cover letter studio preview" width="900"/>
-  <br/><em>Letters — Writer Agent cover letter studio (Sprint 3)</em>
-</p>
+Sprint 3 UI screenshots will be added here after capture *(pending)*.
 
 ---
 
