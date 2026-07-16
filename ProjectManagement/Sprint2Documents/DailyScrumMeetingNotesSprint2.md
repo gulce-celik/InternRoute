@@ -1,15 +1,13 @@
-# Sprint 2 — Daily Scrum Notes (WhatsApp)
+# Sprint 2 — Daily Scrum Notes
 
-> **Format:** Async standups via WhatsApp group chat (team schedule constraints).  
-> **Sprint:** 6 July – 19 July 2026 (**14 days** → **14 daily scrums**)  
-> **Facilitator:** Gülce Çelik (Scrum Master)  
-> **Participants:** Gülce Çelik, Muhammed Enes Andiç  
-> **Template:** Yesterday · Today · Blockers
+> **Format:** WhatsApp + voice calls when needed (same as Sprint 1)  
+> **Sprint:** 6 July – 19 July 2026  
+> **Facilitator:** Gülce Çelik (Scrum Master)
 
 ---
 
 ## WhatsApp screenshot evidence
 
-_Screenshots from the team WhatsApp daily standup chat will be appended here_ (same approach as Sprint 1).
+_Screenshots from Sprint 2 daily syncs will be appended here._
 
-<!-- Placeholder: add exported chat images under this folder when ready -->
+<!-- Add exported chat images under this folder when ready -->
