@@ -1,14 +1,15 @@
 import { NavLink, Outlet } from "react-router-dom";
 
+import DeskBuddy from "./DeskBuddy";
 import MotivationTicker from "./MotivationTicker";
 import SceneBackdrop from "./SceneBackdrop";
 import { useAuth } from "../hooks/useAuth";
 
 const coreNav = [
-  { to: "/", label: "Home", end: true },
-  { to: "/jobs", label: "Board", end: false },
-  { to: "/cvs", label: "CVs", end: false },
-  { to: "/applications", label: "Pipeline", end: false },
+  { to: "/", label: "Home", end: true, tour: "nav-home" },
+  { to: "/jobs", label: "Board", end: false, tour: "nav-board" },
+  { to: "/cvs", label: "CVs", end: false, tour: "nav-cvs" },
+  { to: "/applications", label: "Pipeline", end: false, tour: "nav-pipeline" },
 ] as const;
 
 const aiNav = [
@@ -42,6 +43,7 @@ export default function Layout() {
               key={item.to}
               to={item.to}
               end={item.end}
+              data-tour={item.tour}
               className={({ isActive }) =>
                 `topnav-link${isActive ? " topnav-link--active" : ""}${"soon" in item ? " topnav-link--soon" : ""}`
               }
@@ -55,19 +57,21 @@ export default function Layout() {
 
           <span className="topnav-divider" aria-hidden="true" />
 
-          {aiNav.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={false}
-              className={({ isActive }) =>
-                `topnav-link topnav-link--ai${isActive ? " topnav-link--active" : ""} topnav-link--soon`
-              }
-            >
-              {item.label}
-              <span className="nav-sprint-tag">S{item.soon}</span>
-            </NavLink>
-          ))}
+          <span className="topnav-ai-group" data-tour="nav-ai">
+            {aiNav.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={false}
+                className={({ isActive }) =>
+                  `topnav-link topnav-link--ai${isActive ? " topnav-link--active" : ""} topnav-link--soon`
+                }
+              >
+                {item.label}
+                <span className="nav-sprint-tag">S{item.soon}</span>
+              </NavLink>
+            ))}
+          </span>
         </nav>
 
         <div className="topbar-end">
@@ -77,11 +81,12 @@ export default function Layout() {
           </div>
           <NavLink
             to="/profile"
+            data-tour="nav-profile"
             className={({ isActive }) => `btn-profile${isActive ? " btn-profile--active" : ""}`}
           >
             Profile
           </NavLink>
-          <button type="button" className="btn-ghost" onClick={logout}>
+          <button type="button" className="btn-ghost" data-tour="nav-logout" onClick={logout}>
             Log out
           </button>
         </div>
@@ -90,6 +95,8 @@ export default function Layout() {
       <main className="page-main">
         <Outlet />
       </main>
+
+      <DeskBuddy />
     </div>
   );
 }

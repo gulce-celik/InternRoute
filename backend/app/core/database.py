@@ -35,7 +35,7 @@ def get_db() -> Generator[Session, None, None]:
 
 
 def init_db() -> None:
-    from app.models.user import Application, CV, Job, User  # noqa: F401
+    from app.models.user import Application, CV, Job, PendingRegistration, User  # noqa: F401
 
     Base.metadata.create_all(bind=engine)
     _ensure_user_profile_columns()

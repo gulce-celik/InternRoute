@@ -12,6 +12,15 @@ class UserLogin(BaseModel):
     password: str
 
 
+class RegisterVerify(BaseModel):
+    email: EmailStr
+    code: str = Field(min_length=6, max_length=6, pattern=r"^\d{6}$")
+
+
+class RegisterResend(BaseModel):
+    email: EmailStr
+
+
 class UserResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -27,3 +36,11 @@ class UserResponse(BaseModel):
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+
+class VerificationStarted(BaseModel):
+    email: EmailStr
+    message: str
+    expires_in_minutes: int
+    emailed: bool
+    debug_code: str | None = None

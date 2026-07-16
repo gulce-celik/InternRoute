@@ -7,21 +7,13 @@ from fastapi.testclient import TestClient
 
 @pytest.fixture
 def auth_headers(client: TestClient) -> dict[str, str]:
-    client.post(
-        "/api/v1/auth/register",
-        json={
-            "email": "cvuser@example.com",
-            "password": "securepass",
-            "full_name": "CV User",
-        },
-    )
-    login_response = client.post(
-        "/api/v1/auth/login",
-        data={"username": "cvuser@example.com", "password": "securepass"},
-    )
-    token = login_response.json()["access_token"]
-    return {"Authorization": f"Bearer {token}"}
+    from tests.conftest import register_verified_user
 
+    return register_verified_user(
+        client,
+        email="cvuser@example.com",
+        full_name="CV User",
+    )
 
 def _make_pdf_bytes(text: str = "InternRoute CV content for testing.") -> bytes:
     document = fitz.open()

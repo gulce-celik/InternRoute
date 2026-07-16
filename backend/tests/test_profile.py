@@ -1,14 +1,13 @@
-def auth_headers(client, email="student@example.com", password="securepass", full_name="Test Student"):
-    client.post(
-        "/api/v1/auth/register",
-        json={"email": email, "password": password, "full_name": full_name},
-    )
-    token = client.post(
-        "/api/v1/auth/login",
-        data={"username": email, "password": password},
-    ).json()["access_token"]
-    return {"Authorization": f"Bearer {token}"}
+from tests.conftest import register_verified_user
 
+
+def auth_headers(client, email="student@example.com", password="securepass", full_name="Test Student"):
+    return register_verified_user(
+        client,
+        email=email,
+        password=password,
+        full_name=full_name,
+    )
 
 def test_get_profile(client):
     headers = auth_headers(client)

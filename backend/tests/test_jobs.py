@@ -4,39 +4,24 @@ from fastapi.testclient import TestClient
 
 @pytest.fixture
 def auth_headers(client: TestClient) -> dict[str, str]:
-    client.post(
-        "/api/v1/auth/register",
-        json={
-            "email": "jobuser@example.com",
-            "password": "securepass",
-            "full_name": "Job User",
-        },
+    from tests.conftest import register_verified_user
+
+    return register_verified_user(
+        client,
+        email="jobuser@example.com",
+        full_name="Job User",
     )
-    login_response = client.post(
-        "/api/v1/auth/login",
-        data={"username": "jobuser@example.com", "password": "securepass"},
-    )
-    token = login_response.json()["access_token"]
-    return {"Authorization": f"Bearer {token}"}
 
 
 @pytest.fixture
 def other_user_headers(client: TestClient) -> dict[str, str]:
-    client.post(
-        "/api/v1/auth/register",
-        json={
-            "email": "other@example.com",
-            "password": "securepass",
-            "full_name": "Other User",
-        },
-    )
-    login_response = client.post(
-        "/api/v1/auth/login",
-        data={"username": "other@example.com", "password": "securepass"},
-    )
-    token = login_response.json()["access_token"]
-    return {"Authorization": f"Bearer {token}"}
+    from tests.conftest import register_verified_user
 
+    return register_verified_user(
+        client,
+        email="other@example.com",
+        full_name="Other User",
+    )
 
 JOB_PAYLOAD = {
     "title": "Yazılım Stajyeri",

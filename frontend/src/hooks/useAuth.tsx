@@ -8,15 +8,25 @@ import {
   type ReactNode,
 } from "react";
 
-import { getProfile, loginUser, registerUser, updateProfile } from "../services/api";
-import type { ProfileUpdate, RegisterPayload, User } from "../types/auth";
+import { markHomeTourPending } from "../components/HomeTour";
+import {
+  getProfile,
+  loginUser,
+  resendRegistrationCode,
+  startRegistration,
+  updateProfile,
+  verifyRegistration,
+} from "../services/api";
+import type { ProfileUpdate, RegisterPayload, User, VerificationStarted } from "../types/auth";
 
 interface AuthContextValue {
   user: User | null;
   token: string | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (payload: RegisterPayload) => Promise<void>;
+  startRegister: (payload: RegisterPayload) => Promise<VerificationStarted>;
+  completeRegister: (email: string, code: string, password: string) => Promise<void>;
+  resendRegisterCode: (email: string) => Promise<VerificationStarted>;
   logout: () => void;
   refreshUser: () => Promise<void>;
   updateUserProfile: (payload: ProfileUpdate) => Promise<User>;
@@ -94,10 +104,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [token],
   );
 
-  const register = useCallback(async (payload: RegisterPayload) => {
-    await registerUser(payload);
-    await login(payload.email, payload.password);
-  }, [login]);
+  const startRegister = useCallback(async (payload: RegisterPayload) => {
+    return startRegistration(payload);
+  }, []);
+
+  const completeRegister = useCallback(
+    async (email: string, code: string, password: string) => {
+      await verifyRegistration({ email, code });
+      markHomeTourPending();
+      await login(email, password);
+    },
+    [login],
+  );
+
+  const resendRegisterCode = useCallback(async (email: string) => {
+    return resendRegistrationCode(email);
+  }, []);
 
   const logout = useCallback(() => {
     localStorage.removeItem(TOKEN_KEY);
@@ -106,8 +128,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ user, token, loading, login, register, logout, refreshUser, updateUserProfile }),
-    [user, token, loading, login, register, logout, refreshUser, updateUserProfile],
+    () => ({
+      user,
+      token,
+      loading,
+      login,
+      startRegister,
+      completeRegister,
+      resendRegisterCode,
+      logout,
+      refreshUser,
+      updateUserProfile,
+    }),
+    [
+      user,
+      token,
+      loading,
+      login,
+      startRegister,
+      completeRegister,
+      resendRegisterCode,
+      logout,
+      refreshUser,
+      updateUserProfile,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

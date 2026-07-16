@@ -18,6 +18,9 @@ vi.mock("../services/api", () => ({
   }),
   loginUser: vi.fn(),
   registerUser: vi.fn(),
+  startRegistration: vi.fn(),
+  verifyRegistration: vi.fn(),
+  resendRegistrationCode: vi.fn(),
   getDashboardStats: vi.fn().mockResolvedValue({
     job_count: 1,
     cv_count: 2,
@@ -31,27 +34,33 @@ vi.mock("../services/api", () => ({
 describe("DashboardPage", () => {
   beforeEach(() => {
     localStorage.setItem("internroute_token", "test-token");
+    localStorage.setItem("internroute_home_tour_done", "1");
   });
 
   afterEach(() => {
     localStorage.clear();
   });
 
-  it("renders stat cards and pipeline strip", async () => {
+  it("renders living desk hub with flow zones", async () => {
     renderWithRouter(
       <AuthProvider>
         <DashboardPage />
       </AuthProvider>,
     );
 
-    expect(screen.getByRole("heading", { name: /internship command desk/i })).toBeInTheDocument();
-    expect(screen.getByText("Applications")).toBeInTheDocument();
-    expect(screen.getByText("CV Versions")).toBeInTheDocument();
-    expect(screen.getByLabelText("Application pipeline")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /this is your home base/i })).toBeInTheDocument();
+    expect(screen.getByLabelText("Your InternRoute desk")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Pinned roles" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "CV versions" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Applications" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Where applications move" })).not.toBeInTheDocument();
+    expect(screen.queryByText("then")).not.toBeInTheDocument();
+    expect(document.querySelectorAll(".desk-flow-chevron")).toHaveLength(2);
 
     await waitFor(() => {
-      expect(screen.getByText(/ready in your locker for pipeline matching/i)).toBeInTheDocument();
-      expect(document.querySelectorAll(".stat-value")[0]?.textContent).toBe("1");
+      expect(screen.getByText(/1 pinned · 2 in locker · 1 in pipeline/i)).toBeInTheDocument();
+      expect(screen.getByText("role")).toBeInTheDocument();
+      expect(screen.getByText("versions")).toBeInTheDocument();
     });
   });
 });

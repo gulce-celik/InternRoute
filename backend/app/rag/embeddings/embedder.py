@@ -50,9 +50,20 @@ class GeminiEmbedder:
 
 
 def get_embedder(api_key: str | None) -> Embedder:
-    if api_key:
+    if _usable_gemini_key(api_key):
         try:
             return GeminiEmbedder(api_key)
         except Exception:
             pass
     return LocalHashEmbedder()
+
+
+def _usable_gemini_key(api_key: str | None) -> bool:
+    if not api_key:
+        return False
+    normalized = api_key.strip().lower()
+    if not normalized or normalized.startswith("your_"):
+        return False
+    if normalized in {"changeme", "change-me", "test", "dummy"}:
+        return False
+    return True

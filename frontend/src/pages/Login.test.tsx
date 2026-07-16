@@ -10,7 +10,9 @@ vi.mock("../services/api", () => ({
   getProfile: vi.fn(),
   updateProfile: vi.fn(),
   loginUser: vi.fn(),
-  registerUser: vi.fn(),
+  startRegistration: vi.fn(),
+  verifyRegistration: vi.fn(),
+  resendRegistrationCode: vi.fn(),
 }));
 
 describe("LoginPage", () => {

@@ -7,21 +7,13 @@ from fastapi.testclient import TestClient
 
 @pytest.fixture
 def auth_headers(client: TestClient) -> dict[str, str]:
-    client.post(
-        "/api/v1/auth/register",
-        json={
-            "email": "appuser@example.com",
-            "password": "securepass",
-            "full_name": "App User",
-        },
-    )
-    login_response = client.post(
-        "/api/v1/auth/login",
-        data={"username": "appuser@example.com", "password": "securepass"},
-    )
-    token = login_response.json()["access_token"]
-    return {"Authorization": f"Bearer {token}"}
+    from tests.conftest import register_verified_user
 
+    return register_verified_user(
+        client,
+        email="appuser@example.com",
+        full_name="App User",
+    )
 
 JOB_PAYLOAD = {
     "title": "Yazılım Stajyeri",

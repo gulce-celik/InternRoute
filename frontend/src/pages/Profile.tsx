@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 
 import AnimatedCard from "../components/AnimatedCard";
 import { useAuth } from "../hooks/useAuth";
@@ -22,7 +22,32 @@ const SECTOR_SUGGESTIONS = [
   "Consulting",
   "Healthcare",
   "Automotive",
-];
+] as const;
+
+function parseSectors(raw: string): string[] {
+  return raw
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function yearLabel(value: string): string {
+  if (!value) {
+    return "";
+  }
+  return STUDY_YEARS.find((option) => option.value === value)?.label ?? "";
+}
+
+function initialsFrom(name: string, email?: string | null): string {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length >= 2) {
+    return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+  }
+  if (parts[0]?.length >= 2) {
+    return parts[0].slice(0, 2).toUpperCase();
+  }
+  return (email ?? "IR").slice(0, 2).toUpperCase();
+}
 
 export default function ProfilePage() {
   const { user, updateUserProfile } = useAuth();
@@ -47,18 +72,16 @@ export default function ProfilePage() {
     setTargetSectors(user.target_sectors ?? "");
   }, [user]);
 
-  function toggleSector(sector: string) {
-    const current = targetSectors
-      .split(",")
-      .map((item) => item.trim())
-      .filter(Boolean);
+  const selectedSectors = useMemo(() => parseSectors(targetSectors), [targetSectors]);
+  const displayName = fullName.trim() || user?.email?.split("@")[0] || "Student";
+  const yearText = yearLabel(studyYear);
 
-    if (current.includes(sector)) {
-      setTargetSectors(current.filter((item) => item !== sector).join(", "));
+  function toggleSector(sector: string) {
+    if (selectedSectors.includes(sector)) {
+      setTargetSectors(selectedSectors.filter((item) => item !== sector).join(", "));
       return;
     }
-
-    setTargetSectors([...current, sector].join(", "));
+    setTargetSectors([...selectedSectors, sector].join(", "));
   }
 
   async function handleSubmit(event: FormEvent) {
@@ -75,7 +98,7 @@ export default function ProfilePage() {
         major: major.trim() || undefined,
         target_sectors: targetSectors.trim() || undefined,
       });
-      setSuccess("Profile saved — AI tips will use this in Sprint 3.");
+      setSuccess("Saved.");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save profile");
     } finally {
@@ -85,47 +108,69 @@ export default function ProfilePage() {
 
   return (
     <section className="page-section profile-page">
-      <div className="page-hero page-hero--animated">
-        <p className="page-kicker">Your details</p>
+      <div className="page-hero page-hero--animated profile-hero">
+        <p className="page-kicker">Account</p>
         <h1>
-          Student <em>profile</em>
+          Your <em>profile</em>
         </h1>
-        <p className="page-description">
-          Tell us where you study and what sectors you target. Later, our AI agents will personalize
-          cover letters, gap analysis, and mock interviews from this.
-        </p>
       </div>
 
-      {error && <p className="error banner-error">{error}</p>}
-      {success && <p className="banner-success">{success}</p>}
+      {error ? <p className="error banner-error">{error}</p> : null}
+      {success ? <p className="banner-success">{success}</p> : null}
 
-      <AnimatedCard>
-        <article className="panel profile-panel">
-          <h2>About you</h2>
-          <p className="profile-email muted">{user?.email}</p>
+      <div className="profile-shell">
+        <AnimatedCard delay={40}>
+          <aside className="profile-identity" aria-label="Current user">
+            <div className="profile-avatar" aria-hidden="true">
+              {initialsFrom(fullName, user?.email)}
+            </div>
+            <h2 className="profile-identity-name">{displayName}</h2>
+            <p className="profile-identity-email">{user?.email}</p>
+            {university.trim() || yearText || major.trim() ? (
+              <ul className="profile-identity-facts">
+                {university.trim() ? <li>{university.trim()}</li> : null}
+                {yearText ? <li>{yearText}</li> : null}
+                {major.trim() ? <li>{major.trim()}</li> : null}
+              </ul>
+            ) : null}
+            {selectedSectors.length > 0 ? (
+              <div className="profile-identity-sectors">
+                {selectedSectors.slice(0, 4).map((sector) => (
+                  <span key={sector}>{sector}</span>
+                ))}
+                {selectedSectors.length > 4 ? (
+                  <span>+{selectedSectors.length - 4}</span>
+                ) : null}
+              </div>
+            ) : null}
+          </aside>
+        </AnimatedCard>
 
-          <form onSubmit={handleSubmit} className="profile-form">
-            <label>
-              Full name
-              <input
-                type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                placeholder="Your name"
-              />
-            </label>
+        <AnimatedCard delay={100}>
+          <form onSubmit={handleSubmit} className="profile-form panel">
+            <div className="profile-fields">
+              <label>
+                Full name
+                <input
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="Your name"
+                  autoComplete="name"
+                />
+              </label>
 
-            <label>
-              University
-              <input
-                type="text"
-                value={university}
-                onChange={(e) => setUniversity(e.target.value)}
-                placeholder="e.g. Istanbul Technical University"
-              />
-            </label>
+              <label>
+                University
+                <input
+                  type="text"
+                  value={university}
+                  onChange={(e) => setUniversity(e.target.value)}
+                  placeholder="e.g. Istanbul Technical University"
+                  autoComplete="organization"
+                />
+              </label>
 
-            <div className="profile-form-row">
               <label>
                 Year
                 <select value={studyYear} onChange={(e) => setStudyYear(e.target.value)}>
@@ -138,7 +183,7 @@ export default function ProfilePage() {
               </label>
 
               <label>
-                Major / department
+                Major
                 <input
                   type="text"
                   value={major}
@@ -149,21 +194,17 @@ export default function ProfilePage() {
             </div>
 
             <div className="profile-sectors">
-              <label htmlFor="target-sectors">Target sectors</label>
-              <p className="field-hint">Pick a few or type your own — comma separated.</p>
-              <div className="sector-chips">
+              <span className="profile-sectors-title">Target sectors</span>
+              <div className="sector-chips" role="group" aria-label="Sector suggestions">
                 {SECTOR_SUGGESTIONS.map((sector) => {
-                  const active = targetSectors
-                    .split(",")
-                    .map((item) => item.trim())
-                    .includes(sector);
-
+                  const active = selectedSectors.includes(sector);
                   return (
                     <button
                       key={sector}
                       type="button"
                       className={`sector-chip${active ? " sector-chip--active" : ""}`}
                       onClick={() => toggleSector(sector)}
+                      aria-pressed={active}
                     >
                       {sector}
                     </button>
@@ -174,17 +215,20 @@ export default function ProfilePage() {
                 id="target-sectors"
                 value={targetSectors}
                 onChange={(e) => setTargetSectors(e.target.value)}
-                rows={3}
-                placeholder="Software, Energy, Automotive..."
+                rows={2}
+                placeholder="Or type your own, comma separated"
+                aria-label="Target sectors"
               />
             </div>
 
-            <button type="submit" disabled={submitting}>
-              {submitting ? "Saving..." : "Save profile"}
-            </button>
+            <div className="profile-actions">
+              <button type="submit" disabled={submitting}>
+                {submitting ? "Saving…" : "Save profile"}
+              </button>
+            </div>
           </form>
-        </article>
-      </AnimatedCard>
+        </AnimatedCard>
+      </div>
     </section>
   );
 }
