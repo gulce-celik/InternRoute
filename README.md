@@ -233,7 +233,45 @@ The goal is simple: **stop losing applications in random notes** and walk into e
 
 - **Product status** (screenshots):
 
-  Sprint 2 UI screenshots will be added here after capture *(pending)*.
+  <p align="center">
+    <img src="docs/images/ui/sprint2/login.png" alt="Login page" width="48%"/>
+    &nbsp;
+    <img src="docs/images/ui/sprint2/dashboard.png" alt="Home desk dashboard" width="48%"/>
+  </p>
+
+  <p align="center">
+    <img src="docs/images/ui/sprint2/job-board.png" alt="Job board" width="48%"/>
+    &nbsp;
+    <img src="docs/images/ui/sprint2/cv-locker.png" alt="CV locker" width="48%"/>
+  </p>
+
+  <p align="center">
+    <img src="docs/images/ui/sprint2/pipeline.png" alt="Application pipeline" width="48%"/>
+    &nbsp;
+    <img src="docs/images/ui/sprint2/pipeline-matches.png" alt="Matched applications" width="48%"/>
+  </p>
+
+  <p align="center">
+    <img src="docs/images/ui/sprint2/application-file.png" alt="Application file notes and Q&A" width="48%"/>
+    &nbsp;
+    <img src="docs/images/ui/sprint2/profile.png" alt="Student profile" width="48%"/>
+  </p>
+
+  <p align="center">
+    <img src="docs/images/ui/sprint2/home-tour.png" alt="Home desk tour" width="48%"/>
+    &nbsp;
+    <img src="docs/images/ui/sprint2/home-tour-locker.png" alt="Desk tour locker step" width="48%"/>
+  </p>
+
+  <p align="center">
+    <img src="docs/images/ui/sprint2/analyze-preview.png" alt="Analyze Sprint 3 preview" width="48%"/>
+    &nbsp;
+    <img src="docs/images/ui/sprint2/interview-preview.png" alt="Interview Sprint 3 preview" width="48%"/>
+  </p>
+
+  <p align="center">
+    <img src="docs/images/ui/sprint2/cover-letter-preview.png" alt="Cover letter Sprint 3 preview" width="48%"/>
+  </p>
 
 - **Sprint Review:**  
   At sprint close we demoed the **Sprint 2 increment**: a student can pin a role on the Board, upload a PDF to the CV locker, link that CV to the role in Pipeline (with notes / written screening Q&A), and see live counts on the Dashboard — while CV text is indexed into RAG memory for Sprint 3.  
