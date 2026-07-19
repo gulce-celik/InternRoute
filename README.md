@@ -221,7 +221,7 @@ The goal is simple: **stop losing applications in random notes** and walk into e
   **Story → task split:** Blue-label stories break into red-label tasks (Job CRUD API, Board UI, CV upload API, Applications API, ChromaDB setup, memory context, tests). Process cards (Review, Retro, GitHub evidence) tracked alongside delivery.
 
 - **Daily Scrum:**  
-  We ran dailies throughout Sprint 2 (6 Jul – 19 Jul) in **WhatsApp** and **voice calls** when schedules allowed — same rhythm as Sprint 1. We tracked US-2.1–US-2.4 (job board, CV locker, applications matching, RAG foundation), broke work into Trello tasks, and prepared the **Sprint Review** and **Retrospective**. WhatsApp screenshot evidence will be added under [`ProjectManagement/Sprint2Documents/`](ProjectManagement/Sprint2Documents/) *(pending)*.
+  We ran dailies throughout Sprint 2 (6 Jul – 19 Jul) in **WhatsApp** and **voice calls** when schedules allowed — same rhythm as Sprint 1. We tracked US-2.1–US-2.4 (job board, CV locker, applications matching, RAG foundation), broke work into Trello tasks, and prepared the **Sprint Review** and **Retrospective**. WhatsApp screenshot evidence are added under [`ProjectManagement/Sprint2Documents/dailyscrum-ss-whatsapp`]
 
 - **Sprint board update:**
 
