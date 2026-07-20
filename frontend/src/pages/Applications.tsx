@@ -27,7 +27,7 @@ const STATUS_OPTIONS: { value: ApplicationStatus; label: string }[] = [
 const emptyQaItem = (): ApplicationQAItem => ({ question: "", answer: "" });
 
 function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, {
+  return new Date(iso).toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",

@@ -7,7 +7,7 @@ import type { CV } from "../types/cv";
 import type { MemoryContext } from "../types/dashboard";
 
 function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, {
+  return new Date(iso).toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -131,8 +131,7 @@ export default function CVsPage() {
           Your CV <em>locker</em>
         </h1>
         <p className="page-description">
-          Keep a version for every company — Siemens CV ≠ startup CV. Upload, view, and reuse PDFs
-          when you link applications.
+          Keep a version for every company. Upload, view, and reuse PDFs when you link applications.
         </p>
       </div>
 
@@ -158,10 +157,6 @@ export default function CVsPage() {
                 {uploading ? "Uploading..." : "Add to locker"}
               </button>
             </form>
-            <p className="muted">
-              After upload you can open the PDF anytime. Behind the scenes we also index the text
-              for Sprint 3 AI agents.
-            </p>
           </article>
         </AnimatedCard>
 

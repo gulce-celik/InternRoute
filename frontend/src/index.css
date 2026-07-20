@@ -690,7 +690,10 @@ button:disabled {
 }
 
 .btn-danger:hover:not(:disabled) {
-  box-shadow: 3px 3px 0 #9b1c1c;
+  background: #9b1c1c;
+  color: #fff;
+  border-color: #9b1c1c;
+  box-shadow: 3px 3px 0 #7f1616;
 }
 
 .banner-error {

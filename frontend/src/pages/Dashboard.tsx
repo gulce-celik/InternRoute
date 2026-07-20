@@ -165,13 +165,7 @@ export default function DashboardPage() {
     <section className="page-section home-desk">
       <div className="page-hero page-hero--animated home-desk-hero">
         <p className="page-kicker">Internship desk</p>
-        <h1>
-          Hey {firstName} — this is your <em>home base</em>
-        </h1>
-        <p className="page-description">
-          Board, locker, and pipeline stay open all season. Numbers grow as you hunt — nothing
-          “finishes” after one pin.
-        </p>
+        <h1>Hey {firstName},</h1>
       </div>
 
       <AnimatedCard delay={0}>

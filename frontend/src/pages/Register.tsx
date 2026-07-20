@@ -13,6 +13,7 @@ export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [code, setCode] = useState("");
   const [debugCode, setDebugCode] = useState<string | null>(null);
   const [hint, setHint] = useState<string | null>(null);
@@ -33,9 +34,15 @@ export default function RegisterPage() {
 
   async function handleStart(event: FormEvent) {
     event.preventDefault();
-    setSubmitting(true);
     setError(null);
     setHint(null);
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    setSubmitting(true);
 
     try {
       const started = await startRegister({
@@ -106,7 +113,6 @@ export default function RegisterPage() {
           {step === "details" ? (
             <>
               <h2>Create account</h2>
-              <p className="subtitle">Confirm with a 6-digit code (shown on the next step)</p>
               <form onSubmit={handleStart} className="auth-form">
                 <label>
                   Full name
@@ -133,6 +139,16 @@ export default function RegisterPage() {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    minLength={8}
+                    required
+                  />
+                </label>
+                <label>
+                  Confirm password
+                  <input
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                     minLength={8}
                     required
                   />

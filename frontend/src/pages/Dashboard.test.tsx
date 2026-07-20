@@ -48,7 +48,7 @@ describe("DashboardPage", () => {
       </AuthProvider>,
     );
 
-    expect(screen.getByRole("heading", { name: /this is your home base/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /hey /i })).toBeInTheDocument();
     expect(screen.getByLabelText("Your InternRoute desk")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Pinned roles" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "CV versions" })).toBeInTheDocument();
