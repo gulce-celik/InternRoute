@@ -30,7 +30,7 @@ def get_cv(db: Session, user: User, cv_id: int) -> CV:
     return _get_user_cv(db, user.id, cv_id)
 
 
-def upload_cv(db: Session, user: User, file: UploadFile) -> CV:
+def upload_cv(db: Session, user: User, file: UploadFile, name: str | None = None) -> CV:
     if file.content_type not in {"application/pdf", "application/x-pdf"}:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -40,6 +40,9 @@ def upload_cv(db: Session, user: User, file: UploadFile) -> CV:
     filename = Path(file.filename or "cv.pdf").name
     if not filename.lower().endswith(".pdf"):
         filename = f"{filename}.pdf"
+
+    display_name = (name or "").strip() or filename
+    display_name = display_name[:255]
 
     settings = get_settings()
     user_dir = Path(settings.upload_dir) / str(user.id)
@@ -56,6 +59,7 @@ def upload_cv(db: Session, user: User, file: UploadFile) -> CV:
 
     cv = CV(
         user_id=user.id,
+        name=display_name,
         filename=filename,
         file_path=str(destination),
     )
@@ -67,7 +71,7 @@ def upload_cv(db: Session, user: User, file: UploadFile) -> CV:
         ingest_cv_pdf(
             user_id=user.id,
             cv_id=cv.id,
-            filename=cv.filename,
+            filename=cv.name,
             file_path=cv.file_path,
         )
     except Exception as exc:
@@ -95,7 +99,7 @@ def reingest_cv(db: Session, user: User, cv_id: int) -> CV:
         ingest_cv_pdf(
             user_id=user.id,
             cv_id=cv.id,
-            filename=cv.filename,
+            filename=cv.name,
             file_path=cv.file_path,
         )
     except Exception as exc:

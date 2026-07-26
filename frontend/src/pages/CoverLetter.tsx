@@ -267,7 +267,7 @@ export default function CoverLetterPage() {
                         <option value="">Select from locker</option>
                         {cvs.map((cv) => (
                           <option key={cv.id} value={cv.id}>
-                            {cv.filename}
+                            {cv.name}
                           </option>
                         ))}
                       </select>
@@ -336,7 +336,7 @@ export default function CoverLetterPage() {
                 {mode === "pair" && selectedJob && (
                   <p className="muted analyze-selection-hint">
                     {selectedJob.company}
-                    {selectedCv ? ` · ${selectedCv.filename}` : ""}
+                    {selectedCv ? ` · ${selectedCv.name}` : ""}
                   </p>
                 )}
                 {mode === "application" && selectedApplication && (

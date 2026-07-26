@@ -267,15 +267,15 @@ export default function ApplicationsPage() {
                   required
                 >
                   <option value="">Select a CV</option>
-                  {cvs.map((cv) => (
-                    <option key={cv.id} value={cv.id}>
-                      {cv.filename}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                Application notes
+                      {cvs.map((cv) => (
+                      <option key={cv.id} value={cv.id}>
+                        {cv.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Application notes
                 <textarea
                   value={form.notes}
                   onChange={(event) => setForm((prev) => ({ ...prev, notes: event.target.value }))}
@@ -396,7 +396,7 @@ export default function ApplicationsPage() {
                   <option value="">No CV selected</option>
                   {cvs.map((cv) => (
                     <option key={cv.id} value={cv.id}>
-                      {cv.filename}
+                      {cv.name}
                     </option>
                   ))}
                 </select>

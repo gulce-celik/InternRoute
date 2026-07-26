@@ -41,6 +41,24 @@ def init_db() -> None:
     _ensure_user_profile_columns()
     _ensure_application_tracking_columns()
     _ensure_application_cv_nullable()
+    _ensure_cv_name_column()
+
+
+def _ensure_cv_name_column() -> None:
+    if not settings.database_url.startswith("sqlite"):
+        return
+
+    inspector = inspect(engine)
+    if "cvs" not in inspector.get_table_names():
+        return
+
+    existing = {column["name"] for column in inspector.get_columns("cvs")}
+    if "name" in existing:
+        return
+
+    with engine.begin() as connection:
+        connection.execute(text("ALTER TABLE cvs ADD COLUMN name VARCHAR(255)"))
+        connection.execute(text("UPDATE cvs SET name = filename WHERE name IS NULL OR name = ''"))
 
 
 def _ensure_user_profile_columns() -> None:

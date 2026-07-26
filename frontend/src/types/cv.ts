@@ -1,5 +1,6 @@
 export interface CV {
   id: number;
+  name: string;
   filename: string;
   created_at: string;
 }

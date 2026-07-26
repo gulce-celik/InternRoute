@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
+from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
@@ -24,10 +24,11 @@ def list_user_cvs(
 @router.post("", response_model=CVResponse, status_code=status.HTTP_201_CREATED)
 def create_user_cv(
     file: UploadFile = File(...),
+    name: str | None = Form(None),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> CV:
-    return upload_cv(db, current_user, file)
+    return upload_cv(db, current_user, file, name=name)
 
 
 @router.get("/{cv_id}", response_model=CVResponse)

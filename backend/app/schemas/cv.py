@@ -7,5 +7,6 @@ class CVResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    name: str
     filename: str
     created_at: datetime

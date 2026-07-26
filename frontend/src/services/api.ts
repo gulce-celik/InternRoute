@@ -142,9 +142,13 @@ export async function listCVs(token: string): Promise<CV[]> {
   return authRequest<CV[]>("/cvs", token);
 }
 
-export async function uploadCV(token: string, file: File): Promise<CV> {
+export async function uploadCV(token: string, file: File, name?: string): Promise<CV> {
   const formData = new FormData();
   formData.append("file", file);
+  const trimmed = name?.trim();
+  if (trimmed) {
+    formData.append("name", trimmed);
+  }
 
   const response = await fetch(`${API_BASE_URL}/cvs`, {
     method: "POST",

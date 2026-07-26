@@ -154,6 +154,7 @@ def seed() -> None:
             path.write_bytes(_minimal_pdf(title, body))
             cv = CV(
                 user_id=user.id,
+                name=title,
                 filename=filename,
                 file_path=str(path),
                 created_at=_now(),

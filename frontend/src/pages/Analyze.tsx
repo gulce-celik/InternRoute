@@ -232,7 +232,7 @@ export default function AnalyzePage() {
                         <option value="">Select from locker</option>
                         {cvs.map((cv) => (
                           <option key={cv.id} value={cv.id}>
-                            {cv.filename}
+                            {cv.name}
                           </option>
                         ))}
                       </select>
@@ -260,7 +260,7 @@ export default function AnalyzePage() {
                 {(selectedJob || selectedApplication) && mode === "pair" && selectedJob && (
                   <p className="muted analyze-selection-hint">
                     {selectedJob.company}
-                    {selectedCv ? ` · ${selectedCv.filename}` : ""}
+                    {selectedCv ? ` · ${selectedCv.name}` : ""}
                   </p>
                 )}
                 {mode === "application" && selectedApplication && (

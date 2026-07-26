@@ -77,7 +77,7 @@ Description:
 {job.description}
 
 ## CV file
-Filename: {cv.filename}
+Filename: {cv.name}
 
 ## Relevant CV memory (RAG)
 {cv_context}

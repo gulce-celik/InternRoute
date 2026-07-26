@@ -19,6 +19,7 @@ export default function CVsPage() {
   const { token } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [cvs, setCvs] = useState<CV[]>([]);
+  const [cvName, setCvName] = useState("");
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
@@ -66,9 +67,10 @@ export default function CVsPage() {
     setSuccess(null);
 
     try {
-      const created = await uploadCV(token, file);
+      const created = await uploadCV(token, file, cvName);
       setCvs((prev) => [created, ...prev]);
       setSuccess("CV uploaded. You can open the PDF anytime.");
+      setCvName("");
       fileInputRef.current.value = "";
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to upload CV");
@@ -141,6 +143,16 @@ export default function CVsPage() {
             <h2>Upload PDF</h2>
             <form onSubmit={handleUpload} className="job-form">
               <label>
+                Name (optional)
+                <input
+                  type="text"
+                  value={cvName}
+                  onChange={(event) => setCvName(event.target.value)}
+                  placeholder="e.g. InternRoute version"
+                  maxLength={255}
+                />
+              </label>
+              <label>
                 CV file
                 <input
                   ref={fileInputRef}
@@ -181,8 +193,12 @@ export default function CVsPage() {
                         >
                           <div className="job-card-header">
                             <div>
-                              <h3>{cv.filename}</h3>
-                              <p className="job-meta">PDF · ready for applications</p>
+                              <h3>{cv.name}</h3>
+                              <p className="job-meta">
+                                {cv.name === cv.filename
+                                  ? "PDF · ready for applications"
+                                  : `${cv.filename} · ready for applications`}
+                              </p>
                             </div>
                             <span className="status-badge status-badge--applied">stored</span>
                           </div>
