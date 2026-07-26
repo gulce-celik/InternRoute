@@ -99,6 +99,7 @@ class Application(Base):
         Enum(ApplicationStatus), default=ApplicationStatus.DRAFT, nullable=False
     )
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    cover_letter: Mapped[str | None] = mapped_column(Text, nullable=True)
     qa_items: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False

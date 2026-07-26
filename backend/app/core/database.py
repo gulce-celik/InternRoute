@@ -77,6 +77,7 @@ def _ensure_application_tracking_columns() -> None:
     additions = {
         "notes": "TEXT",
         "qa_items": "JSON",
+        "cover_letter": "TEXT",
     }
 
     with engine.begin() as connection:

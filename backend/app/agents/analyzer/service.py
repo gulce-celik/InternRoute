@@ -10,7 +10,8 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.agents.llm import invoke_chat
-from app.models.user import Application, CV, Job, User
+from app.agents.targets import resolve_job_cv
+from app.models.user import User
 from app.rag.retriever import build_agent_context, retrieve_cv_context
 from app.schemas.agents import AnalyzeRequest, AnalyzeResponse
 
@@ -36,7 +37,14 @@ def analyze_job_cv(
     *,
     chat_fn=None,
 ) -> AnalyzeResponse:
-    job, cv, application_id = _resolve_targets(db, user, data)
+    job, cv, application = resolve_job_cv(
+        db,
+        user,
+        job_id=data.job_id,
+        cv_id=data.cv_id,
+        application_id=data.application_id,
+    )
+    application_id = application.id if application else None
 
     query_text = f"{job.title} at {job.company}\n{job.description}"
     chunks = retrieve_cv_context(
@@ -91,43 +99,6 @@ Filename: {cv.filename}
         recommendations=parsed["recommendations"],
         rag_chunks_used=len(chunks),
     )
-
-
-def _resolve_targets(
-    db: Session,
-    user: User,
-    data: AnalyzeRequest,
-) -> tuple[Job, CV, int | None]:
-    if data.application_id is not None:
-        application = (
-            db.query(Application)
-            .filter(Application.id == data.application_id, Application.user_id == user.id)
-            .first()
-        )
-        if application is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Application not found")
-        if application.cv_id is None:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Application has no CV linked; assign a CV first",
-            )
-        job = db.query(Job).filter(Job.id == application.job_id, Job.user_id == user.id).first()
-        cv = db.query(CV).filter(CV.id == application.cv_id, CV.user_id == user.id).first()
-        if job is None or cv is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Linked job or CV not found",
-            )
-        return job, cv, application.id
-
-    assert data.job_id is not None and data.cv_id is not None
-    job = db.query(Job).filter(Job.id == data.job_id, Job.user_id == user.id).first()
-    if job is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
-    cv = db.query(CV).filter(CV.id == data.cv_id, CV.user_id == user.id).first()
-    if cv is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="CV not found")
-    return job, cv, None
 
 
 def _parse_analysis_json(raw: str) -> dict[str, Any]:
