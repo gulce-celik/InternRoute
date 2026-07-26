@@ -16,7 +16,7 @@ const coreNav = [
 const aiNav = [
   { to: "/analyze", label: "Analyze" },
   { to: "/interview", label: "Interview", soon: "3" as const },
-  { to: "/cover-letter", label: "Letters", soon: "3" as const },
+  { to: "/cover-letter", label: "Letters" },
 ] as const;
 
 export default function Layout() {

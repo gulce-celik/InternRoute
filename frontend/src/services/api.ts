@@ -1,4 +1,4 @@
-import type { AnalyzeRequest, AnalyzeResult } from "../types/agents";
+import type { AnalyzeRequest, AnalyzeResult, CoverLetterRequest, CoverLetterResult } from "../types/agents";
 import type { Application, ApplicationCreate, ApplicationUpdate } from "../types/application";
 import type {
   ProfileUpdate,
@@ -236,6 +236,16 @@ export async function getMemoryContext(token: string): Promise<MemoryContext> {
 
 export async function analyzeJobCv(token: string, payload: AnalyzeRequest): Promise<AnalyzeResult> {
   return authRequest<AnalyzeResult>("/agents/analyze", token, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function generateCoverLetter(
+  token: string,
+  payload: CoverLetterRequest,
+): Promise<CoverLetterResult> {
+  return authRequest<CoverLetterResult>("/agents/cover-letter", token, {
     method: "POST",
     body: JSON.stringify(payload),
   });

@@ -44,7 +44,7 @@ export const DESK_BUDDY_GUIDES: DeskBuddyGuide[] = [
       },
       {
         q: "When do Analyze / Interview / Letters work?",
-        a: "Analyze is live now. Interview and Letters still show S3 until those land.",
+        a: "Analyze and Letters are live. Interview still shows S3 until that lands.",
       },
     ],
     quickLinks: [
@@ -221,27 +221,28 @@ export const DESK_BUDDY_GUIDES: DeskBuddyGuide[] = [
   {
     path: "/cover-letter",
     pageLabel: "Letters",
-    title: "Letter studio (soon)",
-    copy: "Sprint 3: draft a cover letter from Analyzer insights + profile, then edit and attach it.",
+    title: "Letter studio",
+    copy: "Draft a cover letter from a pinned role + CV memory. Edit, copy, and optionally save on a Pipeline application.",
     fabHint: "Letters help",
-    tipsTitle: "Get ready",
+    tipsTitle: "How to use it",
     tips: [
       {
-        q: "What feeds a good letter later?",
-        a: "Clear job descriptions on the Board, a strong CV in the Locker, and a filled Profile.",
+        q: "What should I pick?",
+        a: "A Board role + locker CV, or a Pipeline match. Paste an Analyze summary if you have one.",
       },
       {
-        q: "Will letters be generic AI?",
-        a: "No — drafts will be grounded in your CV memory and the specific role.",
+        q: "Will it invent experience?",
+        a: "It is instructed not to. Thin CV memory still produces cautious, shorter letters.",
       },
       {
-        q: "Available now?",
-        a: "Not yet. Focus on pinning roles and tracking applications until Sprint 3 lands.",
+        q: "Where is it saved?",
+        a: "Only when you use a Pipeline match with “Save draft” on. Otherwise copy the text yourself.",
       },
     ],
     quickLinks: [
-      { label: "Pin roles", to: "/jobs" },
+      { label: "Open Analyze", to: "/analyze" },
       { label: "Open Pipeline", to: "/applications" },
+      { label: "Open Locker", to: "/cvs" },
     ],
   },
 ];

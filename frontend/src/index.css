@@ -2629,6 +2629,41 @@ button:disabled {
   font-size: 0.92rem;
 }
 
+.letter-studio-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.letter-studio-head h2 {
+  margin: 0;
+}
+
+.letter-studio {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.letter-studio label {
+  display: grid;
+  gap: 0.35rem;
+  font-weight: 700;
+  font-size: 0.86rem;
+}
+
+.letter-editor {
+  min-height: 22rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  resize: vertical;
+}
+
+.letter-save-option {
+  padding: 0.35rem 0;
+}
+
 .status-select-label {
   display: flex;
   flex-direction: column;
