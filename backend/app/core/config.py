@@ -35,6 +35,10 @@ class Settings(BaseSettings):
     upload_dir: str = "uploads/cvs"
     chroma_persist_dir: str = "chroma_data"
     google_api_key: str | None = Field(default=None, validation_alias="GEMINI_API_KEY")
+    gemini_model: str = Field(
+        default="gemini-flash-lite-latest",
+        validation_alias="GEMINI_MODEL",
+    )
 
     # Prefer Resend when set; otherwise SMTP (e.g. free Brevo relay).
     resend_api_key: str | None = Field(default=None, validation_alias="RESEND_API_KEY")

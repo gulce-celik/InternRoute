@@ -8,7 +8,7 @@ from app.core.database import get_db
 from app.core.dependencies import get_current_user
 from app.models.user import CV, User
 from app.schemas.cv import CVResponse
-from app.services.cv_service import delete_cv, get_cv, list_cvs, upload_cv
+from app.services.cv_service import delete_cv, get_cv, list_cvs, reingest_cv, upload_cv
 
 router = APIRouter(prefix="/cvs", tags=["cvs"])
 
@@ -55,6 +55,16 @@ def download_user_cv_file(
         filename=cv.filename,
         content_disposition_type="inline",
     )
+
+
+@router.post("/{cv_id}/reingest", response_model=CVResponse)
+def reingest_user_cv(
+    cv_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> CV:
+    """Rebuild Chroma embeddings for an already-uploaded CV (e.g. after a network outage)."""
+    return reingest_cv(db, current_user, cv_id)
 
 
 @router.delete("/{cv_id}", status_code=status.HTTP_204_NO_CONTENT)

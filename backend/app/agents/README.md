@@ -1,6 +1,16 @@
 # Multi-Agent Modülleri
 
-LangChain tabanlı çoklu ajan orkestrasyonu.
+LangChain + Google Gemini chat for Sprint 3 agents.
+
+## Shared LLM
+
+| File | Role |
+|------|------|
+| `llm.py` | `get_chat_model` / `require_chat_model` / `invoke_chat` — shared Gemini client |
+
+Env: `GEMINI_API_KEY`, `GEMINI_MODEL` (see repo `.env.example`).
+
+Status probe: `GET /api/v1/agents/status` (JWT required).
 
 ## Ajanlar
 
@@ -12,7 +22,7 @@ LangChain tabanlı çoklu ajan orkestrasyonu.
 
 ## Orkestrasyon
 
-Sprint 4'te `orchestrator.py` eklenecek — ajanlar arası veri akışını yönetecek.
+Thin services call `invoke_chat` + RAG retriever (no heavy LangGraph required for delivery).
 
 ```
 Analyzer → Writer  (cover letter akışı)
