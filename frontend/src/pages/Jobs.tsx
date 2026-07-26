@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState, type FormEvent } from "react";
 import AnimatedCard from "../components/AnimatedCard";
 import ConfirmCard from "../components/ConfirmCard";
 import { ListSkeleton } from "../components/Skeleton";
+import { useToast } from "../components/ToastProvider";
 import { useAuth } from "../hooks/useAuth";
 import { createJob, deleteJob, listJobs } from "../services/api";
 import type { Job, JobCreate } from "../types/job";
@@ -33,14 +34,13 @@ function formatDate(iso: string): string {
 
 export default function JobsPage() {
   const { token } = useAuth();
+  const toast = useToast();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [form, setForm] = useState<JobCreate>(emptyForm);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
 
   const loadJobs = useCallback(async () => {
     if (!token) {
@@ -48,18 +48,16 @@ export default function JobsPage() {
     }
 
     setLoading(true);
-    setError(null);
-    setSuccess(null);
 
     try {
       const data = await listJobs(token);
       setJobs(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load jobs");
+      toast.error(err instanceof Error ? err.message : "Failed to load jobs");
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [token, toast]);
 
   useEffect(() => {
     void loadJobs();
@@ -72,8 +70,6 @@ export default function JobsPage() {
     }
 
     setSubmitting(true);
-    setError(null);
-    setSuccess(null);
 
     try {
       const created = await createJob(token, {
@@ -85,9 +81,9 @@ export default function JobsPage() {
       });
       setJobs((prev) => [created, ...prev]);
       setForm(emptyForm);
-      setSuccess("Role pinned to your board!");
+      toast.success("Role pinned to your board!");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create job");
+      toast.error(err instanceof Error ? err.message : "Failed to create job");
     } finally {
       setSubmitting(false);
     }
@@ -99,14 +95,14 @@ export default function JobsPage() {
     }
 
     setDeletingId(id);
-    setError(null);
 
     try {
       await deleteJob(token, id);
       setJobs((prev) => prev.filter((job) => job.id !== id));
       setConfirmDeleteId(null);
+      toast.success("Role deleted from your board.");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete job");
+      toast.error(err instanceof Error ? err.message : "Failed to delete job");
     } finally {
       setDeletingId(null);
     }
@@ -124,9 +120,6 @@ export default function JobsPage() {
           track where you stand.
         </p>
       </div>
-
-      {error && <p className="error banner-error">{error}</p>}
-      {success && <p className="banner-success">{success}</p>}
 
       <div className="jobs-layout">
         <AnimatedCard>

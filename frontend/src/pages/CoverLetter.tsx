@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 
 import AnimatedCard from "../components/AnimatedCard";
 import { FormSkeleton } from "../components/Skeleton";
+import { useToast } from "../components/ToastProvider";
 import { useAuth } from "../hooks/useAuth";
 import { generateCoverLetter, listApplications, listCVs, listJobs } from "../services/api";
 import type { CoverLetterResult } from "../types/agents";
@@ -20,6 +21,7 @@ const TONE_OPTIONS = [
 
 export default function CoverLetterPage() {
   const { token } = useAuth();
+  const toast = useToast();
   const [searchParams] = useSearchParams();
 
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -27,8 +29,6 @@ export default function CoverLetterPage() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
   const [drafting, setDrafting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
   const [copyState, setCopyState] = useState<"idle" | "copied">("idle");
 
   const [mode, setMode] = useState<SourceMode>("pair");
@@ -53,7 +53,6 @@ export default function CoverLetterPage() {
     }
 
     setLoading(true);
-    setError(null);
 
     try {
       const [jobData, cvData, applicationData] = await Promise.all([
@@ -65,11 +64,11 @@ export default function CoverLetterPage() {
       setCvs(cvData);
       setApplications(applicationData);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load Letters inputs");
+      toast.error(err instanceof Error ? err.message : "Failed to load Letters inputs");
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [token, toast]);
 
   useEffect(() => {
     void loadData();
@@ -124,8 +123,6 @@ export default function CoverLetterPage() {
     }
 
     setDrafting(true);
-    setError(null);
-    setSuccess(null);
     setCopyState("idle");
 
     try {
@@ -157,13 +154,13 @@ export default function CoverLetterPage() {
         rag_chunks_used: data.rag_chunks_used,
         saved: data.saved,
       });
-      setSuccess(
+      toast.success(
         data.saved
           ? "Draft ready and saved on the pipeline application."
           : "Draft ready — edit below, then copy when you like it.",
       );
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not draft cover letter");
+      toast.error(err instanceof Error ? err.message : "Could not draft cover letter");
     } finally {
       setDrafting(false);
     }
@@ -181,7 +178,7 @@ export default function CoverLetterPage() {
       setCopyState("copied");
       window.setTimeout(() => setCopyState("idle"), 2000);
     } catch {
-      setError("Could not copy to clipboard.");
+      toast.error("Could not copy to clipboard.");
     }
   }
 
@@ -197,9 +194,6 @@ export default function CoverLetterPage() {
           copy it out, and when you use a Pipeline match it can save on that application.
         </p>
       </div>
-
-      {error && <p className="error banner-error">{error}</p>}
-      {success && <p className="banner-success">{success}</p>}
 
       <div className="jobs-layout">
         <AnimatedCard>

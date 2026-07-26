@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState, type FormEvent } from "react";
 import AnimatedCard from "../components/AnimatedCard";
 import PipelineStrip from "../components/PipelineStrip";
 import { FormSkeleton, ListSkeleton } from "../components/Skeleton";
+import { useToast } from "../components/ToastProvider";
 import { useAuth } from "../hooks/useAuth";
 import {
   createApplication,
@@ -47,6 +48,7 @@ function mapApplicationStatusToPipelineStage(status: ApplicationStatus) {
 
 export default function ApplicationsPage() {
   const { token } = useAuth();
+  const toast = useToast();
   const [applications, setApplications] = useState<Application[]>([]);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [cvs, setCvs] = useState<CV[]>([]);
@@ -63,16 +65,12 @@ export default function ApplicationsPage() {
   const [submitting, setSubmitting] = useState(false);
   const [savingDetails, setSavingDetails] = useState(false);
   const [updatingId, setUpdatingId] = useState<number | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-
   const loadData = useCallback(async () => {
     if (!token) {
       return;
     }
 
     setLoading(true);
-    setError(null);
 
     try {
       const [applicationData, jobData, cvData] = await Promise.all([
@@ -84,11 +82,11 @@ export default function ApplicationsPage() {
       setJobs(jobData);
       setCvs(cvData);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load pipeline");
+      toast.error(err instanceof Error ? err.message : "Failed to load pipeline");
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [token, toast]);
 
   useEffect(() => {
     void loadData();
@@ -138,8 +136,6 @@ export default function ApplicationsPage() {
     }
 
     setSubmitting(true);
-    setError(null);
-    setSuccess(null);
 
     try {
       const created = await createApplication(token, {
@@ -152,9 +148,9 @@ export default function ApplicationsPage() {
       setApplications((prev) => [created, ...prev]);
       setSelectedApplicationId(created.id);
       setForm({ job_id: "", cv_id: "", notes: "" });
-      setSuccess("Application linked. Add written Q&A in the file below if you had screening questions.");
+      toast.success("Application linked. Add written Q&A in the file below if you had screening questions.");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create application");
+      toast.error(err instanceof Error ? err.message : "Failed to create application");
     } finally {
       setSubmitting(false);
     }
@@ -166,15 +162,15 @@ export default function ApplicationsPage() {
     }
 
     setUpdatingId(applicationId);
-    setError(null);
 
     try {
       const updated = await updateApplicationStatus(token, applicationId, status);
       setApplications((prev) =>
         prev.map((application) => (application.id === applicationId ? updated : application)),
       );
+      toast.success("Status updated.");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update status");
+      toast.error(err instanceof Error ? err.message : "Failed to update status");
     } finally {
       setUpdatingId(null);
     }
@@ -187,8 +183,6 @@ export default function ApplicationsPage() {
     }
 
     setSavingDetails(true);
-    setError(null);
-    setSuccess(null);
 
     try {
       const updated = await updateApplication(token, selectedApplication.id, {
@@ -199,9 +193,9 @@ export default function ApplicationsPage() {
       setApplications((prev) =>
         prev.map((application) => (application.id === updated.id ? updated : application)),
       );
-      setSuccess("Application CV, notes, and written answers saved.");
+      toast.success("Application CV, notes, and written answers saved.");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save application details");
+      toast.error(err instanceof Error ? err.message : "Failed to save application details");
     } finally {
       setSavingDetails(false);
     }
@@ -219,9 +213,6 @@ export default function ApplicationsPage() {
           screening questions you answered.
         </p>
       </div>
-
-      {error && <p className="error banner-error">{error}</p>}
-      {success && <p className="banner-success">{success}</p>}
 
       <PipelineStrip activeStage={pipelineStage} />
 

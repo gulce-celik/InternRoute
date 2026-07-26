@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 
 import AnimatedCard from "../components/AnimatedCard";
 import ConfirmCard from "../components/ConfirmCard";
 import { ListSkeleton } from "../components/Skeleton";
+import { useToast } from "../components/ToastProvider";
 import { useAuth } from "../hooks/useAuth";
 import { deleteCV, listCVs, openCVFile, uploadCV } from "../services/api";
 import type { CV } from "../types/cv";
@@ -17,6 +18,7 @@ function formatDate(iso: string): string {
 
 export default function CVsPage() {
   const { token } = useAuth();
+  const toast = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [cvs, setCvs] = useState<CV[]>([]);
   const [cvName, setCvName] = useState("");
@@ -25,8 +27,6 @@ export default function CVsPage() {
   const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [viewingId, setViewingId] = useState<number | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
 
   const loadCvs = useCallback(async () => {
     if (!token) {
@@ -34,17 +34,16 @@ export default function CVsPage() {
     }
 
     setLoading(true);
-    setError(null);
 
     try {
       const data = await listCVs(token);
       setCvs(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load CVs");
+      toast.error(err instanceof Error ? err.message : "Failed to load CVs");
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [token, toast]);
 
   useEffect(() => {
     void loadCvs();
@@ -58,31 +57,22 @@ export default function CVsPage() {
 
     const file = fileInputRef.current.files[0];
     if (file.type !== "application/pdf") {
-      setError("Please upload a PDF file.");
+      toast.error("Please upload a PDF file.");
       return;
     }
 
     setUploading(true);
-    setError(null);
-    setSuccess(null);
 
     try {
       const created = await uploadCV(token, file, cvName);
       setCvs((prev) => [created, ...prev]);
-      setSuccess("CV uploaded. You can open the PDF anytime.");
+      toast.success("CV uploaded. You can open the PDF anytime.");
       setCvName("");
       fileInputRef.current.value = "";
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to upload CV");
+      toast.error(err instanceof Error ? err.message : "Failed to upload CV");
     } finally {
       setUploading(false);
-    }
-  }
-
-  function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
-    if (event.target.files?.[0]) {
-      setError(null);
-      setSuccess(null);
     }
   }
 
@@ -92,12 +82,11 @@ export default function CVsPage() {
     }
 
     setViewingId(cv.id);
-    setError(null);
 
     try {
       await openCVFile(token, cv.id, cv.filename);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to open CV");
+      toast.error(err instanceof Error ? err.message : "Failed to open CV");
     } finally {
       setViewingId(null);
     }
@@ -109,14 +98,14 @@ export default function CVsPage() {
     }
 
     setDeletingId(id);
-    setError(null);
 
     try {
       await deleteCV(token, id);
       setCvs((prev) => prev.filter((cv) => cv.id !== id));
       setConfirmDeleteId(null);
+      toast.success("CV deleted from your locker.");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete CV");
+      toast.error(err instanceof Error ? err.message : "Failed to delete CV");
     } finally {
       setDeletingId(null);
     }
@@ -133,9 +122,6 @@ export default function CVsPage() {
           Keep a version for every company. Upload, view, and reuse PDFs when you link applications.
         </p>
       </div>
-
-      {error && <p className="error banner-error">{error}</p>}
-      {success && <p className="banner-success">{success}</p>}
 
       <div className="jobs-layout">
         <AnimatedCard>
@@ -158,7 +144,6 @@ export default function CVsPage() {
                   ref={fileInputRef}
                   type="file"
                   accept="application/pdf,.pdf"
-                  onChange={handleFileChange}
                   required
                 />
               </label>
@@ -196,11 +181,10 @@ export default function CVsPage() {
                               <h3>{cv.name}</h3>
                               <p className="job-meta">
                                 {cv.name === cv.filename
-                                  ? "PDF · ready for applications"
+                                  ? "Ready for applications"
                                   : `${cv.filename} · ready for applications`}
                               </p>
                             </div>
-                            <span className="status-badge status-badge--applied">stored</span>
                           </div>
                           {confirming ? (
                             <ConfirmCard
@@ -212,7 +196,7 @@ export default function CVsPage() {
                             />
                           ) : (
                             <div className="job-card-footer job-card-footer--actions">
-                              <span className="job-date">Uploaded {formatDate(cv.created_at)}</span>
+                              <span className="job-date">Uploaded on {formatDate(cv.created_at)}</span>
                               <div className="cv-card-actions">
                                 <button
                                   type="button"

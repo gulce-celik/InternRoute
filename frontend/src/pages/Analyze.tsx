@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 
 import AnimatedCard from "../components/AnimatedCard";
 import { FormSkeleton } from "../components/Skeleton";
+import { useToast } from "../components/ToastProvider";
 import { useAuth } from "../hooks/useAuth";
 import { analyzeJobCv, listApplications, listCVs, listJobs } from "../services/api";
 import type { AnalyzeResult } from "../types/agents";
@@ -44,6 +45,7 @@ function ReportList({ title, items, empty }: { title: string; items: string[]; e
 
 export default function AnalyzePage() {
   const { token } = useAuth();
+  const toast = useToast();
   const [searchParams] = useSearchParams();
 
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -51,7 +53,6 @@ export default function AnalyzePage() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
   const [analyzing, setAnalyzing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<AnalyzeResult | null>(null);
 
   const [mode, setMode] = useState<SourceMode>("pair");
@@ -65,7 +66,6 @@ export default function AnalyzePage() {
     }
 
     setLoading(true);
-    setError(null);
 
     try {
       const [jobData, cvData, applicationData] = await Promise.all([
@@ -77,11 +77,11 @@ export default function AnalyzePage() {
       setCvs(cvData);
       setApplications(applicationData);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load Analyze inputs");
+      toast.error(err instanceof Error ? err.message : "Failed to load Analyze inputs");
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [token, toast]);
 
   useEffect(() => {
     void loadData();
@@ -134,7 +134,6 @@ export default function AnalyzePage() {
     }
 
     setAnalyzing(true);
-    setError(null);
     setResult(null);
 
     try {
@@ -145,7 +144,7 @@ export default function AnalyzePage() {
       const data = await analyzeJobCv(token, payload);
       setResult(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Analysis failed");
+      toast.error(err instanceof Error ? err.message : "Analysis failed");
     } finally {
       setAnalyzing(false);
     }
@@ -163,8 +162,6 @@ export default function AnalyzePage() {
           strengths, gaps, and what to tighten before you apply.
         </p>
       </div>
-
-      {error && <p className="error banner-error">{error}</p>}
 
       <div className="jobs-layout">
         <AnimatedCard>

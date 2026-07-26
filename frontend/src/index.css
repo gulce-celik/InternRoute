@@ -2249,6 +2249,120 @@ button:disabled {
   animation: slide-up 0.35s ease both;
 }
 
+.toast-viewport {
+  position: fixed;
+  top: 4.75rem;
+  right: 1.25rem;
+  z-index: 120;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  width: min(360px, calc(100vw - 2.5rem));
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.75rem 0.85rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: #fffdf9;
+  box-shadow: var(--shadow);
+  animation: toast-in 0.28s ease both;
+}
+
+.toast--exiting {
+  pointer-events: none;
+  animation: toast-out 0.22s ease forwards;
+}
+
+.toast--success {
+  border-color: var(--forest);
+  background: #e7f3ee;
+}
+
+.toast--error {
+  border-color: #9b1c1c;
+  background: #fde8e8;
+}
+
+.toast-icon {
+  flex-shrink: 0;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: #fff;
+  margin-top: 0.1rem;
+}
+
+.toast--success .toast-icon {
+  background: var(--forest);
+}
+
+.toast--error .toast-icon {
+  background: #9b1c1c;
+}
+
+.toast-message {
+  margin: 0;
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+.toast-close {
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  font-size: 1.1rem;
+  line-height: 1;
+  border: none;
+  background: transparent;
+  color: var(--ink-soft);
+  box-shadow: none;
+}
+
+.toast-close:hover:not(:disabled) {
+  transform: none;
+  box-shadow: none;
+  background: rgba(20, 17, 15, 0.08);
+  color: var(--ink);
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toast-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
 .pipeline-strip {
   margin-bottom: 1.5rem;
   padding: 1rem 1.1rem;
