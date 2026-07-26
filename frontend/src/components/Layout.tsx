@@ -14,7 +14,7 @@ const coreNav = [
 ] as const;
 
 const aiNav = [
-  { to: "/analyze", label: "Analyze", soon: "3" as const },
+  { to: "/analyze", label: "Analyze" },
   { to: "/interview", label: "Interview", soon: "3" as const },
   { to: "/cover-letter", label: "Letters", soon: "3" as const },
 ] as const;
@@ -57,19 +57,24 @@ export default function Layout() {
           <span className="topnav-divider" aria-hidden="true" />
 
           <span className="topnav-ai-group" data-tour="nav-ai">
-            {aiNav.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                end={false}
-                className={({ isActive }) =>
-                  `topnav-link topnav-link--ai${isActive ? " topnav-link--active" : ""} topnav-link--soon`
-                }
-              >
-                {item.label}
-                <span className="nav-sprint-tag">S{item.soon}</span>
-              </NavLink>
-            ))}
+            {aiNav.map((item) => {
+              const soon = "soon" in item ? item.soon : undefined;
+              return (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={false}
+                  className={({ isActive }) =>
+                    `topnav-link topnav-link--ai${isActive ? " topnav-link--active" : ""}${
+                      soon ? " topnav-link--soon" : ""
+                    }`
+                  }
+                >
+                  {item.label}
+                  {soon ? <span className="nav-sprint-tag">S{soon}</span> : null}
+                </NavLink>
+              );
+            })}
           </span>
         </nav>
 

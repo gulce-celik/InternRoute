@@ -2527,6 +2527,108 @@ button:disabled {
   color: rgba(20, 17, 15, 0.78);
 }
 
+.analyze-mode {
+  margin: 0;
+  padding: 0.75rem 0.85rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--paper-deep);
+  display: grid;
+  gap: 0.45rem;
+}
+
+.analyze-mode legend {
+  padding: 0 0.25rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.analyze-mode-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.analyze-mode-option input {
+  width: auto;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.analyze-selection-hint {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.analyze-report {
+  display: grid;
+  gap: 1rem;
+}
+
+.analyze-report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px dashed rgba(20, 17, 15, 0.18);
+}
+
+.analyze-fit-score {
+  margin: 0.15rem 0 0;
+  font-family: var(--font-display);
+  font-size: 3rem;
+  line-height: 1;
+  font-weight: 400;
+}
+
+.analyze-summary {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.98rem;
+  white-space: pre-wrap;
+}
+
+.analyze-meta {
+  margin: 0;
+  font-size: 0.84rem;
+}
+
+.analyze-report-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.analyze-report-block {
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.85rem 0.95rem;
+  background: #fffdf9;
+  box-shadow: var(--shadow-sm);
+}
+
+.analyze-report-block h3 {
+  margin: 0 0 0.55rem;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 800;
+}
+
+.analyze-report-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.35rem;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+}
+
 .status-select-label {
   display: flex;
   flex-direction: column;
@@ -2673,6 +2775,10 @@ button:disabled {
   }
 
   .jobs-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .analyze-report-grid {
     grid-template-columns: 1fr;
   }
 

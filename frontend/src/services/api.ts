@@ -1,3 +1,4 @@
+import type { AnalyzeRequest, AnalyzeResult } from "../types/agents";
 import type { Application, ApplicationCreate, ApplicationUpdate } from "../types/application";
 import type {
   ProfileUpdate,
@@ -231,4 +232,11 @@ export async function getDashboardStats(token: string): Promise<DashboardStats> 
 
 export async function getMemoryContext(token: string): Promise<MemoryContext> {
   return authRequest<MemoryContext>("/memory/context", token);
+}
+
+export async function analyzeJobCv(token: string, payload: AnalyzeRequest): Promise<AnalyzeResult> {
+  return authRequest<AnalyzeResult>("/agents/analyze", token, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
 }
