@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react
 import { Link, useSearchParams } from "react-router-dom";
 
 import AnimatedCard from "../components/AnimatedCard";
+import { FormSkeleton } from "../components/Skeleton";
 import { useAuth } from "../hooks/useAuth";
 import { generateCoverLetter, listApplications, listCVs, listJobs } from "../services/api";
 import type { CoverLetterResult } from "../types/agents";
@@ -206,7 +207,7 @@ export default function CoverLetterPage() {
             <h2>Draft settings</h2>
 
             {loading ? (
-              <p className="muted">Loading your board and locker...</p>
+              <FormSkeleton rows={5} />
             ) : jobs.length === 0 || cvs.length === 0 ? (
               <div className="empty-state">
                 <strong>Need a role and a CV</strong>

@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 
 import AnimatedCard from "../components/AnimatedCard";
+import ConfirmCard from "../components/ConfirmCard";
+import { ListSkeleton } from "../components/Skeleton";
 import { useAuth } from "../hooks/useAuth";
-import { deleteCV, getMemoryContext, listCVs, openCVFile, uploadCV } from "../services/api";
+import { deleteCV, listCVs, openCVFile, uploadCV } from "../services/api";
 import type { CV } from "../types/cv";
-import type { MemoryContext } from "../types/dashboard";
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-US", {
@@ -18,9 +19,9 @@ export default function CVsPage() {
   const { token } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [cvs, setCvs] = useState<CV[]>([]);
-  const [memory, setMemory] = useState<MemoryContext | null>(null);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [viewingId, setViewingId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -35,9 +36,8 @@ export default function CVsPage() {
     setError(null);
 
     try {
-      const [data, memoryData] = await Promise.all([listCVs(token), getMemoryContext(token)]);
+      const data = await listCVs(token);
       setCvs(data);
-      setMemory(memoryData);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load CVs");
     } finally {
@@ -68,8 +68,6 @@ export default function CVsPage() {
     try {
       const created = await uploadCV(token, file);
       setCvs((prev) => [created, ...prev]);
-      const memoryData = await getMemoryContext(token);
-      setMemory(memoryData);
       setSuccess("CV uploaded. You can open the PDF anytime.");
       fileInputRef.current.value = "";
     } catch (err) {
@@ -114,8 +112,7 @@ export default function CVsPage() {
     try {
       await deleteCV(token, id);
       setCvs((prev) => prev.filter((cv) => cv.id !== id));
-      const memoryData = await getMemoryContext(token);
-      setMemory(memoryData);
+      setConfirmDeleteId(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to delete CV");
     } finally {
@@ -165,7 +162,7 @@ export default function CVsPage() {
             <h2>Saved versions</h2>
 
             {loading ? (
-              <p className="muted">Loading your CV locker...</p>
+              <ListSkeleton count={3} variant="cv" />
             ) : cvs.length === 0 ? (
               <div className="empty-state">
                 <strong>No CVs yet</strong>
@@ -173,76 +170,63 @@ export default function CVsPage() {
               </div>
             ) : (
               <ul className="jobs-list">
-                {cvs.map((cv, index) => (
-                  <li key={cv.id}>
-                    <AnimatedCard delay={index * 70} className="job-card-wrap">
-                      <article className="job-card job-card--float">
-                        <div className="job-card-header">
-                          <div>
-                            <h3>{cv.filename}</h3>
-                            <p className="job-meta">PDF · ready for applications</p>
+                {cvs.map((cv, index) => {
+                  const confirming = confirmDeleteId === cv.id;
+
+                  return (
+                    <li key={cv.id}>
+                      <AnimatedCard delay={index * 70} className="job-card-wrap">
+                        <article
+                          className={`job-card job-card--float${confirming ? " job-card--confirming" : ""}`}
+                        >
+                          <div className="job-card-header">
+                            <div>
+                              <h3>{cv.filename}</h3>
+                              <p className="job-meta">PDF · ready for applications</p>
+                            </div>
+                            <span className="status-badge status-badge--applied">stored</span>
                           </div>
-                          <span className="status-badge status-badge--applied">stored</span>
-                        </div>
-                        <div className="job-card-footer job-card-footer--actions">
-                          <span className="job-date">Uploaded {formatDate(cv.created_at)}</span>
-                          <div className="cv-card-actions">
-                            <button
-                              type="button"
-                              className="btn-ghost"
-                              disabled={viewingId === cv.id}
-                              onClick={() => void handleView(cv)}
-                            >
-                              {viewingId === cv.id ? "Opening..." : "View PDF"}
-                            </button>
-                            <button
-                              type="button"
-                              className="btn-danger"
-                              disabled={deletingId === cv.id}
-                              onClick={() => void handleDelete(cv.id)}
-                            >
-                              {deletingId === cv.id ? "Deleting..." : "Delete"}
-                            </button>
-                          </div>
-                        </div>
-                      </article>
-                    </AnimatedCard>
-                  </li>
-                ))}
+                          {confirming ? (
+                            <ConfirmCard
+                              title="Delete this CV?"
+                              description="Applications using this version may lose the linked file."
+                              confirming={deletingId === cv.id}
+                              onCancel={() => setConfirmDeleteId(null)}
+                              onConfirm={() => void handleDelete(cv.id)}
+                            />
+                          ) : (
+                            <div className="job-card-footer job-card-footer--actions">
+                              <span className="job-date">Uploaded {formatDate(cv.created_at)}</span>
+                              <div className="cv-card-actions">
+                                <button
+                                  type="button"
+                                  className="btn-ghost"
+                                  disabled={viewingId === cv.id || deletingId !== null}
+                                  onClick={() => void handleView(cv)}
+                                >
+                                  {viewingId === cv.id ? "Opening..." : "View PDF"}
+                                </button>
+                                <button
+                                  type="button"
+                                  className="btn-danger"
+                                  disabled={deletingId !== null}
+                                  onClick={() => setConfirmDeleteId(cv.id)}
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </article>
+                      </AnimatedCard>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>
         </AnimatedCard>
       </div>
-
-      {memory && memory.cv_chunks > 0 && (
-        <AnimatedCard delay={180}>
-          <article className="panel memory-panel">
-            <p className="page-kicker">RAG · technical preview</p>
-            <h2>Indexed for Sprint 3 AI agents</h2>
-            <p className="muted">
-              This block is <strong>not a student feature</strong>. It shows that your CV text was
-              stored in the RAG memory layer so Sprint 3 agents (Analyze, Letters, Mock Interview)
-              can use it later. You do not need to read or edit these snippets day to day —{" "}
-              <strong>View PDF</strong> above is what you use.
-            </p>
-            <p className="muted">
-              Status: {memory.cv_chunks} chunk{memory.cv_chunks === 1 ? "" : "s"} indexed from your
-              uploads.
-            </p>
-            {memory.snippets.length > 0 && (
-              <ul className="memory-snippet-list">
-                {memory.snippets.map((snippet) => (
-                  <li key={`${snippet.source}-${snippet.snippet.slice(0, 24)}`}>
-                    <strong>{snippet.source}</strong>
-                    <p>{snippet.snippet}</p>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </article>
-        </AnimatedCard>
-      )}
     </section>
   );
 }

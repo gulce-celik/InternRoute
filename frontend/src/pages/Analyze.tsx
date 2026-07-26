@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react
 import { Link, useSearchParams } from "react-router-dom";
 
 import AnimatedCard from "../components/AnimatedCard";
+import { FormSkeleton } from "../components/Skeleton";
 import { useAuth } from "../hooks/useAuth";
 import { analyzeJobCv, listApplications, listCVs, listJobs } from "../services/api";
 import type { AnalyzeResult } from "../types/agents";
@@ -171,7 +172,7 @@ export default function AnalyzePage() {
             <h2>Run analysis</h2>
 
             {loading ? (
-              <p className="muted">Loading your board and locker...</p>
+              <FormSkeleton rows={4} />
             ) : jobs.length === 0 || cvs.length === 0 ? (
               <div className="empty-state">
                 <strong>Need a role and a CV</strong>

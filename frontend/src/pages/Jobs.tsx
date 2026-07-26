@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 
 import AnimatedCard from "../components/AnimatedCard";
+import ConfirmCard from "../components/ConfirmCard";
+import { ListSkeleton } from "../components/Skeleton";
 import { useAuth } from "../hooks/useAuth";
 import { createJob, deleteJob, listJobs } from "../services/api";
 import type { Job, JobCreate } from "../types/job";
@@ -35,6 +37,7 @@ export default function JobsPage() {
   const [form, setForm] = useState<JobCreate>(emptyForm);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -101,6 +104,7 @@ export default function JobsPage() {
     try {
       await deleteJob(token, id);
       setJobs((prev) => prev.filter((job) => job.id !== id));
+      setConfirmDeleteId(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to delete job");
     } finally {
@@ -127,109 +131,127 @@ export default function JobsPage() {
       <div className="jobs-layout">
         <AnimatedCard>
           <article className="panel panel--form">
-          <h2>New listing</h2>
-          <form onSubmit={handleSubmit} className="job-form">
-            <label>
-              Title
-              <input
-                type="text"
-                value={form.title}
-                onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
-                required
-              />
-            </label>
-            <label>
-              Company
-              <input
-                type="text"
-                value={form.company}
-                onChange={(e) => setForm((prev) => ({ ...prev, company: e.target.value }))}
-                required
-              />
-            </label>
-            <label>
-              Description
-              <textarea
-                value={form.description}
-                onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
-                rows={4}
-                required
-              />
-            </label>
-            <label>
-              Location
-              <input
-                type="text"
-                value={form.location ?? ""}
-                onChange={(e) => setForm((prev) => ({ ...prev, location: e.target.value }))}
-                placeholder="Optional"
-              />
-            </label>
-            <label>
-              Status
-              <select
-                value={form.status ?? "applied"}
-                onChange={(e) => setForm((prev) => ({ ...prev, status: e.target.value }))}
-              >
-                {STATUS_OPTIONS.map((status) => (
-                  <option key={status.value} value={status.value}>
-                    {status.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <button type="submit" disabled={submitting}>
-              {submitting ? "Saving..." : "Save role"}
-            </button>
-          </form>
+            <h2>New listing</h2>
+            <form onSubmit={handleSubmit} className="job-form">
+              <label>
+                Title
+                <input
+                  type="text"
+                  value={form.title}
+                  onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
+                  required
+                />
+              </label>
+              <label>
+                Company
+                <input
+                  type="text"
+                  value={form.company}
+                  onChange={(e) => setForm((prev) => ({ ...prev, company: e.target.value }))}
+                  required
+                />
+              </label>
+              <label>
+                Description
+                <textarea
+                  value={form.description}
+                  onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
+                  rows={4}
+                  required
+                />
+              </label>
+              <label>
+                Location
+                <input
+                  type="text"
+                  value={form.location ?? ""}
+                  onChange={(e) => setForm((prev) => ({ ...prev, location: e.target.value }))}
+                  placeholder="Optional"
+                />
+              </label>
+              <label>
+                Status
+                <select
+                  value={form.status ?? "applied"}
+                  onChange={(e) => setForm((prev) => ({ ...prev, status: e.target.value }))}
+                >
+                  {STATUS_OPTIONS.map((status) => (
+                    <option key={status.value} value={status.value}>
+                      {status.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <button type="submit" disabled={submitting}>
+                {submitting ? "Saving..." : "Save role"}
+              </button>
+            </form>
           </article>
         </AnimatedCard>
 
         <AnimatedCard delay={100}>
           <div className="panel">
-          <h2>Pinned roles</h2>
+            <h2>Pinned roles</h2>
 
-          {loading ? (
-            <p className="muted">Loading your roles...</p>
-          ) : jobs.length === 0 ? (
-            <div className="empty-state">
-              <strong>No roles yet</strong>
-              Add your first internship listing and start building your pipeline.
-            </div>
-          ) : (
-            <ul className="jobs-list">
-              {jobs.map((job, index) => (
-                <li key={job.id}>
-                  <AnimatedCard delay={index * 70} className="job-card-wrap">
-                    <article className="job-card job-card--float">
-                  <div className="job-card-header">
-                    <div>
-                      <h3>{job.title}</h3>
-                      <p className="job-meta">
-                        {job.company}
-                        {job.location ? ` · ${job.location}` : ""}
-                      </p>
-                    </div>
-                    <span className={`status-badge status-badge--${job.status}`}>{job.status}</span>
-                  </div>
-                  <p className="job-description">{job.description}</p>
-                  <div className="job-card-footer">
-                    <span className="job-date">Added {formatDate(job.created_at)}</span>
-                    <button
-                      type="button"
-                      className="btn-danger"
-                      disabled={deletingId === job.id}
-                      onClick={() => void handleDelete(job.id)}
-                    >
-                      {deletingId === job.id ? "Deleting..." : "Delete"}
-                    </button>
-                    </div>
-                    </article>
-                  </AnimatedCard>
-                </li>
-              ))}
-            </ul>
-          )}
+            {loading ? (
+              <ListSkeleton count={3} variant="job" />
+            ) : jobs.length === 0 ? (
+              <div className="empty-state">
+                <strong>No roles yet</strong>
+                Add your first internship listing and start building your pipeline.
+              </div>
+            ) : (
+              <ul className="jobs-list">
+                {jobs.map((job, index) => {
+                  const confirming = confirmDeleteId === job.id;
+
+                  return (
+                    <li key={job.id}>
+                      <AnimatedCard delay={index * 70} className="job-card-wrap">
+                        <article
+                          className={`job-card job-card--float${confirming ? " job-card--confirming" : ""}`}
+                        >
+                          <div className="job-card-header">
+                            <div>
+                              <h3>{job.title}</h3>
+                              <p className="job-meta">
+                                {job.company}
+                                {job.location ? ` · ${job.location}` : ""}
+                              </p>
+                            </div>
+                            <span className={`status-badge status-badge--${job.status}`}>
+                              {job.status}
+                            </span>
+                          </div>
+                          <p className="job-description">{job.description}</p>
+                          {confirming ? (
+                            <ConfirmCard
+                              title="Delete this role?"
+                              description="It will leave your board. Linked applications may keep a reference."
+                              confirming={deletingId === job.id}
+                              onCancel={() => setConfirmDeleteId(null)}
+                              onConfirm={() => void handleDelete(job.id)}
+                            />
+                          ) : (
+                            <div className="job-card-footer">
+                              <span className="job-date">Added {formatDate(job.created_at)}</span>
+                              <button
+                                type="button"
+                                className="btn-danger"
+                                disabled={deletingId !== null}
+                                onClick={() => setConfirmDeleteId(job.id)}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          )}
+                        </article>
+                      </AnimatedCard>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
           </div>
         </AnimatedCard>
       </div>

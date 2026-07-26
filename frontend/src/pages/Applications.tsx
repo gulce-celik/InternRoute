@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState, type FormEvent } from "react";
 
 import AnimatedCard from "../components/AnimatedCard";
 import PipelineStrip from "../components/PipelineStrip";
+import { FormSkeleton, ListSkeleton } from "../components/Skeleton";
 import { useAuth } from "../hooks/useAuth";
 import {
   createApplication,
@@ -239,6 +240,9 @@ export default function ApplicationsPage() {
         <AnimatedCard>
           <article className="panel panel--form">
             <h2>Link job + CV</h2>
+            {loading ? (
+              <FormSkeleton rows={3} />
+            ) : (
             <form onSubmit={handleCreate} className="job-form">
               <label>
                 Role
@@ -289,7 +293,8 @@ export default function ApplicationsPage() {
                 {submitting ? "Linking..." : "Create application"}
               </button>
             </form>
-            {(jobs.length === 0 || cvs.length === 0) && (
+            )}
+            {!loading && (jobs.length === 0 || cvs.length === 0) && (
               <p className="muted">
                 Pin at least one role on the Board and upload one CV before linking applications.
               </p>
@@ -302,7 +307,7 @@ export default function ApplicationsPage() {
             <h2>Matched applications</h2>
 
             {loading ? (
-              <p className="muted">Loading your pipeline...</p>
+              <ListSkeleton count={3} variant="flow" />
             ) : applications.length === 0 ? (
               <div className="empty-state">
                 <strong>No applications linked yet</strong>
