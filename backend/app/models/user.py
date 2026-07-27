@@ -35,6 +35,9 @@ class User(Base):
     applications: Mapped[list["Application"]] = relationship(
         back_populates="user", cascade="all, delete-orphan"
     )
+    calendar_events: Mapped[list["CalendarEvent"]] = relationship(
+        back_populates="user", cascade="all, delete-orphan"
+    )
 
 
 class PendingRegistration(Base):
@@ -67,6 +70,7 @@ class Job(Base):
 
     user: Mapped["User"] = relationship(back_populates="jobs")
     applications: Mapped[list["Application"]] = relationship(back_populates="job")
+    calendar_events: Mapped[list["CalendarEvent"]] = relationship(back_populates="job")
 
 
 class CV(Base):
@@ -109,3 +113,45 @@ class Application(Base):
     user: Mapped["User"] = relationship(back_populates="applications")
     job: Mapped["Job"] = relationship(back_populates="applications")
     cv: Mapped["CV | None"] = relationship(back_populates="applications", passive_deletes=True)
+    calendar_events: Mapped[list["CalendarEvent"]] = relationship(back_populates="application")
+
+
+class CalendarEventCategory(str, enum.Enum):
+    APTITUDE_TEST = "aptitude_test"
+    AI_INTERVIEW = "ai_interview"
+    LANGUAGE_TEST = "language_test"
+    HR_INTERVIEW = "hr_interview"
+    TECHNICAL_INTERVIEW = "technical_interview"
+    TEAM_INTERVIEW = "team_interview"
+    CASE_STUDY = "case_study"
+
+
+class CalendarEvent(Base):
+    __tablename__ = "calendar_events"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    title: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    category: Mapped[CalendarEventCategory] = mapped_column(
+        Enum(CalendarEventCategory),
+        nullable=False,
+    )
+    event_date: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    job_id: Mapped[int | None] = mapped_column(
+        ForeignKey("jobs.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
+    application_id: Mapped[int | None] = mapped_column(
+        ForeignKey("applications.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+    user: Mapped["User"] = relationship(back_populates="calendar_events")
+    job: Mapped["Job | None"] = relationship(back_populates="calendar_events")
+    application: Mapped["Application | None"] = relationship(back_populates="calendar_events")

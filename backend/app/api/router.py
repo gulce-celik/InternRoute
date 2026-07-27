@@ -4,6 +4,7 @@ from app.api.routes import (
     agents,
     applications,
     auth,
+    calendar,
     cvs,
     dashboard,
     health,
@@ -19,6 +20,7 @@ api_router.include_router(profile.router)
 api_router.include_router(jobs.router)
 api_router.include_router(cvs.router)
 api_router.include_router(applications.router)
+api_router.include_router(calendar.router)
 api_router.include_router(dashboard.router)
 api_router.include_router(memory.router)
 api_router.include_router(agents.router)
