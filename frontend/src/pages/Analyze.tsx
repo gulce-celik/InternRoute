@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
+import AgentHistoryPanel from "../components/AgentHistoryPanel";
 import AnimatedCard from "../components/AnimatedCard";
 import { FormSkeleton } from "../components/Skeleton";
 import { useToast } from "../components/ToastProvider";
@@ -10,6 +11,14 @@ import type { AnalyzeResult } from "../types/agents";
 import type { Application } from "../types/application";
 import type { CV } from "../types/cv";
 import type { Job } from "../types/job";
+import {
+  clearAnalyzeHistory,
+  loadAnalyzeHistory,
+  newHistoryId,
+  prependAnalyzeHistory,
+  removeAnalyzeHistory,
+  type AnalyzeHistoryEntry,
+} from "../utils/agentHistory";
 
 type SourceMode = "pair" | "application";
 
@@ -24,6 +33,30 @@ function fitBadgeClass(score: number): string {
     return "status-badge--applied";
   }
   return "status-badge--rejected";
+}
+
+function formatAnalyzeForCoverLetter(result: AnalyzeResult): string {
+  const bullet = (items: string[]) =>
+    items.length > 0 ? items.map((item) => `- ${item}`).join("\n") : "- (none)";
+
+  return [
+    `Fit score: ${result.fit_score}/100`,
+    "",
+    "Summary:",
+    result.summary.trim() || "(no summary)",
+    "",
+    "Strengths:",
+    bullet(result.strengths),
+    "",
+    "Gaps:",
+    bullet(result.gaps),
+    "",
+    "Keywords to add:",
+    bullet(result.keywords_to_add),
+    "",
+    "Recommendations:",
+    bullet(result.recommendations),
+  ].join("\n");
 }
 
 function ReportList({ title, items, empty }: { title: string; items: string[]; empty: string }) {
@@ -44,7 +77,7 @@ function ReportList({ title, items, empty }: { title: string; items: string[]; e
 }
 
 export default function AnalyzePage() {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const toast = useToast();
   const [searchParams] = useSearchParams();
 
@@ -54,11 +87,23 @@ export default function AnalyzePage() {
   const [loading, setLoading] = useState(true);
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState<AnalyzeResult | null>(null);
+  const [history, setHistory] = useState<AnalyzeHistoryEntry[]>([]);
+  const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
+  const [copyState, setCopyState] = useState<"idle" | "copied">("idle");
 
   const [mode, setMode] = useState<SourceMode>("pair");
   const [jobId, setJobId] = useState("");
   const [cvId, setCvId] = useState("");
   const [applicationId, setApplicationId] = useState("");
+
+  useEffect(() => {
+    const entries = loadAnalyzeHistory(user?.id);
+    setHistory(entries);
+    if (entries[0]) {
+      setResult(entries[0].result);
+      setActiveSessionId(entries[0].id);
+    }
+  }, [user?.id]);
 
   const loadData = useCallback(async () => {
     if (!token) {
@@ -142,11 +187,73 @@ export default function AnalyzePage() {
           ? { application_id: Number(applicationId) }
           : { job_id: Number(jobId), cv_id: Number(cvId) };
       const data = await analyzeJobCv(token, payload);
+
+      let label = "Gap scan";
+      let subtitle: string | undefined;
+      if (mode === "application" && selectedApplication) {
+        label = `${selectedApplication.job_title} · ${selectedApplication.job_company}`;
+        subtitle = selectedApplication.cv_filename ?? undefined;
+      } else if (selectedJob) {
+        label = `${selectedJob.title} · ${selectedJob.company}`;
+        subtitle = selectedCv?.name;
+      }
+
+      const entry: AnalyzeHistoryEntry = {
+        id: newHistoryId(),
+        createdAt: new Date().toISOString(),
+        label,
+        subtitle,
+        result: data,
+      };
+      setHistory(prependAnalyzeHistory(user?.id, entry));
+      setActiveSessionId(entry.id);
       setResult(data);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Analysis failed");
     } finally {
       setAnalyzing(false);
+    }
+  }
+
+  function handleSelectSession(id: string) {
+    const entry = history.find((item) => item.id === id);
+    if (!entry) {
+      return;
+    }
+    setActiveSessionId(entry.id);
+    setResult(entry.result);
+    setCopyState("idle");
+  }
+
+  function handleRemoveSession(id: string) {
+    const next = removeAnalyzeHistory(user?.id, id);
+    setHistory(next);
+    if (activeSessionId === id) {
+      const latest = next[0] ?? null;
+      setActiveSessionId(latest?.id ?? null);
+      setResult(latest?.result ?? null);
+    }
+  }
+
+  function handleClearSessions() {
+    clearAnalyzeHistory(user?.id);
+    setHistory([]);
+    setActiveSessionId(null);
+    setResult(null);
+    setCopyState("idle");
+  }
+
+  async function handleCopyForCoverLetter() {
+    if (!result) {
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(formatAnalyzeForCoverLetter(result));
+      setCopyState("copied");
+      toast.success("Copied — paste into Letters → Analyzer summary.");
+      window.setTimeout(() => setCopyState("idle"), 2500);
+    } catch {
+      toast.error("Could not copy to clipboard.");
     }
   }
 
@@ -163,7 +270,7 @@ export default function AnalyzePage() {
         </p>
       </div>
 
-      <div className="jobs-layout">
+      <div className="jobs-layout jobs-layout--with-sessions">
         <AnimatedCard>
           <article className="panel panel--form">
             <h2>Run analysis</h2>
@@ -279,7 +386,18 @@ export default function AnalyzePage() {
 
         <AnimatedCard delay={100}>
           <div className="panel">
-            <h2>Report</h2>
+            <div className="letter-studio-head">
+              <h2>Report</h2>
+              {result && !analyzing ? (
+                <button
+                  type="button"
+                  className="btn-ghost"
+                  onClick={() => void handleCopyForCoverLetter()}
+                >
+                  {copyState === "copied" ? "Copied" : "Copy for cover letter"}
+                </button>
+              ) : null}
+            </div>
 
             {analyzing ? (
               <p className="muted">Comparing the listing to your CV memory...</p>
@@ -314,7 +432,9 @@ export default function AnalyzePage() {
                   {result.rag_chunks_used === 1 ? "" : "s"}
                   {result.rag_chunks_used === 0
                     ? " — upload or reingest a fuller CV for richer results."
-                    : "."}
+                    : "."}{" "}
+                  Paste into{" "}
+                  <Link to="/cover-letter">Letters → Analyzer summary</Link> after copying.
                 </p>
 
                 <div className="analyze-report-grid">
@@ -338,6 +458,24 @@ export default function AnalyzePage() {
               </div>
             )}
           </div>
+        </AnimatedCard>
+
+        <AnimatedCard delay={160}>
+          <AgentHistoryPanel
+            title="Sessions"
+            emptyText="Past gap scans will show up here."
+            items={history.map((entry) => ({
+              id: entry.id,
+              createdAt: entry.createdAt,
+              label: entry.label,
+              subtitle: entry.subtitle,
+              badge: `Fit ${entry.result.fit_score}`,
+            }))}
+            activeId={activeSessionId}
+            onSelect={handleSelectSession}
+            onRemove={handleRemoveSession}
+            onClear={handleClearSessions}
+          />
         </AnimatedCard>
       </div>
     </section>
