@@ -34,7 +34,7 @@ def _to_response(application: Application) -> dict:
         "created_at": application.created_at,
         "job_title": application.job.title,
         "job_company": application.job.company,
-        "cv_filename": application.cv.filename if application.cv is not None else None,
+        "cv_filename": application.cv.name if application.cv is not None else None,
     }
 
 

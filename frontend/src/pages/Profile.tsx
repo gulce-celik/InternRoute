@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 
 import AnimatedCard from "../components/AnimatedCard";
+import { useToast } from "../components/ToastProvider";
 import { useAuth } from "../hooks/useAuth";
 
 const STUDY_YEARS = [
@@ -51,14 +52,13 @@ function initialsFrom(name: string, email?: string | null): string {
 
 export default function ProfilePage() {
   const { user, updateUserProfile } = useAuth();
+  const toast = useToast();
   const [fullName, setFullName] = useState("");
   const [university, setUniversity] = useState("");
   const [studyYear, setStudyYear] = useState("");
   const [major, setMajor] = useState("");
   const [targetSectors, setTargetSectors] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) {
@@ -87,8 +87,6 @@ export default function ProfilePage() {
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     setSubmitting(true);
-    setError(null);
-    setSuccess(null);
 
     try {
       await updateUserProfile({
@@ -98,9 +96,9 @@ export default function ProfilePage() {
         major: major.trim() || undefined,
         target_sectors: targetSectors.trim() || undefined,
       });
-      setSuccess("Saved.");
+      toast.success("Profile saved.");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save profile");
+      toast.error(err instanceof Error ? err.message : "Failed to save profile");
     } finally {
       setSubmitting(false);
     }
@@ -114,9 +112,6 @@ export default function ProfilePage() {
           Your <em>profile</em>
         </h1>
       </div>
-
-      {error ? <p className="error banner-error">{error}</p> : null}
-      {success ? <p className="banner-success">{success}</p> : null}
 
       <div className="profile-shell">
         <AnimatedCard delay={40}>

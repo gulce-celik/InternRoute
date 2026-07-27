@@ -90,6 +90,63 @@ class ChromaStore:
 
         return snippets
 
+    def query_cv_chunks(
+        self,
+        *,
+        user_id: int,
+        query_text: str,
+        cv_id: int | None = None,
+        top_k: int = 5,
+    ) -> list[dict[str, str | float]]:
+        """Semantic search over a user's CV chunks (optional single-CV filter)."""
+        cleaned = (query_text or "").strip()
+        if not cleaned or top_k <= 0:
+            return []
+
+        collection = self._cv_collection()
+        if self.count_user_chunks(user_id) == 0:
+            return []
+
+        where = (
+            {"$and": [{"user_id": str(user_id)}, {"cv_id": str(cv_id)}]}
+            if cv_id is not None
+            else {"user_id": str(user_id)}
+        )
+
+        # Cap n_results to available rows so Chroma does not error on small collections.
+        available = collection.get(where=where, include=[])
+        available_count = len(available.get("ids") or [])
+        if available_count == 0:
+            return []
+
+        query_embedding = self._embedder.embed_texts([cleaned])[0]
+        results = collection.query(
+            query_embeddings=[query_embedding],
+            n_results=min(top_k, available_count),
+            where=where,
+            include=["documents", "metadatas", "distances"],
+        )
+
+        documents = (results.get("documents") or [[]])[0]
+        metadatas = (results.get("metadatas") or [[]])[0]
+        distances = (results.get("distances") or [[]])[0]
+
+        hits: list[dict[str, str | float]] = []
+        for document, metadata, distance in zip(documents, metadatas, distances, strict=False):
+            if not document:
+                continue
+            meta = metadata or {}
+            hits.append(
+                {
+                    "text": document,
+                    "source": str(meta.get("filename") or "cv.pdf"),
+                    "cv_id": str(meta.get("cv_id") or ""),
+                    "chunk_index": str(meta.get("chunk_index") or ""),
+                    "distance": float(distance),
+                }
+            )
+        return hits
+
     def count_user_chunks(self, user_id: int) -> int:
         collection = self._cv_collection()
         results = collection.get(where={"user_id": str(user_id)}, include=[])

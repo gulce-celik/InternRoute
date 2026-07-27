@@ -45,10 +45,7 @@ export default function LoginPage() {
         <section className="auth-hero">
           <span className="auth-hero-badge">YZTA Bootcamp &apos;26</span>
           <h1>Stop losing track of applications.</h1>
-          <p>
-            InternRoute is your personal board for internships — save roles, tailor CVs, prep for
-            interviews.
-          </p>
+          <p>InternRoute is your personal board for internships.</p>
         </section>
 
         <section className="auth-card">

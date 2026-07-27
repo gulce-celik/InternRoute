@@ -40,6 +40,7 @@ def test_upload_list_delete_cv(client: TestClient, auth_headers: dict[str, str])
     assert upload_response.status_code == 201
     created = upload_response.json()
     assert created["filename"] == "resume.pdf"
+    assert created["name"] == "resume.pdf"
     cv_id = created["id"]
 
     list_response = client.get("/api/v1/cvs", headers=auth_headers)
@@ -122,3 +123,16 @@ def test_delete_cv_clears_application_link_but_keeps_pipeline(
     assert reassign.status_code == 200
     assert reassign.json()["cv_id"] == new_cv_id
     assert reassign.json()["cv_filename"] == "new-cv.pdf"
+
+
+def test_upload_cv_with_custom_name(client: TestClient, auth_headers: dict[str, str]):
+    upload_response = client.post(
+        "/api/v1/cvs",
+        headers=auth_headers,
+        data={"name": "Bosch version"},
+        files={"file": ("resume.pdf", _make_pdf_bytes(), "application/pdf")},
+    )
+    assert upload_response.status_code == 201
+    created = upload_response.json()
+    assert created["name"] == "Bosch version"
+    assert created["filename"] == "resume.pdf"

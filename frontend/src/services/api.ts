@@ -1,3 +1,4 @@
+import type { AnalyzeRequest, AnalyzeResult, CoverLetterRequest, CoverLetterResult } from "../types/agents";
 import type { Application, ApplicationCreate, ApplicationUpdate } from "../types/application";
 import type {
   ProfileUpdate,
@@ -7,6 +8,7 @@ import type {
   User,
   VerificationStarted,
 } from "../types/auth";
+import type { CalendarEvent, CalendarEventCreate } from "../types/calendar";
 import type { DashboardStats, MemoryContext } from "../types/dashboard";
 import type { CV } from "../types/cv";
 import type { Job, JobCreate, JobUpdate } from "../types/job";
@@ -141,9 +143,13 @@ export async function listCVs(token: string): Promise<CV[]> {
   return authRequest<CV[]>("/cvs", token);
 }
 
-export async function uploadCV(token: string, file: File): Promise<CV> {
+export async function uploadCV(token: string, file: File, name?: string): Promise<CV> {
   const formData = new FormData();
   formData.append("file", file);
+  const trimmed = name?.trim();
+  if (trimmed) {
+    formData.append("name", trimmed);
+  }
 
   const response = await fetch(`${API_BASE_URL}/cvs`, {
     method: "POST",
@@ -231,4 +237,50 @@ export async function getDashboardStats(token: string): Promise<DashboardStats> 
 
 export async function getMemoryContext(token: string): Promise<MemoryContext> {
   return authRequest<MemoryContext>("/memory/context", token);
+}
+
+export async function analyzeJobCv(token: string, payload: AnalyzeRequest): Promise<AnalyzeResult> {
+  return authRequest<AnalyzeResult>("/agents/analyze", token, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function generateCoverLetter(
+  token: string,
+  payload: CoverLetterRequest,
+): Promise<CoverLetterResult> {
+  return authRequest<CoverLetterResult>("/agents/cover-letter", token, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function listCalendarEvents(
+  token: string,
+  params?: { year?: number; month?: number },
+): Promise<CalendarEvent[]> {
+  const search = new URLSearchParams();
+  if (params?.year != null) {
+    search.set("year", String(params.year));
+  }
+  if (params?.month != null) {
+    search.set("month", String(params.month));
+  }
+  const query = search.toString();
+  return authRequest<CalendarEvent[]>(`/calendar/events${query ? `?${query}` : ""}`, token);
+}
+
+export async function createCalendarEvent(
+  token: string,
+  payload: CalendarEventCreate,
+): Promise<CalendarEvent> {
+  return authRequest<CalendarEvent>("/calendar/events", token, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deleteCalendarEvent(token: string, id: number): Promise<void> {
+  await authRequest<void>(`/calendar/events/${id}`, token, { method: "DELETE" });
 }

@@ -7,7 +7,7 @@ Retrieval-Augmented Generation — kullanıcı hafıza yönetimi.
 | Dizin | Açıklama |
 |-------|----------|
 | `embeddings/` | Metin → vektör dönüşümü (Gemini embeddings) |
-| `retriever/` | ChromaDB'den benzerlik arama, bağlam çekme |
+| `retriever/` | ChromaDB semantic search + agent context formatting |
 | `pipeline/` | Ingestion akışı: PDF/metin → chunk → embed → store |
 
 ## Koleksiyonlar (ChromaDB)

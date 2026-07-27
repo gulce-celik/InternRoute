@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import uuid
 from pathlib import Path
 
@@ -10,6 +11,8 @@ from app.core.config import get_settings
 from app.models.user import Application, CV, User
 from app.rag.pipeline.ingestion import ingest_cv_pdf
 from app.rag.vectorstore.chroma_store import get_chroma_store
+
+logger = logging.getLogger(__name__)
 
 
 def _get_user_cv(db: Session, user_id: int, cv_id: int) -> CV:
@@ -27,7 +30,7 @@ def get_cv(db: Session, user: User, cv_id: int) -> CV:
     return _get_user_cv(db, user.id, cv_id)
 
 
-def upload_cv(db: Session, user: User, file: UploadFile) -> CV:
+def upload_cv(db: Session, user: User, file: UploadFile, name: str | None = None) -> CV:
     if file.content_type not in {"application/pdf", "application/x-pdf"}:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -37,6 +40,9 @@ def upload_cv(db: Session, user: User, file: UploadFile) -> CV:
     filename = Path(file.filename or "cv.pdf").name
     if not filename.lower().endswith(".pdf"):
         filename = f"{filename}.pdf"
+
+    display_name = (name or "").strip() or filename
+    display_name = display_name[:255]
 
     settings = get_settings()
     user_dir = Path(settings.upload_dir) / str(user.id)
@@ -53,6 +59,7 @@ def upload_cv(db: Session, user: User, file: UploadFile) -> CV:
 
     cv = CV(
         user_id=user.id,
+        name=display_name,
         filename=filename,
         file_path=str(destination),
     )
@@ -64,18 +71,45 @@ def upload_cv(db: Session, user: User, file: UploadFile) -> CV:
         ingest_cv_pdf(
             user_id=user.id,
             cv_id=cv.id,
-            filename=cv.filename,
+            filename=cv.name,
             file_path=cv.file_path,
         )
     except Exception as exc:
-        db.delete(cv)
-        db.commit()
-        destination.unlink(missing_ok=True)
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Could not process PDF for memory ingestion: {exc}",
-        ) from exc
+        # Keep the uploaded CV even if Gemini/network is down. Memory can be
+        # rebuilt later via reingest_cv once DNS/connectivity recovers.
+        logger.warning(
+            "CV %s saved but memory ingestion failed for user %s: %s",
+            cv.id,
+            user.id,
+            exc,
+        )
 
+    return cv
+
+
+def reingest_cv(db: Session, user: User, cv_id: int) -> CV:
+    cv = _get_user_cv(db, user.id, cv_id)
+    path = Path(cv.file_path)
+    if not path.exists():
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="CV file missing on disk",
+        )
+    try:
+        ingest_cv_pdf(
+            user_id=user.id,
+            cv_id=cv.id,
+            filename=cv.name,
+            file_path=cv.file_path,
+        )
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=(
+                "Could not reach Gemini for embeddings (network/DNS). "
+                f"Try again on a stable connection. Details: {exc}"
+            ),
+        ) from exc
     return cv
 
 

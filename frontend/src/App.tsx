@@ -2,9 +2,11 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { ToastProvider } from "./components/ToastProvider";
 import { AuthProvider } from "./hooks/useAuth";
 import AnalyzePage from "./pages/Analyze";
 import ApplicationsPage from "./pages/Applications";
+import CalendarPage from "./pages/Calendar";
 import CoverLetterPage from "./pages/CoverLetter";
 import CVsPage from "./pages/CVs";
 import DashboardPage from "./pages/Dashboard";
@@ -18,27 +20,30 @@ import "./index.css";
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+      <ToastProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
 
-          <Route element={<ProtectedRoute />}>
-            <Route element={<Layout />}>
-              <Route path="/" element={<DashboardPage />} />
-              <Route path="/jobs" element={<JobsPage />} />
-              <Route path="/cvs" element={<CVsPage />} />
-              <Route path="/applications" element={<ApplicationsPage />} />
-              <Route path="/analyze" element={<AnalyzePage />} />
-              <Route path="/interview" element={<InterviewPage />} />
-              <Route path="/cover-letter" element={<CoverLetterPage />} />
-              <Route path="/profile" element={<ProfilePage />} />
+            <Route element={<ProtectedRoute />}>
+              <Route element={<Layout />}>
+                <Route path="/" element={<DashboardPage />} />
+                <Route path="/jobs" element={<JobsPage />} />
+                <Route path="/cvs" element={<CVsPage />} />
+                <Route path="/applications" element={<ApplicationsPage />} />
+                <Route path="/calendar" element={<CalendarPage />} />
+                <Route path="/analyze" element={<AnalyzePage />} />
+                <Route path="/interview" element={<InterviewPage />} />
+                <Route path="/cover-letter" element={<CoverLetterPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+              </Route>
             </Route>
-          </Route>
 
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </ToastProvider>
     </AuthProvider>
   );
 }
