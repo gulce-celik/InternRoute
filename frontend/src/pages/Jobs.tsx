@@ -1,11 +1,15 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
+import { Link } from "react-router-dom";
 
 import AnimatedCard from "../components/AnimatedCard";
+import CalendarEventForm from "../components/CalendarEventForm";
 import ConfirmCard from "../components/ConfirmCard";
 import { ListSkeleton } from "../components/Skeleton";
 import { useToast } from "../components/ToastProvider";
 import { useAuth } from "../hooks/useAuth";
-import { createJob, deleteJob, listJobs } from "../services/api";
+import { createCalendarEvent, createJob, deleteJob, listJobs } from "../services/api";
+import type { CalendarEventCategory } from "../types/calendar";
+import { CALENDAR_CATEGORIES } from "../types/calendar";
 import type { Job, JobCreate } from "../types/job";
 
 const STATUS_OPTIONS = [
@@ -41,6 +45,10 @@ export default function JobsPage() {
   const [submitting, setSubmitting] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [eventDate, setEventDate] = useState("");
+  const [eventCategory, setEventCategory] = useState<CalendarEventCategory>("language_test");
+  const [eventNote, setEventNote] = useState("");
+  const [eventJobId, setEventJobId] = useState<number | null>(null);
 
   const loadJobs = useCallback(async () => {
     if (!token) {
@@ -81,7 +89,26 @@ export default function JobsPage() {
       });
       setJobs((prev) => [created, ...prev]);
       setForm(emptyForm);
-      toast.success("Role pinned to your board!");
+
+      if (eventDate) {
+        try {
+          await createCalendarEvent(token, {
+            category: eventCategory,
+            event_date: eventDate,
+            title: `${form.title} · ${form.company}`,
+            notes: eventNote.trim() || null,
+            job_id: created.id,
+          });
+          toast.success("Role pinned and deadline added to Calendar.");
+        } catch {
+          toast.success("Role pinned — calendar event could not be saved.");
+        }
+        setEventDate("");
+        setEventNote("");
+      } else {
+        toast.success("Role pinned to your board!");
+      }
+      setEventJobId(created.id);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to create job");
     } finally {
@@ -175,10 +202,61 @@ export default function JobsPage() {
                   ))}
                 </select>
               </label>
+
+              <div className="calendar-inline-block">
+                <p className="calendar-inline-title">Upcoming test / deadline (optional)</p>
+                <label>
+                  Category
+                  <select
+                    value={eventCategory}
+                    onChange={(event) =>
+                      setEventCategory(event.target.value as CalendarEventCategory)
+                    }
+                  >
+                    {CALENDAR_CATEGORIES.map((item) => (
+                      <option key={item.value} value={item.value}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Date
+                  <input
+                    type="date"
+                    value={eventDate}
+                    onChange={(event) => setEventDate(event.target.value)}
+                  />
+                </label>
+                <label>
+                  Note
+                  <input
+                    type="text"
+                    value={eventNote}
+                    onChange={(event) => setEventNote(event.target.value)}
+                    placeholder="Optional — e.g. online English test"
+                  />
+                </label>
+                <p className="muted">
+                  Saved events appear on <Link to="/calendar">Calendar</Link>.
+                </p>
+              </div>
+
               <button type="submit" disabled={submitting}>
                 {submitting ? "Saving..." : "Save role"}
               </button>
             </form>
+
+            {token && eventJobId ? (
+              <div className="calendar-inline-followup">
+                <CalendarEventForm
+                  token={token}
+                  jobId={eventJobId}
+                  defaultTitle={jobs.find((job) => job.id === eventJobId)?.title ?? ""}
+                  compact
+                />
+              </div>
+            ) : null}
           </article>
         </AnimatedCard>
 

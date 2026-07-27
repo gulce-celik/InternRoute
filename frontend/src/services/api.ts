@@ -8,6 +8,7 @@ import type {
   User,
   VerificationStarted,
 } from "../types/auth";
+import type { CalendarEvent, CalendarEventCreate } from "../types/calendar";
 import type { DashboardStats, MemoryContext } from "../types/dashboard";
 import type { CV } from "../types/cv";
 import type { Job, JobCreate, JobUpdate } from "../types/job";
@@ -253,4 +254,33 @@ export async function generateCoverLetter(
     method: "POST",
     body: JSON.stringify(payload),
   });
+}
+
+export async function listCalendarEvents(
+  token: string,
+  params?: { year?: number; month?: number },
+): Promise<CalendarEvent[]> {
+  const search = new URLSearchParams();
+  if (params?.year != null) {
+    search.set("year", String(params.year));
+  }
+  if (params?.month != null) {
+    search.set("month", String(params.month));
+  }
+  const query = search.toString();
+  return authRequest<CalendarEvent[]>(`/calendar/events${query ? `?${query}` : ""}`, token);
+}
+
+export async function createCalendarEvent(
+  token: string,
+  payload: CalendarEventCreate,
+): Promise<CalendarEvent> {
+  return authRequest<CalendarEvent>("/calendar/events", token, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deleteCalendarEvent(token: string, id: number): Promise<void> {
+  await authRequest<void>(`/calendar/events/${id}`, token, { method: "DELETE" });
 }

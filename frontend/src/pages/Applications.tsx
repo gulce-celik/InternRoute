@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
+import { Link } from "react-router-dom";
 
 import AnimatedCard from "../components/AnimatedCard";
+import CalendarEventForm from "../components/CalendarEventForm";
 import PipelineStrip from "../components/PipelineStrip";
 import { FormSkeleton, ListSkeleton } from "../components/Skeleton";
 import { useToast } from "../components/ToastProvider";
@@ -451,6 +453,21 @@ export default function ApplicationsPage() {
                 {savingDetails ? "Saving..." : "Save CV, notes & Q&A"}
               </button>
             </form>
+
+            {token ? (
+              <div className="calendar-inline-followup">
+                <p className="muted">
+                  Log a test or interview date for this application — it lands on{" "}
+                  <Link to="/calendar">Calendar</Link>.
+                </p>
+                <CalendarEventForm
+                  token={token}
+                  applicationId={selectedApplication.id}
+                  jobId={selectedApplication.job_id}
+                  defaultTitle={`${selectedApplication.job_title} · ${selectedApplication.job_company}`}
+                />
+              </div>
+            ) : null}
           </article>
         </AnimatedCard>
       )}

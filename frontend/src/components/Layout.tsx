@@ -11,6 +11,7 @@ const coreNav = [
   { to: "/jobs", label: "Board", end: false, tour: "nav-board" },
   { to: "/cvs", label: "CVs", end: false, tour: "nav-cvs" },
   { to: "/applications", label: "Pipeline", end: false, tour: "nav-pipeline" },
+  { to: "/calendar", label: "Calendar", end: false, tour: "nav-calendar" },
 ] as const;
 
 const aiNav = [

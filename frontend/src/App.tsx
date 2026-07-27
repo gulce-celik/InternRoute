@@ -6,6 +6,7 @@ import { ToastProvider } from "./components/ToastProvider";
 import { AuthProvider } from "./hooks/useAuth";
 import AnalyzePage from "./pages/Analyze";
 import ApplicationsPage from "./pages/Applications";
+import CalendarPage from "./pages/Calendar";
 import CoverLetterPage from "./pages/CoverLetter";
 import CVsPage from "./pages/CVs";
 import DashboardPage from "./pages/Dashboard";
@@ -31,6 +32,7 @@ export default function App() {
                 <Route path="/jobs" element={<JobsPage />} />
                 <Route path="/cvs" element={<CVsPage />} />
                 <Route path="/applications" element={<ApplicationsPage />} />
+                <Route path="/calendar" element={<CalendarPage />} />
                 <Route path="/analyze" element={<AnalyzePage />} />
                 <Route path="/interview" element={<InterviewPage />} />
                 <Route path="/cover-letter" element={<CoverLetterPage />} />
