@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
+import AgentHistoryPanel from "../components/AgentHistoryPanel";
 import AnimatedCard from "../components/AnimatedCard";
 import { FormSkeleton } from "../components/Skeleton";
 import { useToast } from "../components/ToastProvider";
@@ -10,6 +11,16 @@ import type { CoverLetterResult } from "../types/agents";
 import type { Application } from "../types/application";
 import type { CV } from "../types/cv";
 import type { Job } from "../types/job";
+import {
+  clearLetterHistory,
+  loadLetterHistory,
+  newHistoryId,
+  prependLetterHistory,
+  removeLetterHistory,
+  updateLetterHistoryEntry,
+  type LetterHistoryEntry,
+} from "../utils/agentHistory";
+import { saveCoverLetterPdf } from "../utils/saveCoverLetterPdf";
 
 type SourceMode = "pair" | "application";
 
@@ -20,7 +31,7 @@ const TONE_OPTIONS = [
 ] as const;
 
 export default function CoverLetterPage() {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const toast = useToast();
   const [searchParams] = useSearchParams();
 
@@ -30,6 +41,9 @@ export default function CoverLetterPage() {
   const [loading, setLoading] = useState(true);
   const [drafting, setDrafting] = useState(false);
   const [copyState, setCopyState] = useState<"idle" | "copied">("idle");
+  const [editing, setEditing] = useState(false);
+  const [history, setHistory] = useState<LetterHistoryEntry[]>([]);
+  const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
 
   const [mode, setMode] = useState<SourceMode>("pair");
   const [jobId, setJobId] = useState("");
@@ -46,6 +60,17 @@ export default function CoverLetterPage() {
   > | null>(null);
   const [subjectLine, setSubjectLine] = useState("");
   const [letter, setLetter] = useState("");
+
+  useEffect(() => {
+    const entries = loadLetterHistory(user?.id);
+    setHistory(entries);
+    if (entries[0]) {
+      setActiveSessionId(entries[0].id);
+      setSubjectLine(entries[0].subject_line);
+      setLetter(entries[0].letter);
+      setResultMeta(entries[0].meta);
+    }
+  }, [user?.id]);
 
   const loadData = useCallback(async () => {
     if (!token) {
@@ -124,6 +149,7 @@ export default function CoverLetterPage() {
 
     setDrafting(true);
     setCopyState("idle");
+    setEditing(false);
 
     try {
       const payload =
@@ -145,15 +171,39 @@ export default function CoverLetterPage() {
             };
 
       const data = await generateCoverLetter(token, payload);
-      setSubjectLine(data.subject_line);
-      setLetter(data.letter);
-      setResultMeta({
+
+      let label = "Cover letter";
+      let subtitle: string | undefined;
+      if (mode === "application" && selectedApplication) {
+        label = `${selectedApplication.job_title} · ${selectedApplication.job_company}`;
+        subtitle = selectedApplication.cv_filename ?? undefined;
+      } else if (selectedJob) {
+        label = `${selectedJob.title} · ${selectedJob.company}`;
+        subtitle = selectedCv?.name;
+      }
+
+      const meta = {
         job_id: data.job_id,
         cv_id: data.cv_id,
         application_id: data.application_id,
         rag_chunks_used: data.rag_chunks_used,
         saved: data.saved,
-      });
+      };
+      const entry: LetterHistoryEntry = {
+        id: newHistoryId(),
+        createdAt: new Date().toISOString(),
+        label,
+        subtitle,
+        subject_line: data.subject_line,
+        letter: data.letter,
+        meta,
+      };
+
+      setHistory(prependLetterHistory(user?.id, entry));
+      setActiveSessionId(entry.id);
+      setSubjectLine(data.subject_line);
+      setLetter(data.letter);
+      setResultMeta(meta);
       toast.success(
         data.saved
           ? "Draft ready and saved on the pipeline application."
@@ -163,6 +213,83 @@ export default function CoverLetterPage() {
       toast.error(err instanceof Error ? err.message : "Could not draft cover letter");
     } finally {
       setDrafting(false);
+    }
+  }
+
+  function handleSelectSession(id: string) {
+    const entry = history.find((item) => item.id === id);
+    if (!entry) {
+      return;
+    }
+    setActiveSessionId(entry.id);
+    setSubjectLine(entry.subject_line);
+    setLetter(entry.letter);
+    setResultMeta(entry.meta);
+    setCopyState("idle");
+    setEditing(false);
+  }
+
+  function handleRemoveSession(id: string) {
+    const next = removeLetterHistory(user?.id, id);
+    setHistory(next);
+    if (activeSessionId === id) {
+      const latest = next[0] ?? null;
+      setActiveSessionId(latest?.id ?? null);
+      setSubjectLine(latest?.subject_line ?? "");
+      setLetter(latest?.letter ?? "");
+      setResultMeta(latest?.meta ?? null);
+      setEditing(false);
+    }
+  }
+
+  function handleClearSessions() {
+    clearLetterHistory(user?.id);
+    setHistory([]);
+    setActiveSessionId(null);
+    setSubjectLine("");
+    setLetter("");
+    setResultMeta(null);
+    setEditing(false);
+  }
+
+  function persistEditedDraft() {
+    if (!activeSessionId) {
+      return;
+    }
+    setHistory(
+      updateLetterHistoryEntry(user?.id, activeSessionId, {
+        subject_line: subjectLine,
+        letter,
+      }),
+    );
+  }
+
+  function handleStartEdit() {
+    setEditing(true);
+  }
+
+  function handleDoneEdit() {
+    persistEditedDraft();
+    setEditing(false);
+    toast.success("Edits saved to this session.");
+  }
+
+  async function handleSavePdf() {
+    try {
+      persistEditedDraft();
+      const hint =
+        selectedJob?.company ||
+        selectedApplication?.job_company ||
+        subjectLine ||
+        "cover-letter";
+      await saveCoverLetterPdf({
+        subject: subjectLine,
+        letter,
+        filenameHint: `cover-letter-${hint}`,
+      });
+      toast.success("PDF downloaded.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not save PDF");
     }
   }
 
@@ -195,7 +322,7 @@ export default function CoverLetterPage() {
         </p>
       </div>
 
-      <div className="jobs-layout">
+      <div className="jobs-layout jobs-layout--with-sessions">
         <AnimatedCard>
           <article className="panel panel--form">
             <h2>Draft settings</h2>
@@ -355,9 +482,23 @@ export default function CoverLetterPage() {
             <div className="letter-studio-head">
               <h2>Draft</h2>
               {letter ? (
-                <button type="button" className="btn-ghost" onClick={() => void handleCopy()}>
-                  {copyState === "copied" ? "Copied" : "Copy"}
-                </button>
+                <div className="letter-studio-actions">
+                  {!editing ? (
+                    <button type="button" className="btn-ghost" onClick={handleStartEdit}>
+                      Edit
+                    </button>
+                  ) : (
+                    <button type="button" className="btn-ghost" onClick={handleDoneEdit}>
+                      Done
+                    </button>
+                  )}
+                  <button type="button" className="btn-ghost" onClick={() => void handleSavePdf()}>
+                    Save PDF
+                  </button>
+                  <button type="button" className="btn-ghost" onClick={() => void handleCopy()}>
+                    {copyState === "copied" ? "Copied" : "Copy"}
+                  </button>
+                </div>
               ) : null}
             </div>
 
@@ -370,38 +511,73 @@ export default function CoverLetterPage() {
                 or save.
               </div>
             ) : (
-              <div className="letter-studio">
-                <label>
-                  Subject line
-                  <input
-                    type="text"
-                    value={subjectLine}
-                    onChange={(event) => setSubjectLine(event.target.value)}
-                    placeholder="Optional email subject"
-                  />
-                </label>
-                <label>
-                  Letter
-                  <textarea
-                    className="letter-editor"
-                    value={letter}
-                    onChange={(event) => setLetter(event.target.value)}
-                    rows={16}
-                  />
-                </label>
-                {resultMeta && (
-                  <p className="muted analyze-meta">
-                    Used {resultMeta.rag_chunks_used} CV memory chunk
-                    {resultMeta.rag_chunks_used === 1 ? "" : "s"}
-                    {resultMeta.saved ? " · saved on application" : ""}
-                    {resultMeta.rag_chunks_used === 0
-                      ? " — fuller CV memory makes stronger letters."
-                      : "."}
-                  </p>
+              <div className={`letter-studio${editing ? " letter-studio--editing" : ""}`}>
+                {editing ? (
+                  <>
+                    <label>
+                      Subject line
+                      <input
+                        type="text"
+                        value={subjectLine}
+                        onChange={(event) => setSubjectLine(event.target.value)}
+                        placeholder="Optional email subject"
+                      />
+                    </label>
+                    <label>
+                      Letter
+                      <textarea
+                        className="letter-editor"
+                        value={letter}
+                        onChange={(event) => setLetter(event.target.value)}
+                        rows={16}
+                      />
+                    </label>
+                    <p className="muted analyze-meta">
+                      Editing — save with <strong>Done</strong>, or download anytime with{" "}
+                      <strong>Save PDF</strong>.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    {subjectLine.trim() ? (
+                      <div className="letter-preview-subject">
+                        <span className="letter-preview-label">Subject</span>
+                        <p>{subjectLine}</p>
+                      </div>
+                    ) : null}
+                    <div className="letter-preview-body">{letter}</div>
+                    <p className="muted analyze-meta">
+                      {resultMeta
+                        ? `Used ${resultMeta.rag_chunks_used} CV memory chunk${
+                            resultMeta.rag_chunks_used === 1 ? "" : "s"
+                          }${resultMeta.saved ? " · saved on application" : ""}.`
+                        : null}{" "}
+                      Click <strong>Edit</strong> to change the text, or <strong>Save PDF</strong> to
+                      download.
+                    </p>
+                  </>
                 )}
               </div>
             )}
           </div>
+        </AnimatedCard>
+
+        <AnimatedCard delay={160}>
+          <AgentHistoryPanel
+            title="Sessions"
+            emptyText="Past letter drafts will show up here."
+            items={history.map((entry) => ({
+              id: entry.id,
+              createdAt: entry.createdAt,
+              label: entry.label,
+              subtitle: entry.subtitle,
+              badge: entry.meta.saved ? "Saved" : undefined,
+            }))}
+            activeId={activeSessionId}
+            onSelect={handleSelectSession}
+            onRemove={handleRemoveSession}
+            onClear={handleClearSessions}
+          />
         </AnimatedCard>
       </div>
     </section>
