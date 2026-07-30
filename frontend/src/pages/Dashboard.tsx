@@ -235,12 +235,43 @@ export default function DashboardPage() {
       </ol>
 
       <AnimatedCard delay={320}>
-        <aside className="home-sprint3-note home-sprint3-note--wide">
-          <p className="page-kicker">Coming Sprint 3</p>
-          <p>
-            Analyzer, cover letters, and mock interviews will pull from this desk — the more you
-            pin, upload, and track, the smarter those tools get.
-          </p>
+        <aside className="home-ai-strip" aria-label="AI tools">
+          <div className="home-ai-strip-header">
+            <p className="page-kicker">AI tools</p>
+          </div>
+          <ul className="home-ai-tools">
+            <li>
+              <article className="home-ai-tool home-ai-tool--live">
+                <span className="home-ai-tool-title">Analyze</span>
+                <span className="home-ai-tool-body">Gap scan your CV against a pinned role</span>
+                <Link to="/analyze" className="desk-zone-cta">
+                  Open
+                  <span aria-hidden="true"> →</span>
+                </Link>
+              </article>
+            </li>
+            <li>
+              <article className="home-ai-tool home-ai-tool--live">
+                <span className="home-ai-tool-title">Letters</span>
+                <span className="home-ai-tool-body">Draft a cover letter from job + CV</span>
+                <Link to="/cover-letter" className="desk-zone-cta">
+                  Open
+                  <span aria-hidden="true"> →</span>
+                </Link>
+              </article>
+            </li>
+            <li>
+              <article className="home-ai-tool home-ai-tool--soon">
+                <span className="home-ai-tool-status">Soon</span>
+                <span className="home-ai-tool-title">Interview</span>
+                <span className="home-ai-tool-body">Mock HR chat grounded in your pipeline</span>
+                <Link to="/interview" className="desk-zone-cta">
+                  Preview
+                  <span aria-hidden="true"> →</span>
+                </Link>
+              </article>
+            </li>
+          </ul>
         </aside>
       </AnimatedCard>
 
