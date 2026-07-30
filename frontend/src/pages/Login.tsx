@@ -15,7 +15,24 @@ export default function LoginPage() {
   if (loading) {
     return (
       <div className="auth-page">
-        <p className="muted">Loading your session...</p>
+        <div className="auth-shell">
+          <section className="auth-hero">
+            <span className="auth-hero-badge">YZTA Bootcamp &apos;26</span>
+            <h1>Stop losing track of applications.</h1>
+            <p>InternRoute is your personal board for internships.</p>
+          </section>
+          <section className="auth-card" aria-busy="true">
+            <div className="auth-brand">
+              <BrandMark />
+              <div>
+                <p className="auth-brand-name">InternRoute</p>
+                <p className="auth-brand-tag">student career kit</p>
+              </div>
+            </div>
+            <h2>Welcome back</h2>
+            <p className="subtitle muted">Loading your session...</p>
+          </section>
+        </div>
       </div>
     );
   }
@@ -78,7 +95,11 @@ export default function LoginPage() {
                 required
               />
             </label>
-            {error && <p className="error">{error}</p>}
+            {error && (
+              <p className="error" role="alert" aria-live="polite">
+                {error}
+              </p>
+            )}
             <button type="submit" disabled={submitting}>
               {submitting ? "Signing in..." : "Sign in"}
             </button>

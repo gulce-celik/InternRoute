@@ -23,7 +23,27 @@ export default function RegisterPage() {
   if (loading) {
     return (
       <div className="auth-page">
-        <p className="muted">Loading your session...</p>
+        <div className="auth-shell">
+          <section className="auth-hero">
+            <span className="auth-hero-badge">Free for students</span>
+            <h1>Your first step toward the offer letter.</h1>
+            <p>
+              Create an account, pin your target roles, and build a pipeline that actually makes
+              sense.
+            </p>
+          </section>
+          <section className="auth-card" aria-busy="true">
+            <div className="auth-brand">
+              <BrandMark />
+              <div>
+                <p className="auth-brand-name">InternRoute</p>
+                <p className="auth-brand-tag">student career kit</p>
+              </div>
+            </div>
+            <h2>Create account</h2>
+            <p className="subtitle muted">Loading your session...</p>
+          </section>
+        </div>
       </div>
     );
   }
@@ -153,7 +173,11 @@ export default function RegisterPage() {
                     required
                   />
                 </label>
-                {error && <p className="error">{error}</p>}
+                {error && (
+                  <p className="error" role="alert" aria-live="polite">
+                    {error}
+                  </p>
+                )}
                 <button type="submit" disabled={submitting}>
                   {submitting ? "Sending code..." : "Send verification code"}
                 </button>
@@ -186,7 +210,11 @@ export default function RegisterPage() {
                     Your code: <strong>{debugCode}</strong>
                   </p>
                 ) : null}
-                {error && <p className="error">{error}</p>}
+                {error && (
+                  <p className="error" role="alert" aria-live="polite">
+                    {error}
+                  </p>
+                )}
                 <button type="submit" disabled={submitting || code.length !== 6}>
                   {submitting ? "Verifying..." : "Verify & create account"}
                 </button>
