@@ -6,6 +6,31 @@ import { useAuth } from "../hooks/useAuth";
 
 type Step = "details" | "verify";
 
+const PASSWORD_MIN_LENGTH = 8;
+
+function getPasswordError(password: string, force: boolean): string | null {
+  if (!force && password.length === 0) {
+    return null;
+  }
+  if (password.length < PASSWORD_MIN_LENGTH) {
+    return `Password must be at least ${PASSWORD_MIN_LENGTH} characters`;
+  }
+  return null;
+}
+
+function getConfirmError(password: string, confirmPassword: string, force: boolean): string | null {
+  if (!force && confirmPassword.length === 0) {
+    return null;
+  }
+  if (confirmPassword.length === 0) {
+    return "Confirm your password";
+  }
+  if (password !== confirmPassword) {
+    return "Passwords do not match";
+  }
+  return null;
+}
+
 export default function RegisterPage() {
   const { startRegister, completeRegister, resendRegisterCode, token, user, loading } = useAuth();
   const navigate = useNavigate();
@@ -18,7 +43,21 @@ export default function RegisterPage() {
   const [debugCode, setDebugCode] = useState<string | null>(null);
   const [hint, setHint] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [confirmError, setConfirmError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  function syncPasswordValidation(
+    nextPassword: string,
+    nextConfirm: string,
+    force = false,
+  ): boolean {
+    const nextPasswordError = getPasswordError(nextPassword, force);
+    const nextConfirmError = getConfirmError(nextPassword, nextConfirm, force);
+    setPasswordError(nextPasswordError);
+    setConfirmError(nextConfirmError);
+    return !nextPasswordError && !nextConfirmError;
+  }
 
   if (loading) {
     return (
@@ -57,8 +96,7 @@ export default function RegisterPage() {
     setError(null);
     setHint(null);
 
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
+    if (!syncPasswordValidation(password, confirmPassword, true)) {
       return;
     }
 
@@ -133,7 +171,7 @@ export default function RegisterPage() {
           {step === "details" ? (
             <>
               <h2>Create account</h2>
-              <form onSubmit={handleStart} className="auth-form">
+              <form onSubmit={handleStart} className="auth-form" noValidate>
                 <label>
                   Full name
                   <input
@@ -158,20 +196,44 @@ export default function RegisterPage() {
                   <input
                     type="password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    minLength={8}
+                    onChange={(e) => {
+                      const next = e.target.value;
+                      setPassword(next);
+                      syncPasswordValidation(next, confirmPassword);
+                    }}
+                    onBlur={() => syncPasswordValidation(password, confirmPassword)}
+                    minLength={PASSWORD_MIN_LENGTH}
                     required
+                    aria-invalid={passwordError ? true : undefined}
+                    aria-describedby={passwordError ? "register-password-error" : undefined}
                   />
+                  {passwordError ? (
+                    <span id="register-password-error" className="field-error" role="alert">
+                      {passwordError}
+                    </span>
+                  ) : null}
                 </label>
                 <label>
                   Confirm password
                   <input
                     type="password"
                     value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    minLength={8}
+                    onChange={(e) => {
+                      const next = e.target.value;
+                      setConfirmPassword(next);
+                      syncPasswordValidation(password, next);
+                    }}
+                    onBlur={() => syncPasswordValidation(password, confirmPassword)}
+                    minLength={PASSWORD_MIN_LENGTH}
                     required
+                    aria-invalid={confirmError ? true : undefined}
+                    aria-describedby={confirmError ? "register-confirm-error" : undefined}
                   />
+                  {confirmError ? (
+                    <span id="register-confirm-error" className="field-error" role="alert">
+                      {confirmError}
+                    </span>
+                  ) : null}
                 </label>
                 {error && (
                   <p className="error" role="alert" aria-live="polite">
@@ -230,6 +292,8 @@ export default function RegisterPage() {
                     setStep("details");
                     setCode("");
                     setError(null);
+                    setPasswordError(null);
+                    setConfirmError(null);
                     setHint(null);
                     setDebugCode(null);
                   }}
