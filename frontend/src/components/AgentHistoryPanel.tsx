@@ -16,6 +16,8 @@ type Props = {
   onSelect: (id: string) => void;
   onRemove: (id: string) => void;
   onClear: () => void;
+  /** Nest under another panel without a second card chrome */
+  embedded?: boolean;
 };
 
 export default function AgentHistoryPanel({
@@ -26,9 +28,12 @@ export default function AgentHistoryPanel({
   onSelect,
   onRemove,
   onClear,
+  embedded = false,
 }: Props) {
+  const Wrapper = embedded ? "div" : "article";
+
   return (
-    <article className="panel session-rail">
+    <Wrapper className={`session-rail${embedded ? " session-rail--embedded" : " panel"}`}>
       <div className="session-rail-head">
         <h2>{title}</h2>
         {items.length > 0 ? (
@@ -49,9 +54,13 @@ export default function AgentHistoryPanel({
                 className={`session-rail-item${item.id === activeId ? " session-rail-item--active" : ""}`}
                 onClick={() => onSelect(item.id)}
               >
-                <span className="session-rail-item-label">{item.label}</span>
+                <span className="session-rail-item-label" title={item.label}>
+                  {item.label}
+                </span>
                 {item.subtitle ? (
-                  <span className="session-rail-item-sub">{item.subtitle}</span>
+                  <span className="session-rail-item-sub" title={item.subtitle}>
+                    {item.subtitle}
+                  </span>
                 ) : null}
                 <span className="session-rail-item-meta">
                   {item.badge ? <strong>{item.badge}</strong> : null}
@@ -70,6 +79,6 @@ export default function AgentHistoryPanel({
           ))}
         </ul>
       )}
-    </article>
+    </Wrapper>
   );
 }

@@ -3145,6 +3145,34 @@ button:disabled {
   font-size: 0.85rem;
 }
 
+.analyze-prereq-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.55rem;
+  margin-top: 0.9rem;
+}
+
+.analyze-prereq-empty .desk-zone-cta {
+  margin-top: 0;
+}
+
+.analyze-sessions-block {
+  margin-top: 1.25rem;
+  padding-top: 1.15rem;
+  border-top: 2px dashed rgba(20, 17, 15, 0.16);
+  min-width: 0;
+  overflow: hidden;
+}
+
+.session-rail--embedded {
+  min-width: 0;
+}
+
+.session-rail--embedded .session-rail-head h2 {
+  font-size: 1.15rem;
+}
+
 .session-rail-head {
   display: flex;
   align-items: center;
@@ -3160,6 +3188,7 @@ button:disabled {
 .session-rail-clear {
   padding: 0.3rem 0.55rem;
   font-size: 0.78rem;
+  flex-shrink: 0;
 }
 
 .session-rail-empty {
@@ -3173,18 +3202,22 @@ button:disabled {
   padding: 0;
   display: grid;
   gap: 0.55rem;
+  min-width: 0;
 }
 
 .session-rail-row {
   display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 0.25rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.35rem;
   align-items: stretch;
+  min-width: 0;
+  width: 100%;
 }
 
 .session-rail-item {
   display: grid;
   gap: 0.2rem;
+  min-width: 0;
   text-align: left;
   padding: 0.65rem 0.7rem;
   border: 2px solid var(--border);
@@ -3208,12 +3241,18 @@ button:disabled {
   font-weight: 800;
   font-size: 0.84rem;
   line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .session-rail-item-sub {
   font-size: 0.76rem;
   color: var(--ink-soft);
   font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .session-rail-item-meta {
@@ -3224,6 +3263,7 @@ button:disabled {
   font-size: 0.72rem;
   color: var(--ink-soft);
   font-weight: 600;
+  min-width: 0;
 }
 
 .session-rail-remove {
@@ -3236,11 +3276,14 @@ button:disabled {
   font-size: 1.1rem;
   line-height: 1;
   cursor: pointer;
+  flex-shrink: 0;
+  align-self: stretch;
 }
 
 .session-rail-remove:hover {
-  color: var(--accent);
-  border-color: var(--accent);
+  background: #9b1c1c;
+  color: #fff;
+  border-color: #9b1c1c;
 }
 
 .analyze-report {
