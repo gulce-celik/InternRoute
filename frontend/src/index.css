@@ -3453,10 +3453,21 @@ button:disabled {
   color: var(--accent);
 }
 
+.calendar-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(280px, 360px);
+  grid-template-rows: auto auto;
+  gap: 0.75rem 1.1rem;
+  align-items: start;
+}
+
 .calendar-controls {
+  grid-column: 1;
+  grid-row: 1;
   display: grid;
   gap: 0.75rem;
   width: 100%;
+  min-width: 0;
 }
 
 .calendar-month-nav {
@@ -3498,16 +3509,17 @@ button:disabled {
   border: 1.5px solid var(--border);
 }
 
-.calendar-shell {
-  display: grid;
-  grid-template-columns: minmax(0, 1.7fr) minmax(280px, 360px);
-  gap: 1.1rem;
-  align-items: start;
+.calendar-grid-card {
+  grid-column: 1;
+  grid-row: 2;
+  min-width: 0;
 }
 
-.calendar-main {
+.calendar-side {
+  grid-column: 2;
+  grid-row: 2;
   display: grid;
-  gap: 0.75rem;
+  gap: 1rem;
   min-width: 0;
 }
 
@@ -3617,9 +3629,9 @@ button:disabled {
   margin: 0;
 }
 
-.calendar-side {
-  display: grid;
-  gap: 1rem;
+.calendar-day-empty-cta {
+  display: inline-flex;
+  margin: 0.85rem auto 0;
 }
 
 .calendar-day-list {
@@ -3878,6 +3890,14 @@ button:disabled {
 
   .calendar-shell {
     grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  .calendar-controls,
+  .calendar-grid-card,
+  .calendar-side {
+    grid-column: 1;
+    grid-row: auto;
   }
 
   .calendar-grid {
