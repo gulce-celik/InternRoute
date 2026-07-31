@@ -58,6 +58,8 @@ export default function JobsPage() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editForm, setEditForm] = useState<JobUpdate>(emptyForm);
   const [savingId, setSavingId] = useState<number | null>(null);
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [eventCategory, setEventCategory] = useState<CalendarEventCategory>("language_test");
   const [eventNote, setEventNote] = useState("");
@@ -188,6 +190,21 @@ export default function JobsPage() {
       setDeletingId(null);
     }
   }
+
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+  const filteredJobs = jobs.filter((job) => {
+    if (statusFilter !== "all" && job.status !== statusFilter) {
+      return false;
+    }
+    if (!normalizedQuery) {
+      return true;
+    }
+    return (
+      job.title.toLowerCase().includes(normalizedQuery) ||
+      job.company.toLowerCase().includes(normalizedQuery)
+    );
+  });
+  const hasActiveFilters = statusFilter !== "all" || normalizedQuery.length > 0;
 
   return (
     <section className="page-section">
@@ -326,159 +343,222 @@ export default function JobsPage() {
                 Add your first internship listing and start building your pipeline.
               </div>
             ) : (
-              <ul className="jobs-list">
-                {jobs.map((job, index) => {
-                  const confirming = confirmDeleteId === job.id;
-                  const editing = editingId === job.id;
+              <>
+                <div className="board-toolbar">
+                  <label className="board-search">
+                    <span className="visually-hidden">Search by title or company</span>
+                    <input
+                      type="search"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search title or company"
+                      autoComplete="off"
+                    />
+                  </label>
+                  <div className="board-filter-chips" role="group" aria-label="Filter by status">
+                    <button
+                      type="button"
+                      className={`board-filter-chip${statusFilter === "all" ? " board-filter-chip--active" : ""}`}
+                      aria-pressed={statusFilter === "all"}
+                      onClick={() => setStatusFilter("all")}
+                    >
+                      All
+                    </button>
+                    {STATUS_OPTIONS.map((status) => (
+                      <button
+                        key={status.value}
+                        type="button"
+                        className={`board-filter-chip${
+                          statusFilter === status.value ? " board-filter-chip--active" : ""
+                        }`}
+                        aria-pressed={statusFilter === status.value}
+                        onClick={() => setStatusFilter(status.value)}
+                      >
+                        {status.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
-                  return (
-                    <li key={job.id}>
-                      <AnimatedCard delay={index * 70} className="job-card-wrap">
-                        <article
-                          className={`job-card job-card--float${confirming ? " job-card--confirming" : ""}${
-                            editing ? " job-card--editing" : ""
-                          }`}
-                        >
-                          {editing ? (
-                            <form
-                              className="job-form job-form--inline-edit"
-                              onSubmit={(event) => void handleUpdate(event, job.id)}
+                {filteredJobs.length === 0 ? (
+                  <div className="empty-state">
+                    <strong>No matching roles</strong>
+                    <p className="empty-state-copy">
+                      {hasActiveFilters
+                        ? "Try another status chip or clear your search."
+                        : "Nothing to show right now."}
+                    </p>
+                    {hasActiveFilters ? (
+                      <button
+                        type="button"
+                        className="btn-ghost board-clear-filters"
+                        onClick={() => {
+                          setStatusFilter("all");
+                          setSearchQuery("");
+                        }}
+                      >
+                        Clear filters
+                      </button>
+                    ) : null}
+                  </div>
+                ) : (
+                  <ul className="jobs-list">
+                    {filteredJobs.map((job, index) => {
+                      const confirming = confirmDeleteId === job.id;
+                      const editing = editingId === job.id;
+
+                      return (
+                        <li key={job.id}>
+                          <AnimatedCard delay={index * 70} className="job-card-wrap">
+                            <article
+                              className={`job-card job-card--float${confirming ? " job-card--confirming" : ""}${
+                                editing ? " job-card--editing" : ""
+                              }`}
                             >
-                              <label>
-                                Title
-                                <input
-                                  type="text"
-                                  value={editForm.title ?? ""}
-                                  onChange={(e) =>
-                                    setEditForm((prev) => ({ ...prev, title: e.target.value }))
-                                  }
-                                  required
-                                  autoFocus
-                                />
-                              </label>
-                              <label>
-                                Company
-                                <input
-                                  type="text"
-                                  value={editForm.company ?? ""}
-                                  onChange={(e) =>
-                                    setEditForm((prev) => ({ ...prev, company: e.target.value }))
-                                  }
-                                  required
-                                />
-                              </label>
-                              <label>
-                                Description
-                                <textarea
-                                  value={editForm.description ?? ""}
-                                  onChange={(e) =>
-                                    setEditForm((prev) => ({
-                                      ...prev,
-                                      description: e.target.value,
-                                    }))
-                                  }
-                                  rows={4}
-                                  required
-                                />
-                              </label>
-                              <label>
-                                Location
-                                <input
-                                  type="text"
-                                  value={editForm.location ?? ""}
-                                  onChange={(e) =>
-                                    setEditForm((prev) => ({ ...prev, location: e.target.value }))
-                                  }
-                                  placeholder="Optional"
-                                />
-                              </label>
-                              <label>
-                                Status
-                                <select
-                                  value={editForm.status ?? "applied"}
-                                  onChange={(e) =>
-                                    setEditForm((prev) => ({ ...prev, status: e.target.value }))
-                                  }
+                              {editing ? (
+                                <form
+                                  className="job-form job-form--inline-edit"
+                                  onSubmit={(event) => void handleUpdate(event, job.id)}
                                 >
-                                  {STATUS_OPTIONS.map((status) => (
-                                    <option key={status.value} value={status.value}>
-                                      {status.label}
-                                    </option>
-                                  ))}
-                                </select>
-                              </label>
-                              <div className="job-edit-actions">
-                                <button type="submit" disabled={savingId === job.id}>
-                                  {savingId === job.id ? "Saving..." : "Save changes"}
-                                </button>
-                                <button
-                                  type="button"
-                                  className="btn-ghost"
-                                  disabled={savingId === job.id}
-                                  onClick={cancelEdit}
-                                >
-                                  Cancel
-                                </button>
-                              </div>
-                            </form>
-                          ) : (
-                            <>
-                              <div className="job-card-header">
-                                <div>
-                                  <h3>{job.title}</h3>
-                                  <p className="job-meta">
-                                    {job.company}
-                                    {job.location ? ` · ${job.location}` : ""}
-                                  </p>
-                                </div>
-                                <span className={`status-badge status-badge--${job.status}`}>
-                                  {STATUS_OPTIONS.find((option) => option.value === job.status)
-                                    ?.label ?? job.status}
-                                </span>
-                              </div>
-                              <p className="job-description">{job.description}</p>
-                              {confirming ? (
-                                <ConfirmCard
-                                  title="Delete this role?"
-                                  description="It will leave your board. Linked applications may keep a reference."
-                                  confirming={deletingId === job.id}
-                                  onCancel={() => setConfirmDeleteId(null)}
-                                  onConfirm={() => void handleDelete(job.id)}
-                                />
-                              ) : (
-                                <div className="job-card-footer job-card-footer--actions">
-                                  <span className="job-date">Added {formatDate(job.created_at)}</span>
-                                  <div className="cv-card-actions">
+                                  <label>
+                                    Title
+                                    <input
+                                      type="text"
+                                      value={editForm.title ?? ""}
+                                      onChange={(e) =>
+                                        setEditForm((prev) => ({ ...prev, title: e.target.value }))
+                                      }
+                                      required
+                                      autoFocus
+                                    />
+                                  </label>
+                                  <label>
+                                    Company
+                                    <input
+                                      type="text"
+                                      value={editForm.company ?? ""}
+                                      onChange={(e) =>
+                                        setEditForm((prev) => ({ ...prev, company: e.target.value }))
+                                      }
+                                      required
+                                    />
+                                  </label>
+                                  <label>
+                                    Description
+                                    <textarea
+                                      value={editForm.description ?? ""}
+                                      onChange={(e) =>
+                                        setEditForm((prev) => ({
+                                          ...prev,
+                                          description: e.target.value,
+                                        }))
+                                      }
+                                      rows={4}
+                                      required
+                                    />
+                                  </label>
+                                  <label>
+                                    Location
+                                    <input
+                                      type="text"
+                                      value={editForm.location ?? ""}
+                                      onChange={(e) =>
+                                        setEditForm((prev) => ({ ...prev, location: e.target.value }))
+                                      }
+                                      placeholder="Optional"
+                                    />
+                                  </label>
+                                  <label>
+                                    Status
+                                    <select
+                                      value={editForm.status ?? "applied"}
+                                      onChange={(e) =>
+                                        setEditForm((prev) => ({ ...prev, status: e.target.value }))
+                                      }
+                                    >
+                                      {STATUS_OPTIONS.map((status) => (
+                                        <option key={status.value} value={status.value}>
+                                          {status.label}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </label>
+                                  <div className="job-edit-actions">
+                                    <button type="submit" disabled={savingId === job.id}>
+                                      {savingId === job.id ? "Saving..." : "Save changes"}
+                                    </button>
                                     <button
                                       type="button"
                                       className="btn-ghost"
-                                      disabled={deletingId !== null || savingId !== null}
-                                      onClick={() => startEdit(job)}
+                                      disabled={savingId === job.id}
+                                      onClick={cancelEdit}
                                     >
-                                      Edit
-                                    </button>
-                                    <button
-                                      type="button"
-                                      className="btn-danger"
-                                      disabled={deletingId !== null || savingId !== null}
-                                      onClick={() => {
-                                        setEditingId(null);
-                                        setConfirmDeleteId(job.id);
-                                      }}
-                                    >
-                                      Delete
+                                      Cancel
                                     </button>
                                   </div>
-                                </div>
+                                </form>
+                              ) : (
+                                <>
+                                  <div className="job-card-header">
+                                    <div>
+                                      <h3>{job.title}</h3>
+                                      <p className="job-meta">
+                                        {job.company}
+                                        {job.location ? ` · ${job.location}` : ""}
+                                      </p>
+                                    </div>
+                                    <span className={`status-badge status-badge--${job.status}`}>
+                                      {STATUS_OPTIONS.find((option) => option.value === job.status)
+                                        ?.label ?? job.status}
+                                    </span>
+                                  </div>
+                                  <p className="job-description">{job.description}</p>
+                                  {confirming ? (
+                                    <ConfirmCard
+                                      title="Delete this role?"
+                                      description="It will leave your board. Linked applications may keep a reference."
+                                      confirming={deletingId === job.id}
+                                      onCancel={() => setConfirmDeleteId(null)}
+                                      onConfirm={() => void handleDelete(job.id)}
+                                    />
+                                  ) : (
+                                    <div className="job-card-footer job-card-footer--actions">
+                                      <span className="job-date">
+                                        Added {formatDate(job.created_at)}
+                                      </span>
+                                      <div className="cv-card-actions">
+                                        <button
+                                          type="button"
+                                          className="btn-ghost"
+                                          disabled={deletingId !== null || savingId !== null}
+                                          onClick={() => startEdit(job)}
+                                        >
+                                          Edit
+                                        </button>
+                                        <button
+                                          type="button"
+                                          className="btn-danger"
+                                          disabled={deletingId !== null || savingId !== null}
+                                          onClick={() => {
+                                            setEditingId(null);
+                                            setConfirmDeleteId(job.id);
+                                          }}
+                                        >
+                                          Delete
+                                        </button>
+                                      </div>
+                                    </div>
+                                  )}
+                                </>
                               )}
-                            </>
-                          )}
-                        </article>
-                      </AnimatedCard>
-                    </li>
-                  );
-                })}
-              </ul>
+                            </article>
+                          </AnimatedCard>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </>
             )}
           </div>
         </AnimatedCard>
