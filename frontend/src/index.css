@@ -3436,11 +3436,8 @@ button:disabled {
 }
 
 .calendar-hero {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 1rem;
-  flex-wrap: wrap;
+  display: grid;
+  gap: 0.35rem;
 }
 
 .calendar-hero h1 {
@@ -3456,9 +3453,16 @@ button:disabled {
   color: var(--accent);
 }
 
+.calendar-controls {
+  display: grid;
+  gap: 0.75rem;
+  width: 100%;
+}
+
 .calendar-month-nav {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.65rem;
 }
 
@@ -3474,6 +3478,7 @@ button:disabled {
 .calendar-legend {
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-start;
   gap: 0.45rem 0.75rem;
 }
 
@@ -3498,6 +3503,12 @@ button:disabled {
   grid-template-columns: minmax(0, 1.7fr) minmax(280px, 360px);
   gap: 1.1rem;
   align-items: start;
+}
+
+.calendar-main {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
 }
 
 .calendar-grid-wrap {

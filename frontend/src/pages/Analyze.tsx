@@ -242,10 +242,6 @@ export default function AnalyzePage() {
         <h1>
           Compare a CV to a <em>pinned role</em>
         </h1>
-        <p className="page-description">
-          Pick a listing and a locker version. InternRoute reads job text + CV memory and returns
-          strengths, gaps, and what to tighten before you apply.
-        </p>
       </div>
 
       <div className="jobs-layout">

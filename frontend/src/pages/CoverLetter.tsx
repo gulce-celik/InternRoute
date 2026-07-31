@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
 import AgentHistoryPanel from "../components/AgentHistoryPanel";
@@ -7,7 +7,6 @@ import { FormSkeleton } from "../components/Skeleton";
 import { useToast } from "../components/ToastProvider";
 import { useAuth } from "../hooks/useAuth";
 import { generateCoverLetter, listApplications, listCVs, listJobs } from "../services/api";
-import type { CoverLetterResult } from "../types/agents";
 import type { Application } from "../types/application";
 import type { CV } from "../types/cv";
 import type { Job } from "../types/job";
@@ -21,8 +20,6 @@ import {
   type LetterHistoryEntry,
 } from "../utils/agentHistory";
 import { saveCoverLetterPdf } from "../utils/saveCoverLetterPdf";
-
-type SourceMode = "pair" | "application";
 
 const TONE_OPTIONS = [
   { value: "professional", label: "Professional" },
@@ -45,19 +42,12 @@ export default function CoverLetterPage() {
   const [history, setHistory] = useState<LetterHistoryEntry[]>([]);
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
 
-  const [mode, setMode] = useState<SourceMode>("pair");
   const [jobId, setJobId] = useState("");
   const [cvId, setCvId] = useState("");
-  const [applicationId, setApplicationId] = useState("");
   const [tone, setTone] = useState("professional");
   const [analysisSummary, setAnalysisSummary] = useState("");
   const [notes, setNotes] = useState("");
-  const [saveToApplication, setSaveToApplication] = useState(true);
 
-  const [resultMeta, setResultMeta] = useState<Pick<
-    CoverLetterResult,
-    "job_id" | "cv_id" | "application_id" | "rag_chunks_used" | "saved"
-  > | null>(null);
   const [subjectLine, setSubjectLine] = useState("");
   const [letter, setLetter] = useState("");
 
@@ -68,7 +58,6 @@ export default function CoverLetterPage() {
       setActiveSessionId(entries[0].id);
       setSubjectLine(entries[0].subject_line);
       setLetter(entries[0].letter);
-      setResultMeta(entries[0].meta);
     }
   }, [user?.id]);
 
@@ -113,33 +102,28 @@ export default function CoverLetterPage() {
       setAnalysisSummary(qSummary);
     }
 
-    if (qApp && applications.some((item) => String(item.id) === qApp)) {
-      setMode("application");
-      setApplicationId(qApp);
-      return;
+    if (qApp) {
+      const application = applications.find((item) => String(item.id) === qApp);
+      if (application) {
+        setJobId(String(application.job_id));
+        if (application.cv_id != null) {
+          setCvId(String(application.cv_id));
+        }
+        return;
+      }
     }
 
     if (qJob && jobs.some((item) => String(item.id) === qJob)) {
-      setMode("pair");
       setJobId(qJob);
     }
     if (qCv && cvs.some((item) => String(item.id) === qCv)) {
-      setMode("pair");
       setCvId(qCv);
     }
   }, [loading, searchParams, jobs, cvs, applications]);
 
-  const linkedApplications = useMemo(
-    () => applications.filter((item) => item.cv_id != null),
-    [applications],
-  );
-
   const selectedJob = jobs.find((job) => String(job.id) === jobId);
   const selectedCv = cvs.find((cv) => String(cv.id) === cvId);
-  const selectedApplication = applications.find((item) => String(item.id) === applicationId);
-
-  const canSubmit =
-    mode === "application" ? Boolean(applicationId) : Boolean(jobId && cvId);
+  const canSubmit = Boolean(jobId && cvId);
 
   async function handleDraft(event: FormEvent) {
     event.preventDefault();
@@ -152,63 +136,36 @@ export default function CoverLetterPage() {
     setEditing(false);
 
     try {
-      const payload =
-        mode === "application"
-          ? {
-              application_id: Number(applicationId),
-              analysis_summary: analysisSummary.trim() || undefined,
-              notes: notes.trim() || undefined,
-              tone,
-              save: saveToApplication,
-            }
-          : {
-              job_id: Number(jobId),
-              cv_id: Number(cvId),
-              analysis_summary: analysisSummary.trim() || undefined,
-              notes: notes.trim() || undefined,
-              tone,
-              save: false,
-            };
+      const data = await generateCoverLetter(token, {
+        job_id: Number(jobId),
+        cv_id: Number(cvId),
+        analysis_summary: analysisSummary.trim() || undefined,
+        notes: notes.trim() || undefined,
+        tone,
+        save: false,
+      });
 
-      const data = await generateCoverLetter(token, payload);
-
-      let label = "Cover letter";
-      let subtitle: string | undefined;
-      if (mode === "application" && selectedApplication) {
-        label = `${selectedApplication.job_title} · ${selectedApplication.job_company}`;
-        subtitle = selectedApplication.cv_filename ?? undefined;
-      } else if (selectedJob) {
-        label = `${selectedJob.title} · ${selectedJob.company}`;
-        subtitle = selectedCv?.name;
-      }
-
-      const meta = {
-        job_id: data.job_id,
-        cv_id: data.cv_id,
-        application_id: data.application_id,
-        rag_chunks_used: data.rag_chunks_used,
-        saved: data.saved,
-      };
       const entry: LetterHistoryEntry = {
         id: newHistoryId(),
         createdAt: new Date().toISOString(),
-        label,
-        subtitle,
+        label: selectedJob ? `${selectedJob.title} · ${selectedJob.company}` : "Cover letter",
+        subtitle: selectedCv?.name,
         subject_line: data.subject_line,
         letter: data.letter,
-        meta,
+        meta: {
+          job_id: data.job_id,
+          cv_id: data.cv_id,
+          application_id: data.application_id,
+          rag_chunks_used: data.rag_chunks_used,
+          saved: data.saved,
+        },
       };
 
       setHistory(prependLetterHistory(user?.id, entry));
       setActiveSessionId(entry.id);
       setSubjectLine(data.subject_line);
       setLetter(data.letter);
-      setResultMeta(meta);
-      toast.success(
-        data.saved
-          ? "Draft ready and saved on the pipeline application."
-          : "Draft ready — edit below, then copy when you like it.",
-      );
+      toast.success("Draft ready — edit below, then copy when you like it.");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Could not draft cover letter");
     } finally {
@@ -224,7 +181,6 @@ export default function CoverLetterPage() {
     setActiveSessionId(entry.id);
     setSubjectLine(entry.subject_line);
     setLetter(entry.letter);
-    setResultMeta(entry.meta);
     setCopyState("idle");
     setEditing(false);
   }
@@ -237,7 +193,6 @@ export default function CoverLetterPage() {
       setActiveSessionId(latest?.id ?? null);
       setSubjectLine(latest?.subject_line ?? "");
       setLetter(latest?.letter ?? "");
-      setResultMeta(latest?.meta ?? null);
       setEditing(false);
     }
   }
@@ -248,7 +203,6 @@ export default function CoverLetterPage() {
     setActiveSessionId(null);
     setSubjectLine("");
     setLetter("");
-    setResultMeta(null);
     setEditing(false);
   }
 
@@ -277,11 +231,7 @@ export default function CoverLetterPage() {
   async function handleSavePdf() {
     try {
       persistEditedDraft();
-      const hint =
-        selectedJob?.company ||
-        selectedApplication?.job_company ||
-        subjectLine ||
-        "cover-letter";
+      const hint = selectedJob?.company || subjectLine || "cover-letter";
       await saveCoverLetterPdf({
         subject: subjectLine,
         letter,
@@ -316,13 +266,9 @@ export default function CoverLetterPage() {
         <h1>
           Draft a letter for a <em>pinned role</em>
         </h1>
-        <p className="page-description">
-          Grounded in the listing and your CV memory — not a generic template. Edit the draft,
-          copy it out, and when you use a Pipeline match it can save on that application.
-        </p>
       </div>
 
-      <div className="jobs-layout jobs-layout--with-sessions">
+      <div className="jobs-layout">
         <AnimatedCard>
           <article className="panel panel--form">
             <h2>Draft settings</h2>
@@ -330,98 +276,80 @@ export default function CoverLetterPage() {
             {loading ? (
               <FormSkeleton rows={5} />
             ) : jobs.length === 0 || cvs.length === 0 ? (
-              <div className="empty-state">
-                <strong>Need a role and a CV</strong>
-                Pin a listing on the <Link to="/jobs">Board</Link> and upload a PDF in the{" "}
-                <Link to="/cvs">Locker</Link> first. Optionally run{" "}
-                <Link to="/analyze">Analyze</Link> and paste the summary below.
-              </div>
-            ) : (
-              <form onSubmit={(event) => void handleDraft(event)} className="job-form">
-                <fieldset className="analyze-mode">
-                  <legend>Source</legend>
-                  <label className="analyze-mode-option">
-                    <input
-                      type="radio"
-                      name="letter-mode"
-                      checked={mode === "pair"}
-                      onChange={() => setMode("pair")}
-                    />
-                    Job + CV
-                  </label>
-                  <label className="analyze-mode-option">
-                    <input
-                      type="radio"
-                      name="letter-mode"
-                      checked={mode === "application"}
-                      onChange={() => setMode("application")}
-                      disabled={linkedApplications.length === 0}
-                    />
-                    Pipeline match
-                  </label>
-                </fieldset>
-
-                {mode === "pair" ? (
+              <div className="empty-state analyze-prereq-empty">
+                {jobs.length === 0 && cvs.length === 0 ? (
                   <>
-                    <label>
-                      Role
-                      <select
-                        value={jobId}
-                        onChange={(event) => setJobId(event.target.value)}
-                        required
-                      >
-                        <option value="">Select a pinned role</option>
-                        {jobs.map((job) => (
-                          <option key={job.id} value={job.id}>
-                            {job.title} · {job.company}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                    <label>
-                      CV version
-                      <select
-                        value={cvId}
-                        onChange={(event) => setCvId(event.target.value)}
-                        required
-                      >
-                        <option value="">Select from locker</option>
-                        {cvs.map((cv) => (
-                          <option key={cv.id} value={cv.id}>
-                            {cv.name}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
+                    <strong>Need a role and a CV</strong>
+                    <p className="empty-state-copy">
+                      Letters need something on your Board and in your locker first.
+                    </p>
+                    <div className="analyze-prereq-actions">
+                      <Link to="/jobs" className="desk-zone-cta">
+                        Pin a role
+                      </Link>
+                      <Link to="/cvs" className="desk-zone-cta">
+                        Upload a CV
+                      </Link>
+                    </div>
+                  </>
+                ) : jobs.length === 0 ? (
+                  <>
+                    <strong>No pinned roles yet</strong>
+                    <p className="empty-state-copy">
+                      Add a listing on the Board, then come back to draft a letter.
+                    </p>
+                    <div className="analyze-prereq-actions">
+                      <Link to="/jobs" className="desk-zone-cta">
+                        Open Board
+                      </Link>
+                    </div>
                   </>
                 ) : (
                   <>
-                    <label>
-                      Application
-                      <select
-                        value={applicationId}
-                        onChange={(event) => setApplicationId(event.target.value)}
-                        required
-                      >
-                        <option value="">Select a pipeline card</option>
-                        {linkedApplications.map((item) => (
-                          <option key={item.id} value={item.id}>
-                            {item.job_title} · {item.job_company}
-                            {item.cv_filename ? ` · ${item.cv_filename}` : ""}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                    <label className="analyze-mode-option letter-save-option">
-                      <input
-                        type="checkbox"
-                        checked={saveToApplication}
-                        onChange={(event) => setSaveToApplication(event.target.checked)}
-                      />
-                      Save draft on this application
-                    </label>
+                    <strong>No CVs in your locker</strong>
+                    <p className="empty-state-copy">
+                      Upload a PDF first — Letters needs a CV version to ground the draft.
+                    </p>
+                    <div className="analyze-prereq-actions">
+                      <Link to="/cvs" className="desk-zone-cta">
+                        Open locker
+                      </Link>
+                    </div>
                   </>
                 )}
+              </div>
+            ) : (
+              <form onSubmit={(event) => void handleDraft(event)} className="job-form">
+                <label>
+                  Role
+                  <select
+                    value={jobId}
+                    onChange={(event) => setJobId(event.target.value)}
+                    required
+                  >
+                    <option value="">Select a pinned role</option>
+                    {jobs.map((job) => (
+                      <option key={job.id} value={job.id}>
+                        {job.title} · {job.company}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  CV version
+                  <select
+                    value={cvId}
+                    onChange={(event) => setCvId(event.target.value)}
+                    required
+                  >
+                    <option value="">Select from locker</option>
+                    {cvs.map((cv) => (
+                      <option key={cv.id} value={cv.id}>
+                        {cv.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
 
                 <label>
                   Tone
@@ -454,26 +382,37 @@ export default function CoverLetterPage() {
                   />
                 </label>
 
-                {mode === "pair" && selectedJob && (
+                {selectedJob ? (
                   <p className="muted analyze-selection-hint">
                     {selectedJob.company}
                     {selectedCv ? ` · ${selectedCv.name}` : ""}
                   </p>
-                )}
-                {mode === "application" && selectedApplication && (
-                  <p className="muted analyze-selection-hint">
-                    Status: {selectedApplication.status}
-                    {selectedApplication.cv_filename
-                      ? ` · ${selectedApplication.cv_filename}`
-                      : ""}
-                  </p>
-                )}
+                ) : null}
 
                 <button type="submit" disabled={!canSubmit || drafting}>
                   {drafting ? "Drafting..." : letter ? "Regenerate draft" : "Draft letter"}
                 </button>
               </form>
             )}
+
+            <div className="analyze-sessions-block">
+              <AgentHistoryPanel
+                embedded
+                title="Past sessions"
+                emptyText="Past letter drafts will show up here."
+                items={history.map((entry) => ({
+                  id: entry.id,
+                  createdAt: entry.createdAt,
+                  label: entry.label,
+                  subtitle: entry.subtitle,
+                  badge: entry.meta.saved ? "Saved" : undefined,
+                }))}
+                activeId={activeSessionId}
+                onSelect={handleSelectSession}
+                onRemove={handleRemoveSession}
+                onClear={handleClearSessions}
+              />
+            </div>
           </article>
         </AnimatedCard>
 
@@ -507,8 +446,7 @@ export default function CoverLetterPage() {
             ) : !letter ? (
               <div className="empty-state">
                 <strong>No draft yet</strong>
-                Choose a role and CV, then draft a letter. You can edit every line before you copy
-                or save.
+                Choose a role and CV, then draft a letter.
               </div>
             ) : (
               <div className={`letter-studio${editing ? " letter-studio--editing" : ""}`}>
@@ -532,10 +470,6 @@ export default function CoverLetterPage() {
                         rows={16}
                       />
                     </label>
-                    <p className="muted analyze-meta">
-                      Editing — save with <strong>Done</strong>, or download anytime with{" "}
-                      <strong>Save PDF</strong>.
-                    </p>
                   </>
                 ) : (
                   <>
@@ -546,38 +480,11 @@ export default function CoverLetterPage() {
                       </div>
                     ) : null}
                     <div className="letter-preview-body">{letter}</div>
-                    <p className="muted analyze-meta">
-                      {resultMeta
-                        ? `Used ${resultMeta.rag_chunks_used} CV memory chunk${
-                            resultMeta.rag_chunks_used === 1 ? "" : "s"
-                          }${resultMeta.saved ? " · saved on application" : ""}.`
-                        : null}{" "}
-                      Click <strong>Edit</strong> to change the text, or <strong>Save PDF</strong> to
-                      download.
-                    </p>
                   </>
                 )}
               </div>
             )}
           </div>
-        </AnimatedCard>
-
-        <AnimatedCard delay={160}>
-          <AgentHistoryPanel
-            title="Sessions"
-            emptyText="Past letter drafts will show up here."
-            items={history.map((entry) => ({
-              id: entry.id,
-              createdAt: entry.createdAt,
-              label: entry.label,
-              subtitle: entry.subtitle,
-              badge: entry.meta.saved ? "Saved" : undefined,
-            }))}
-            activeId={activeSessionId}
-            onSelect={handleSelectSession}
-            onRemove={handleRemoveSession}
-            onClear={handleClearSessions}
-          />
         </AnimatedCard>
       </div>
     </section>
