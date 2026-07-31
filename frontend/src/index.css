@@ -978,6 +978,11 @@ button:disabled {
   margin-bottom: 0.55rem;
 }
 
+.job-card-header > div,
+.job-card-header > .cv-card-heading {
+  min-width: 0;
+}
+
 .job-card h3 {
   margin: 0;
   font-family: var(--font-display);
@@ -2942,6 +2947,115 @@ button:disabled {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+}
+
+.cv-upload-field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.cv-upload-label {
+  font-weight: 700;
+  font-size: 0.88rem;
+  letter-spacing: 0.02em;
+}
+
+.cv-dropzone {
+  position: relative;
+  display: grid;
+  gap: 0.55rem;
+  padding: 1rem 0.95rem;
+  border: 2px dashed rgba(20, 17, 15, 0.28);
+  border-radius: var(--radius);
+  background: rgba(255, 253, 249, 0.85);
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.cv-dropzone--active {
+  border-color: var(--forest);
+  background: rgba(47, 93, 74, 0.1);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.cv-dropzone--filled {
+  border-style: solid;
+  border-color: var(--border);
+  background: var(--paper-deep);
+}
+
+.cv-dropzone-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.cv-dropzone-body {
+  display: grid;
+  gap: 0.2rem;
+  cursor: pointer;
+  font-weight: 400;
+}
+
+.cv-dropzone-body strong {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 400;
+}
+
+.cv-dropzone-filename {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cv-dropzone-meta,
+.cv-dropzone-hint,
+.cv-upload-constraints {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.cv-dropzone-clear {
+  width: fit-content;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.78rem;
+}
+
+.cv-card-heading {
+  min-width: 0;
+  width: 100%;
+}
+
+.cv-card-name,
+.cv-card-filename {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cv-card-filename {
+  display: inline-block;
+  max-width: min(100%, 18rem);
+  vertical-align: bottom;
+}
+
+.job-card-header .cv-card-heading h3.cv-card-name {
+  margin: 0;
 }
 
 .memory-panel {

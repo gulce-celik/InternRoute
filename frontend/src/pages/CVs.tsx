@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type DragEvent,
+  type FormEvent,
+} from "react";
 
 import AnimatedCard from "../components/AnimatedCard";
 import ConfirmCard from "../components/ConfirmCard";
@@ -8,6 +15,9 @@ import { useAuth } from "../hooks/useAuth";
 import { deleteCV, listCVs, openCVFile, uploadCV } from "../services/api";
 import type { CV } from "../types/cv";
 
+const MAX_CV_BYTES = 10 * 1024 * 1024; // 10 MB client guard
+const MAX_CV_LABEL = "10 MB";
+
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-US", {
     year: "numeric",
@@ -16,12 +26,33 @@ function formatDate(iso: string): string {
   });
 }
 
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) {
+    return `${bytes} B`;
+  }
+  if (bytes < 1024 * 1024) {
+    return `${(bytes / 1024).toFixed(1)} KB`;
+  }
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function isPdfFile(file: File): boolean {
+  const nameOk = file.name.toLowerCase().endsWith(".pdf");
+  const typeOk =
+    file.type === "" ||
+    file.type === "application/pdf" ||
+    file.type === "application/x-pdf";
+  return nameOk && typeOk;
+}
+
 export default function CVsPage() {
   const { token } = useAuth();
   const toast = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [cvs, setCvs] = useState<CV[]>([]);
   const [cvName, setCvName] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [dragActive, setDragActive] = useState(false);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
@@ -49,15 +80,81 @@ export default function CVsPage() {
     void loadCvs();
   }, [loadCvs]);
 
-  async function handleUpload(event: FormEvent) {
-    event.preventDefault();
-    if (!token || !fileInputRef.current?.files?.[0]) {
+  function clearSelectedFile() {
+    setSelectedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  }
+
+  function acceptFile(file: File | undefined | null) {
+    if (!file) {
       return;
     }
 
-    const file = fileInputRef.current.files[0];
-    if (file.type !== "application/pdf") {
+    if (!isPdfFile(file)) {
       toast.error("Please upload a PDF file.");
+      clearSelectedFile();
+      return;
+    }
+
+    if (file.size > MAX_CV_BYTES) {
+      toast.error(`PDF must be ${MAX_CV_LABEL} or smaller.`);
+      clearSelectedFile();
+      return;
+    }
+
+    setSelectedFile(file);
+    if (fileInputRef.current) {
+      const transfer = new DataTransfer();
+      transfer.items.add(file);
+      fileInputRef.current.files = transfer.files;
+    }
+  }
+
+  function handleDragOver(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (!uploading) {
+      setDragActive(true);
+    }
+  }
+
+  function handleDragLeave(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    setDragActive(false);
+  }
+
+  function handleDrop(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    setDragActive(false);
+    if (uploading) {
+      return;
+    }
+    acceptFile(event.dataTransfer.files?.[0]);
+  }
+
+  async function handleUpload(event: FormEvent) {
+    event.preventDefault();
+    if (!token) {
+      return;
+    }
+
+    const file = selectedFile ?? fileInputRef.current?.files?.[0];
+    if (!file) {
+      toast.error("Choose a PDF to upload.");
+      return;
+    }
+
+    if (!isPdfFile(file)) {
+      toast.error("Please upload a PDF file.");
+      return;
+    }
+
+    if (file.size > MAX_CV_BYTES) {
+      toast.error(`PDF must be ${MAX_CV_LABEL} or smaller.`);
       return;
     }
 
@@ -68,7 +165,7 @@ export default function CVsPage() {
       setCvs((prev) => [created, ...prev]);
       toast.success("CV uploaded. You can open the PDF anytime.");
       setCvName("");
-      fileInputRef.current.value = "";
+      clearSelectedFile();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to upload CV");
     } finally {
@@ -118,15 +215,12 @@ export default function CVsPage() {
         <h1>
           Your CV <em>locker</em>
         </h1>
-        <p className="page-description">
-          Keep a version for every company. Upload, view, and reuse PDFs when you link applications.
-        </p>
       </div>
 
       <div className="jobs-layout">
         <AnimatedCard>
           <article className="panel panel--form">
-            <h2>Upload PDF</h2>
+            <h2>Upload Your CV</h2>
             <form onSubmit={handleUpload} className="job-form">
               <label>
                 Name (optional)
@@ -138,16 +232,60 @@ export default function CVsPage() {
                   maxLength={255}
                 />
               </label>
-              <label>
-                CV file
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="application/pdf,.pdf"
-                  required
-                />
-              </label>
-              <button type="submit" disabled={uploading}>
+
+              <div className="cv-upload-field">
+                <span className="cv-upload-label">CV file</span>
+                <div
+                  className={`cv-dropzone${dragActive ? " cv-dropzone--active" : ""}${
+                    selectedFile ? " cv-dropzone--filled" : ""
+                  }`}
+                  onDragEnter={handleDragOver}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                >
+                  <input
+                    ref={fileInputRef}
+                    id="cv-file-input"
+                    className="cv-dropzone-input"
+                    type="file"
+                    accept="application/pdf,.pdf"
+                    disabled={uploading}
+                    onChange={(event) => acceptFile(event.target.files?.[0])}
+                  />
+                  <label htmlFor="cv-file-input" className="cv-dropzone-body">
+                    {selectedFile ? (
+                      <>
+                        <strong className="cv-dropzone-filename" title={selectedFile.name}>
+                          {selectedFile.name}
+                        </strong>
+                        <span className="cv-dropzone-meta">
+                          {formatFileSize(selectedFile.size)} · PDF ready
+                        </span>
+                        <span className="cv-dropzone-hint">Click or drop another PDF to replace</span>
+                      </>
+                    ) : (
+                      <>
+                        <strong>Drop your PDF here</strong>
+                        <span className="cv-dropzone-hint">or click to browse</span>
+                      </>
+                    )}
+                  </label>
+                  {selectedFile ? (
+                    <button
+                      type="button"
+                      className="btn-ghost cv-dropzone-clear"
+                      disabled={uploading}
+                      onClick={clearSelectedFile}
+                    >
+                      Clear
+                    </button>
+                  ) : null}
+                </div>
+                <p className="cv-upload-constraints">PDF only · max {MAX_CV_LABEL}</p>
+              </div>
+
+              <button type="submit" disabled={uploading || !selectedFile}>
                 {uploading ? "Uploading..." : "Add to locker"}
               </button>
             </form>
@@ -177,12 +315,24 @@ export default function CVsPage() {
                           className={`job-card job-card--float${confirming ? " job-card--confirming" : ""}`}
                         >
                           <div className="job-card-header">
-                            <div>
-                              <h3>{cv.name}</h3>
+                            <div className="cv-card-heading">
+                              <h3 className="cv-card-name" title={cv.name}>
+                                {cv.name}
+                              </h3>
                               <p className="job-meta">
-                                {cv.name === cv.filename
-                                  ? "Ready for applications"
-                                  : `${cv.filename} · ready for applications`}
+                                {cv.name === cv.filename ? (
+                                  "Ready for applications"
+                                ) : (
+                                  <>
+                                    <span className="cv-card-filename" title={cv.filename}>
+                                      {cv.filename}
+                                    </span>
+                                    <span className="cv-card-filename-suffix">
+                                      {" "}
+                                      · ready for applications
+                                    </span>
+                                  </>
+                                )}
                               </p>
                             </div>
                           </div>
