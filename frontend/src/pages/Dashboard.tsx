@@ -211,7 +211,6 @@ export default function DashboardPage() {
                 <p className="desk-zone-pulse">{zone.pulse}</p>
                 <Link to={zone.to} className="desk-zone-cta">
                   {zone.cta}
-                  <span aria-hidden="true"> →</span>
                 </Link>
               </article>
             </AnimatedCard>
@@ -246,7 +245,6 @@ export default function DashboardPage() {
                 <span className="home-ai-tool-body">Gap scan your CV against a pinned role</span>
                 <Link to="/analyze" className="desk-zone-cta">
                   Open
-                  <span aria-hidden="true"> →</span>
                 </Link>
               </article>
             </li>
@@ -256,7 +254,6 @@ export default function DashboardPage() {
                 <span className="home-ai-tool-body">Draft a cover letter from job + CV</span>
                 <Link to="/cover-letter" className="desk-zone-cta">
                   Open
-                  <span aria-hidden="true"> →</span>
                 </Link>
               </article>
             </li>
@@ -267,7 +264,6 @@ export default function DashboardPage() {
                 <span className="home-ai-tool-body">Mock HR chat grounded in your pipeline</span>
                 <Link to="/interview" className="desk-zone-cta">
                   Preview
-                  <span aria-hidden="true"> →</span>
                 </Link>
               </article>
             </li>
