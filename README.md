@@ -4,12 +4,26 @@
 
 <p align="center"><strong>Your AI-powered personal career &amp; internship command center</strong></p>
 
+<p align="center">
+  <a href="https://internroute.onrender.com">
+    <img src="https://img.shields.io/badge/LIVE_DEMO-internroute.onrender.com-E4572E?style=for-the-badge&labelColor=1a1a1a" alt="Live demo"/>
+  </a>
+</p>
+
+<p align="center">
+  <strong style="font-size:1.35em;">🚀 Live app:</strong>
+  <a href="https://internroute.onrender.com"><strong style="font-size:1.35em;">https://internroute.onrender.com</strong></a>
+  <br/>
+  <span>Open the link → try the full product (UI + API + Gemini agents). Free tier may take ~30–60s on first wake.</span>
+</p>
+
 📋 **Scrum Board:** [InternRoute Bootcamp 2026 on Trello](https://trello.com/b/yTUmFEoB/internroutebootcamp2026)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=black)](https://react.dev/)
+[![Live](https://img.shields.io/badge/Live-internroute.onrender.com-success)](https://internroute.onrender.com)
 
 > Built with Scrum during **YZTA Bootcamp 2026** — 3 sprints × 2 weeks
 
@@ -91,14 +105,16 @@ The goal is simple: **stop losing applications in random notes** and walk into e
 | **CV locker** | PDF upload, view, delete; CV can be reassigned on applications |
 | **RAG foundation** | ChromaDB, PDF → text → chunks → embeddings, memory context API |
 
-### Coming in Sprint 3 (Jul 20 – Aug 2)
+### Delivered in Sprint 3 (Jul 20 – Aug 2)
 
 | Feature | Description |
 |---------|-------------|
-| **Analyzer Agent** | CV vs job gap scan with RAG-backed insights |
-| **Writer Agent** | Company-aware cover letter drafts |
-| **HR Mock Agent** | Role-specific mock interview chat; answers saved to memory |
-| **Deploy & demo** | Live URL, polished UI, 3-minute demo video, final delivery |
+| **Analyzer Agent** | CV vs job gap scan (Job+CV / Pipeline), RAG-backed fit score, strengths, gaps, keywords |
+| **Writer Agent** | Cover letter studio — tone, analyzer notes, edit mode, Save PDF |
+| **HR Mock Agent** | Role-specific mock interview chat, coaching feedback, session history |
+| **Interview Calendar** | Month view + categories (HR/tech/AI interview, aptitude, language, case study) |
+| **UI polish** | Unified agent pages, Board edit/search, status labels, dashboard AI links |
+| **Deploy** | Live URL on Render — [https://internroute.onrender.com](https://internroute.onrender.com) |
 
 ---
 
@@ -316,24 +332,109 @@ The goal is simple: **stop losing applications in random notes** and walk into e
 
 **Dates:** 20 July – 2 August 2026 · **Delivery deadline: 2 Aug 23:59**
 
-### Goals
+- **Backlog organisation and story selection:**  
+  Sprint 3 continues the same Trello Kanban flow (`Rejected → Backlog → To Do → In Progress → Done`). With auth, board, CV locker, pipeline, and RAG memory in place (Sprints 1–2), the Product Owner pulled the **multi-agent AI + delivery** slice into Sprint 3.  
+  **Sprint 3 selection:** **US-3.1 — Analyzer Agent / CV vs job gap scan (8)**, **US-3.2 — Writer Agent / cover letter generation (8)**, **US-3.3 — HR Mock Interview Agent (13)**, **US-3.4 — Deploy, demo video & final delivery (5)**, **US-3.5 — Interview Calendar (5)** — **39 points total**. No single story exceeds half of the sprint total (max = 13, under half of 39).  
+  **Story → task split:** Blue-label stories break into red-label tasks (shared Gemini LLM client, `/agents/analyze`, gap report UI, cover-letter API/studio/PDF, mock-interview sessions + coaching UI, calendar API/month UI, Render Docker deploy, tests). Process cards (Review, Retro, GitHub evidence) tracked alongside delivery.
 
-Ship the **multi-agent AI layer**, connect it to RAG memory, deploy, and record the demo.
+- **Daily Scrum:**  
+  We ran dailies throughout Sprint 3 (20 Jul – 2 Aug) in **WhatsApp** and **voice calls** when schedules allowed — same rhythm as Sprints 1–2. We tracked US-3.1–US-3.5 (analyzer, writer, mock interview, calendar, deploy/polish), broke work into Trello tasks, and prepared the **Sprint Review** and **Retrospective**. WhatsApp screenshot evidence will be added under [`ProjectManagement/Sprint3Documents/dailyscrum-ss-whatsapp`](ProjectManagement/Sprint3Documents/dailyscrum-ss-whatsapp).
 
-### Backlog highlights
+- **Sprint board update:**
 
-- LangChain agent orchestration  
-- **Analyzer Agent** — `/agents/analyze`, gap report UI  
-- **Writer Agent** — `/agents/cover-letter`, editable letter studio  
-- **HR Mock Agent** — `/agents/mock-interview`, session history  
-- RAG retriever integration; interview answers saved to memory  
-- UI polish (responsive, loading, error states)  
-- Deploy to live URL · Update README · 3-minute YouTube demo  
-- Submit product delivery form · Sprint 3 review & retro  
+  <p align="center">
+    <img src="ProjectManagement/Sprint3Documents/Trello%20ss%20Sprint3/Screenshot%202026-08-01%20220449.png" alt="Sprint 3 Trello board 1" width="32%"/>
+    &nbsp;
+    <img src="ProjectManagement/Sprint3Documents/Trello%20ss%20Sprint3/Screenshot%202026-08-01%20221030.png" alt="Sprint 3 Trello board 2" width="32%"/>
+    &nbsp;
+    <img src="ProjectManagement/Sprint3Documents/Trello%20ss%20Sprint3/Screenshot%202026-08-01%20221131.png" alt="Sprint 3 Trello board 3" width="32%"/>
+  </p>
 
-### UI previews (Sprint 3 screens)
+  <p align="center">
+    <img src="ProjectManagement/Sprint3Documents/Trello%20ss%20Sprint3/Screenshot%202026-08-01%20221318.png" alt="Sprint 3 Trello board 4" width="40%"/>
+    &nbsp;
+    <img src="ProjectManagement/Sprint3Documents/Trello%20ss%20Sprint3/Screenshot%202026-08-01%20221358.png" alt="Sprint 3 Trello board 5" width="40%"/>
+  </p>
 
-Sprint 3 UI screenshots will be added here after capture *(pending)*.
+- **Product status** (screenshots):
+
+  <p align="center">
+    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20221711.png" alt="Sprint 3 UI — home desk" width="32%"/>
+    &nbsp;
+    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20221727.png" alt="Sprint 3 UI — desk tour" width="32%"/>
+    &nbsp;
+    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20221739.png" alt="Sprint 3 UI — dashboard" width="32%"/>
+  </p>
+
+  <p align="center">
+    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20221943.png" alt="Sprint 3 UI — navigation / workspace" width="32%"/>
+    &nbsp;
+    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222012.png" alt="Sprint 3 UI — calendar" width="32%"/>
+    &nbsp;
+    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222043.png" alt="Sprint 3 UI — calendar event" width="32%"/>
+  </p>
+
+  <p align="center">
+    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222055.png" alt="Sprint 3 UI — board" width="32%"/>
+    &nbsp;
+    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222129.png" alt="Sprint 3 UI — pipeline" width="32%"/>
+    &nbsp;
+    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222144.png" alt="Sprint 3 UI — pipeline detail" width="32%"/>
+  </p>
+
+  <p align="center">
+    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222153.png" alt="Sprint 3 UI — CV locker / board polish" width="32%"/>
+    &nbsp;
+    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222204.png" alt="Sprint 3 UI — analyze agent" width="32%"/>
+    &nbsp;
+    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222223.png" alt="Sprint 3 UI — gap report" width="32%"/>
+  </p>
+
+  <p align="center">
+    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222238.png" alt="Sprint 3 UI — cover letter studio" width="32%"/>
+    &nbsp;
+    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222257.png" alt="Sprint 3 UI — mock interview" width="32%"/>
+    &nbsp;
+    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222426.png" alt="Sprint 3 UI — interview coaching" width="32%"/>
+  </p>
+
+  <p align="center">
+    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20223306.png" alt="Sprint 3 UI — interview feedback" width="32%"/>
+    &nbsp;
+    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20223322.png" alt="Sprint 3 UI — session summary" width="32%"/>
+    &nbsp;
+    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20223336.png" alt="Sprint 3 UI — AI ready flow" width="32%"/>
+  </p>
+
+- **Sprint Review:**  
+  At sprint close we demoed the **Sprint 3 increment** on the live app ([https://internroute.onrender.com](https://internroute.onrender.com)): a student can run a **CV vs job gap scan**, draft an editable **cover letter** (with PDF export), complete a **mock HR interview** with coaching feedback, schedule prep events on the **Calendar**, and move through Board → Pipeline with polished UI — all backed by Sprint 2 RAG memory + Gemini.  
+  **What we delivered:**  
+  - **Analyzer (US-3.1):** Shared Gemini LLM client; `/agents/analyze`; RAG retriever for CV memory; Analyze page (Job+CV / Pipeline sources); fit score / strengths / gaps / keywords UI; past scan sessions; copy-to-cover-letter; analyzer tests.  
+  - **Writer (US-3.2):** `/agents/cover-letter`; Letter studio (tone, analyzer summary, notes); Pipeline-aware drafts; session history; edit mode + Save PDF; writer tests.  
+  - **HR Mock Interview (US-3.3):** Interview session models + API (`start` / `answer` / list / get); Interview page with coaching rail; Pipeline deep link; Desk Buddy interview guidance; session/schema tests; Interview removed from “coming soon”.  
+  - **Calendar (US-3.5):** Calendar API + month UI; event categories (aptitude, language, case study, AI/HR/tech/team interview); Board / Pipeline event forms; navbar Calendar.  
+  - **Deploy & polish (US-3.4):** UI unify (agent pages, loading/empty states, status labels); Board edit + search; Dashboard AI tool links; single-service **Docker deploy on Render** (UI + API same origin); README + Sprint 3 evidence.  
+  **Demo outcome:** Live URL opens the full product; Analyzer → Writer → Interview → Calendar path runs without critical blockers (Gemini free-tier rate limits may apply).  
+  **Still optional / ceremony:** 3-minute YouTube demo video upload, product delivery form submit, formal Sprint 3 Review + Retro notes if not yet filed.  
+  **Participants:** Gülce Çelik, Muhammed Enes Andiç
+
+- **Sprint Retrospective:**  
+  - **Keep:** Vertical slices (API + UI per agent) so Analyze / Letters / Interview became usable mid-sprint.  
+  - **Keep:** Blue story / red task cards on Trello and WhatsApp async dailies.  
+  - **Improve:** Gemini env / rate-limit checks earlier in planning (local `.env` vs `backend/.env` override surprised us once).  
+  - **Improve:** Free-tier Render has no persistent disk — re-seed demo data after cold redeploys; warm the live URL before jury demos.  
+  - **Team:** Two-person active unit shipped agents + calendar + live URL; delivery form / demo video are the last ceremony checklist items.
+
+### Sprint 3 — technical summary
+
+| Layer | Stack |
+|-------|-------|
+| **Agents** | Gemini (`gemini-flash-lite-latest`) · shared `agents/llm.py` · Analyzer / Writer / HR Mock services |
+| **API** | `/agents/analyze`, `/agents/cover-letter`, `/agents/mock-interview/*`, `/calendar`, `/agents/status` |
+| **RAG** | Retriever feeds Analyzer (+ memory context from Sprint 2 ChromaDB) |
+| **Frontend** | Analyze, Cover Letter, Interview, Calendar pages · agent history panels · PDF export |
+| **Deploy** | Docker (Vite build + FastAPI static) · Render free web service · [live URL](https://internroute.onrender.com) |
+| **Testing** | pytest (analyzer, writer, interview, LLM status) · Vitest |
 
 ---
 
@@ -342,8 +443,8 @@ Sprint 3 UI screenshots will be added here after capture *(pending)*.
 | Layer | Technology |
 |-------|------------|
 | **Backend** | Python, FastAPI |
-| **AI Orchestration** | LangChain *(Sprint 3)* |
-| **Vector Database** | ChromaDB *(Sprint 2–3)* |
+| **AI Orchestration** | LangChain + Gemini agents (Analyzer, Writer, HR Mock) |
+| **Vector Database** | ChromaDB (RAG memory) |
 | **LLM API** | Google Gemini API |
 | **Frontend** | React + Vite + TypeScript |
 | **Validation** | Pydantic v2 |
@@ -389,17 +490,22 @@ InternRoute/
 ├── frontend/                # React (Vite) SPA
 ├── ProjectManagement/       # Sprint evidence (board screenshots, daily scrum notes)
 │   ├── Sprint1Documents/
-│   └── Sprint2Documents/
+│   ├── Sprint2Documents/
+│   └── Sprint3Documents/    # Trello ss, UI ss, dailyscrum-ss-whatsapp
 ├── docs/                    # Architecture, API design, sprint plan, screenshots
-│   └── images/              # README evidence only (ui/, trello/) — not root “Trello ss/” dumps
-├── scripts/                 # Test runners, git helpers, demo seed
-├── .cursor/                 # Project hooks & skills
+│   └── images/              # README evidence (ui/, logo)
+├── scripts/                 # Test runners, demo seed
+├── DEPLOY.md                # Render live deploy guide
+├── Dockerfile               # Single-service UI + API image
+├── render.yaml              # Render Blueprint (free tier)
 ├── HOW_TO_START_APP.md
 ├── .env.example
 └── README.md
 ```
 
-Further reading: [`docs/architecture.md`](docs/architecture.md) · [`docs/api-design.md`](docs/api-design.md) · [`docs/sprint-plan.md`](docs/sprint-plan.md)
+Further reading: [`docs/architecture.md`](docs/architecture.md) · [`docs/api-design.md`](docs/api-design.md) · [`docs/sprint-plan.md`](docs/sprint-plan.md) · [`DEPLOY.md`](DEPLOY.md)
+
+**Live demo:** [https://internroute.onrender.com](https://internroute.onrender.com)
 
 ---
 
