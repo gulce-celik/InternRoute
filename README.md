@@ -6,15 +6,12 @@
 
 <p align="center">
   <a href="https://internroute.onrender.com">
-    <img src="https://img.shields.io/badge/LIVE%20DEMO-internroute.onrender.com-E4572E?style=for-the-badge&labelColor=111111" alt="LIVE DEMO" height="56"/>
+    <img src="https://img.shields.io/badge/LIVE%20DEMO-internroute.onrender.com-E4572E?style=for-the-badge&labelColor=111111" alt="LIVE DEMO" height="72"/>
   </a>
 </p>
 
-<h2 align="center">
-  <a href="https://internroute.onrender.com">LIVE DEMO — https://internroute.onrender.com</a>
-</h2>
-
 <p align="center">
+  <a href="https://internroute.onrender.com"><strong>https://internroute.onrender.com</strong></a><br/>
   Open the link to try the full product (UI + API + Gemini agents).<br/>
   Free tier may take ~30–60s on first wake.
 </p>
