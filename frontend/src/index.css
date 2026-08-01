@@ -291,7 +291,7 @@ button:disabled {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.85rem 1.5rem;
+  padding: 0.85rem 5rem;
   background: #fffdf9;
   border-bottom: 2px solid var(--border);
   position: sticky;
@@ -457,7 +457,7 @@ button:disabled {
   outline-offset: 2px;
 }
 
-/* Shared idle / active / open treatment for Home, Workspace, Prep */
+/* Shared idle / active / open treatment for Home, Workspace, Get Ready with AI */
 .topnav-link--active,
 .topnav-category--active .topnav-category-trigger,
 .topnav-category--open .topnav-category-trigger {

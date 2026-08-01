@@ -32,7 +32,7 @@ const STEPS: TourStep[] = [
   },
   {
     target: "[data-tour='nav-ai']",
-    title: "Prep",
+    title: "Get Ready with AI",
     body: "Hover or tap for Analyze, Interview, and Letters — gap scan, mock HR chat, and cover letters.",
   },
   {

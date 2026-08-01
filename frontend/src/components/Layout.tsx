@@ -17,8 +17,8 @@ const workspaceNav = [
 
 const prepNav = [
   { to: "/analyze", label: "Analyze", end: false },
-  { to: "/interview", label: "Interview", end: false },
   { to: "/cover-letter", label: "Letters", end: false },
+  { to: "/interview", label: "Interview", end: false },
 ] as const;
 
 const HOVER_MQ = "(hover: hover) and (pointer: fine)";
@@ -211,7 +211,7 @@ export default function Layout() {
               aria-haspopup="menu"
               onClick={() => onCategoryClick("prep")}
             >
-              Prep
+              Get Ready with AI
               <span className="topnav-category-caret" aria-hidden="true" />
             </button>
             <div
