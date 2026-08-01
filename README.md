@@ -6,15 +6,17 @@
 
 <p align="center">
   <a href="https://internroute.onrender.com">
-    <img src="https://img.shields.io/badge/LIVE_DEMO-internroute.onrender.com-E4572E?style=for-the-badge&labelColor=1a1a1a" alt="Live demo"/>
+    <img src="https://img.shields.io/badge/LIVE%20DEMO-internroute.onrender.com-E4572E?style=for-the-badge&labelColor=111111" alt="LIVE DEMO" height="56"/>
   </a>
 </p>
 
+<h2 align="center">
+  <a href="https://internroute.onrender.com">LIVE DEMO — https://internroute.onrender.com</a>
+</h2>
+
 <p align="center">
-  <strong style="font-size:1.35em;">🚀 Live app:</strong>
-  <a href="https://internroute.onrender.com"><strong style="font-size:1.35em;">https://internroute.onrender.com</strong></a>
-  <br/>
-  <span>Open the link → try the full product (UI + API + Gemini agents). Free tier may take ~30–60s on first wake.</span>
+  Open the link to try the full product (UI + API + Gemini agents).<br/>
+  Free tier may take ~30–60s on first wake.
 </p>
 
 📋 **Scrum Board:** [InternRoute Bootcamp 2026 on Trello](https://trello.com/b/yTUmFEoB/internroutebootcamp2026)
@@ -358,53 +360,98 @@ The goal is simple: **stop losing applications in random notes** and walk into e
 
 - **Product status** (screenshots):
 
-  <p align="center">
-    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20221711.png" alt="Sprint 3 UI — home desk" width="32%"/>
-    &nbsp;
-    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20221727.png" alt="Sprint 3 UI — desk tour" width="32%"/>
-    &nbsp;
-    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20221739.png" alt="Sprint 3 UI — dashboard" width="32%"/>
-  </p>
-
-  <p align="center">
-    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20221943.png" alt="Sprint 3 UI — navigation / workspace" width="32%"/>
-    &nbsp;
-    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222012.png" alt="Sprint 3 UI — calendar" width="32%"/>
-    &nbsp;
-    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222043.png" alt="Sprint 3 UI — calendar event" width="32%"/>
-  </p>
-
-  <p align="center">
-    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222055.png" alt="Sprint 3 UI — board" width="32%"/>
-    &nbsp;
-    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222129.png" alt="Sprint 3 UI — pipeline" width="32%"/>
-    &nbsp;
-    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222144.png" alt="Sprint 3 UI — pipeline detail" width="32%"/>
-  </p>
-
-  <p align="center">
-    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222153.png" alt="Sprint 3 UI — CV locker / board polish" width="32%"/>
-    &nbsp;
-    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222204.png" alt="Sprint 3 UI — analyze agent" width="32%"/>
-    &nbsp;
-    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222223.png" alt="Sprint 3 UI — gap report" width="32%"/>
-  </p>
-
-  <p align="center">
-    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222238.png" alt="Sprint 3 UI — cover letter studio" width="32%"/>
-    &nbsp;
-    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222257.png" alt="Sprint 3 UI — mock interview" width="32%"/>
-    &nbsp;
-    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222426.png" alt="Sprint 3 UI — interview coaching" width="32%"/>
-  </p>
-
-  <p align="center">
-    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20223306.png" alt="Sprint 3 UI — interview feedback" width="32%"/>
-    &nbsp;
-    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20223322.png" alt="Sprint 3 UI — session summary" width="32%"/>
-    &nbsp;
-    <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20223336.png" alt="Sprint 3 UI — AI ready flow" width="32%"/>
-  </p>
+  <table>
+  <tr>
+  <td width="50%" valign="top" align="center">
+  <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20221711.png" alt="Internship Desk with welcome tour"/><br/>
+  <sub><b>Home — Internship Desk (tour)</b><br/>Welcome modal (1/8) over Board · Locker · Pipeline cards.</sub>
+  </td>
+  <td width="50%" valign="top" align="center">
+  <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20221727.png" alt="Internship Desk overview"/><br/>
+  <sub><b>Home — Internship Desk</b><br/>Live summary bar and the three desk cards (pinned roles, CVs, applications).</sub>
+  </td>
+  </tr>
+  <tr>
+  <td width="50%" valign="top" align="center">
+  <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20221739.png" alt="Desk with AI tools"/><br/>
+  <sub><b>Home — AI tools strip</b><br/>Quick links to Analyze, Letters, and Interview under the desk cards.</sub>
+  </td>
+  <td width="50%" valign="top" align="center">
+  <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20221943.png" alt="Calendar month view"/><br/>
+  <sub><b>Calendar — month view</b><br/>Color-coded deadlines &amp; tests (aptitude, HR/tech/AI interview, case study, …).</sub>
+  </td>
+  </tr>
+  <tr>
+  <td width="50%" valign="top" align="center">
+  <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222012.png" alt="Calendar add event"/><br/>
+  <sub><b>Calendar — day detail</b><br/>Selected date sidebar with linked role/application and Add Event form.</sub>
+  </td>
+  <td width="50%" valign="top" align="center">
+  <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222043.png" alt="Job board"/><br/>
+  <sub><b>Workspace — Job Board</b><br/>Pin roles, search/filter by status, edit or delete listings.</sub>
+  </td>
+  </tr>
+  <tr>
+  <td width="50%" valign="top" align="center">
+  <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222055.png" alt="CV locker"/><br/>
+  <sub><b>Workspace — CV Locker</b><br/>Upload named PDF versions and view/delete saved CVs.</sub>
+  </td>
+  <td width="50%" valign="top" align="center">
+  <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222129.png" alt="Application pipeline"/><br/>
+  <sub><b>Workspace — Application Pipeline</b><br/>Link job + CV, stage strip, matched applications with status.</sub>
+  </td>
+  </tr>
+  <tr>
+  <td width="50%" valign="top" align="center">
+  <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222144.png" alt="Gap scan fit score"/><br/>
+  <sub><b>Analyzer — Gap scan report</b><br/>Fit score, summary, strengths/gaps, past sessions, copy for cover letter.</sub>
+  </td>
+  <td width="50%" valign="top" align="center">
+  <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222153.png" alt="Gap scan keywords"/><br/>
+  <sub><b>Analyzer — Keywords &amp; recommendations</b><br/>Keywords to add and actionable tips after a CV vs role scan.</sub>
+  </td>
+  </tr>
+  <tr>
+  <td width="50%" valign="top" align="center">
+  <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222204.png" alt="Cover letter draft"/><br/>
+  <sub><b>Writer — Cover letter studio</b><br/>Draft settings, generated letter, Edit / Save PDF / Copy, past sessions.</sub>
+  </td>
+  <td width="50%" valign="top" align="center">
+  <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222223.png" alt="Cover letter edit mode"/><br/>
+  <sub><b>Writer — Edit mode</b><br/>Inline edit of subject + body, then Done / Save PDF / Copy.</sub>
+  </td>
+  </tr>
+  <tr>
+  <td width="50%" valign="top" align="center">
+  <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222238.png" alt="HR mock agent start"/><br/>
+  <sub><b>Interview — HR Mock Agent start</b><br/>Pick role + CV, how-it-works, past practice sessions.</sub>
+  </td>
+  <td width="50%" valign="top" align="center">
+  <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222257.png" alt="Mock interview question"/><br/>
+  <sub><b>Interview — Live mock chat</b><br/>Question progress, interviewer prompt, answer box, STAR coaching rail.</sub>
+  </td>
+  </tr>
+  <tr>
+  <td width="50%" valign="top" align="center">
+  <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20222426.png" alt="Mock interview feedback"/><br/>
+  <sub><b>Interview — Mid-session feedback</b><br/>Follow-up question with latest coaching feedback on the previous answer.</sub>
+  </td>
+  <td width="50%" valign="top" align="center">
+  <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20223306.png" alt="Interview session complete"/><br/>
+  <sub><b>Interview — Session complete</b><br/>Practice-round done, session summary + strengths, Practice again / Open Pipeline.</sub>
+  </td>
+  </tr>
+  <tr>
+  <td width="50%" valign="top" align="center">
+  <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20223322.png" alt="Interview improvements tips"/><br/>
+  <sub><b>Interview — Coaching rail detail</b><br/>Strengths, improvements, and practice tips after a mock round.</sub>
+  </td>
+  <td width="50%" valign="top" align="center">
+  <img src="ProjectManagement/Sprint3Documents/UI%20ss%20sprint3/Screenshot%202026-08-01%20223336.png" alt="Student profile"/><br/>
+  <sub><b>Account — Student profile</b><br/>University, year, major, and target sectors used by the AI agents.</sub>
+  </td>
+  </tr>
+  </table>
 
 - **Sprint Review:**  
   At sprint close we demoed the **Sprint 3 increment** on the live app ([https://internroute.onrender.com](https://internroute.onrender.com)): a student can run a **CV vs job gap scan**, draft an editable **cover letter** (with PDF export), complete a **mock HR interview** with coaching feedback, schedule prep events on the **Calendar**, and move through Board → Pipeline with polished UI — all backed by Sprint 2 RAG memory + Gemini.  
