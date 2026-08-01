@@ -211,6 +211,14 @@ def test_mock_interview_start_answer_get_list(
     )
     assert again.status_code == 400
 
+    deleted = client.delete(f"/api/v1/agents/mock-interview/{session_id}", headers=auth_headers)
+    assert deleted.status_code == 204, deleted.text
+    missing = client.get(f"/api/v1/agents/mock-interview/{session_id}", headers=auth_headers)
+    assert missing.status_code == 404
+    listed_after = client.get("/api/v1/agents/mock-interview", headers=auth_headers)
+    assert listed_after.status_code == 200
+    assert all(item["session_id"] != session_id for item in listed_after.json())
+
 
 def test_mock_interview_via_application_id(
     client: TestClient,

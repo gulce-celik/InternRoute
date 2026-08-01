@@ -301,6 +301,18 @@ export async function listMockInterviews(
   return authRequest<MockInterviewSessionListItem[]>(`/agents/mock-interview?${search}`, token);
 }
 
+export async function deleteMockInterview(token: string, sessionId: number): Promise<void> {
+  await authRequest<void>(`/agents/mock-interview/${sessionId}`, token, {
+    method: "DELETE",
+  });
+}
+
+export async function clearMockInterviews(token: string): Promise<void> {
+  await authRequest<void>("/agents/mock-interview", token, {
+    method: "DELETE",
+  });
+}
+
 export async function listCalendarEvents(
   token: string,
   params?: { year?: number; month?: number },

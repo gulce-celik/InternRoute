@@ -18,15 +18,11 @@ import {
 import type { Application, ApplicationQAItem, ApplicationStatus } from "../types/application";
 import type { CV } from "../types/cv";
 import type { Job } from "../types/job";
-import { mapJobStatusToPipelineStage } from "../utils/jobStatus";
-
-const STATUS_OPTIONS: { value: ApplicationStatus; label: string }[] = [
-  { value: "draft", label: "Saved for later" },
-  { value: "applied", label: "Applied" },
-  { value: "interview", label: "Interview" },
-  { value: "offer", label: "Offer" },
-  { value: "rejected", label: "Rejected" },
-];
+import {
+  getStatusLabel,
+  mapStatusToPipelineStage,
+  STATUS_OPTIONS,
+} from "../utils/jobStatus";
 
 const emptyQaItem = (): ApplicationQAItem => ({ question: "", answer: "" });
 
@@ -36,16 +32,6 @@ function formatDate(iso: string): string {
     month: "short",
     day: "numeric",
   });
-}
-
-function mapApplicationStatusToPipelineStage(status: ApplicationStatus) {
-  if (status === "draft") {
-    return "saved" as const;
-  }
-  if (status === "rejected") {
-    return "applied" as const;
-  }
-  return mapJobStatusToPipelineStage(status);
 }
 
 export default function ApplicationsPage() {
@@ -128,7 +114,7 @@ export default function ApplicationsPage() {
   }, [selectedApplication]);
 
   const pipelineStage = selectedApplication
-    ? mapApplicationStatusToPipelineStage(selectedApplication.status)
+    ? mapStatusToPipelineStage(selectedApplication.status)
     : "saved";
 
   async function handleCreate(event: FormEvent) {
@@ -231,7 +217,7 @@ export default function ApplicationsPage() {
 
       <div className="jobs-layout">
         <AnimatedCard>
-          <article className="panel panel--form">
+          <article className="panel panel--form" id="link-application-form">
             <h2>Link job + CV</h2>
             {loading ? (
               <FormSkeleton rows={3} />
@@ -288,9 +274,24 @@ export default function ApplicationsPage() {
             </form>
             )}
             {!loading && (jobs.length === 0 || cvs.length === 0) && (
-              <p className="muted">
-                Pin at least one role on the Board and upload one CV before linking applications.
-              </p>
+              <div className="empty-state">
+                <strong>Need a role and a CV first</strong>
+                <p className="empty-state-copy">
+                  Pin at least one role on the Board and upload one CV before linking applications.
+                </p>
+                <div className="empty-state-actions">
+                  {jobs.length === 0 ? (
+                    <Link className="desk-zone-cta empty-state-cta" to="/jobs">
+                      Open Board
+                    </Link>
+                  ) : null}
+                  {cvs.length === 0 ? (
+                    <Link className="desk-zone-cta empty-state-cta" to="/cvs">
+                      Open CVs
+                    </Link>
+                  ) : null}
+                </div>
+              </div>
             )}
           </article>
         </AnimatedCard>
@@ -304,7 +305,27 @@ export default function ApplicationsPage() {
             ) : applications.length === 0 ? (
               <div className="empty-state">
                 <strong>No applications linked yet</strong>
-                Choose a role and CV above to start tracking which version you sent.
+                <p className="empty-state-copy">
+                  Choose a role and CV above to start tracking which version you sent.
+                </p>
+                {jobs.length > 0 && cvs.length > 0 ? (
+                  <a className="desk-zone-cta empty-state-cta" href="#link-application-form">
+                    Link an application
+                  </a>
+                ) : (
+                  <div className="empty-state-actions">
+                    {jobs.length === 0 ? (
+                      <Link className="desk-zone-cta empty-state-cta" to="/jobs">
+                        Pin a role
+                      </Link>
+                    ) : null}
+                    {cvs.length === 0 ? (
+                      <Link className="desk-zone-cta empty-state-cta" to="/cvs">
+                        Upload a CV
+                      </Link>
+                    ) : null}
+                  </div>
+                )}
               </div>
             ) : (
               <div className="pipeline-preview-grid">
@@ -360,7 +381,7 @@ export default function ApplicationsPage() {
                             </select>
                           </label>
                           <span className="job-date">
-                            {mapApplicationStatusToPipelineStage(application.status)} · Linked{" "}
+                            {getStatusLabel(application.status)} · Linked{" "}
                             {formatDate(application.created_at)}
                           </span>
                         </div>

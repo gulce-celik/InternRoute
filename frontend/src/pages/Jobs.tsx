@@ -11,14 +11,7 @@ import { createCalendarEvent, createJob, deleteJob, listJobs, updateJob } from "
 import type { CalendarEventCategory } from "../types/calendar";
 import { CALENDAR_CATEGORIES } from "../types/calendar";
 import type { Job, JobCreate, JobUpdate } from "../types/job";
-
-const STATUS_OPTIONS = [
-  { value: "applied", label: "Applied" },
-  { value: "interview", label: "Interview" },
-  { value: "offer", label: "Offer" },
-  { value: "rejected", label: "Rejected" },
-  { value: "draft", label: "Saved for later" },
-] as const;
+import { getStatusLabel, STATUS_OPTIONS } from "../utils/jobStatus";
 
 const emptyForm: JobCreate = {
   title: "",
@@ -221,7 +214,7 @@ export default function JobsPage() {
 
       <div className="jobs-layout">
         <AnimatedCard>
-          <article className="panel panel--form">
+          <article className="panel panel--form" id="pin-role-form">
             <h2>New listing</h2>
             <form onSubmit={handleSubmit} className="job-form">
               <label>
@@ -340,7 +333,12 @@ export default function JobsPage() {
             ) : jobs.length === 0 ? (
               <div className="empty-state">
                 <strong>No roles yet</strong>
-                Add your first internship listing and start building your pipeline.
+                <p className="empty-state-copy">
+                  Add your first internship listing and start building your pipeline.
+                </p>
+                <a className="desk-zone-cta empty-state-cta" href="#pin-role-form">
+                  Pin a role
+                </a>
               </div>
             ) : (
               <>
@@ -391,7 +389,7 @@ export default function JobsPage() {
                     {hasActiveFilters ? (
                       <button
                         type="button"
-                        className="btn-ghost board-clear-filters"
+                        className="desk-zone-cta empty-state-cta"
                         onClick={() => {
                           setStatusFilter("all");
                           setSearchQuery("");
@@ -508,8 +506,7 @@ export default function JobsPage() {
                                       </p>
                                     </div>
                                     <span className={`status-badge status-badge--${job.status}`}>
-                                      {STATUS_OPTIONS.find((option) => option.value === job.status)
-                                        ?.label ?? job.status}
+                                      {getStatusLabel(job.status)}
                                     </span>
                                   </div>
                                   <p className="job-description">{job.description}</p>

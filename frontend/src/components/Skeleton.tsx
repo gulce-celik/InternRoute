@@ -80,13 +80,51 @@ export function FormSkeleton({ rows = 4 }: { rows?: number }) {
   );
 }
 
+export function CalendarGridSkeleton() {
+  return (
+    <div className="calendar-grid-skeleton" aria-busy="true" aria-label="Loading calendar">
+      <div className="calendar-weekdays" aria-hidden="true">
+        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+          <span key={day}>{day}</span>
+        ))}
+      </div>
+      <div className="calendar-grid">
+        {Array.from({ length: 35 }, (_, index) => (
+          <div key={index} className="calendar-cell calendar-cell--skeleton" aria-hidden="true">
+            <Skeleton className="skeleton--calendar-day" />
+            <Skeleton className="skeleton--calendar-dot" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function CalendarDaySkeleton() {
+  return (
+    <div className="calendar-day-skeleton" aria-busy="true" aria-label="Loading day">
+      <div className="skeleton-stack">
+        <Skeleton className="skeleton--title" />
+        <Skeleton className="skeleton--meta" />
+        <Skeleton className="skeleton--line" />
+        <Skeleton className="skeleton--line skeleton--line-short" />
+        <Skeleton className="skeleton--button" />
+      </div>
+    </div>
+  );
+}
+
 export function ListSkeleton({
   count = 3,
   variant = "job",
 }: {
   count?: number;
-  variant?: "job" | "cv" | "flow";
+  variant?: "job" | "cv" | "flow" | "calendar";
 }) {
+  if (variant === "calendar") {
+    return <CalendarGridSkeleton />;
+  }
+
   const Card =
     variant === "cv" ? CvCardSkeleton : variant === "flow" ? FlowCardSkeleton : JobCardSkeleton;
 

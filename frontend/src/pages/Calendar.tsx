@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import AnimatedCard from "../components/AnimatedCard";
 import CalendarEventForm from "../components/CalendarEventForm";
+import { CalendarDaySkeleton, ListSkeleton } from "../components/Skeleton";
 import { useToast } from "../components/ToastProvider";
 import { useAuth } from "../hooks/useAuth";
 import { deleteCalendarEvent, listApplications, listCalendarEvents, listJobs } from "../services/api";
@@ -174,55 +175,60 @@ export default function CalendarPage() {
 
         <AnimatedCard className="calendar-grid-card">
           <div className="calendar-grid-wrap panel">
-            <div className="calendar-weekdays">
-              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-                <span key={day}>{day}</span>
-              ))}
-            </div>
-            <div className="calendar-grid">
-              {cells.map((day, index) => {
-                if (day == null) {
-                  return <div key={`empty-${index}`} className="calendar-cell calendar-cell--empty" />;
-                }
-                const dayEvents = events.filter((event) =>
-                  sameDay(event.event_date, cursor.year, cursor.month, day),
-                );
-                const isToday =
-                  day === today.getDate() &&
-                  cursor.month === today.getMonth() &&
-                  cursor.year === today.getFullYear();
-                const isSelected = day === selectedDay;
+            {loading ? (
+              <ListSkeleton variant="calendar" />
+            ) : (
+              <>
+                <div className="calendar-weekdays">
+                  {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+                    <span key={day}>{day}</span>
+                  ))}
+                </div>
+                <div className="calendar-grid">
+                  {cells.map((day, index) => {
+                    if (day == null) {
+                      return <div key={`empty-${index}`} className="calendar-cell calendar-cell--empty" />;
+                    }
+                    const dayEvents = events.filter((event) =>
+                      sameDay(event.event_date, cursor.year, cursor.month, day),
+                    );
+                    const isToday =
+                      day === today.getDate() &&
+                      cursor.month === today.getMonth() &&
+                      cursor.year === today.getFullYear();
+                    const isSelected = day === selectedDay;
 
-                return (
-                  <button
-                    key={day}
-                    type="button"
-                    className={`calendar-cell${isToday ? " calendar-cell--today" : ""}${
-                      isSelected ? " calendar-cell--selected" : ""
-                    }${dayEvents.length ? " calendar-cell--has-events" : ""}`}
-                    onClick={() => setSelectedDay(day)}
-                  >
-                    <span className="calendar-cell-day">{day}</span>
-                    <span className="calendar-cell-dots">
-                      {dayEvents.slice(0, 4).map((event) => {
-                        const meta = getCategoryMeta(event.category);
-                        return (
-                          <i
-                            key={event.id}
-                            title={event.title ?? meta.label}
-                            style={{ background: meta.color }}
-                          />
-                        );
-                      })}
-                    </span>
-                    {dayEvents[0] ? (
-                      <span className="calendar-cell-preview">{dayEvents[0].title}</span>
-                    ) : null}
-                  </button>
-                );
-              })}
-            </div>
-            {loading ? <p className="muted calendar-loading">Loading month…</p> : null}
+                    return (
+                      <button
+                        key={day}
+                        type="button"
+                        className={`calendar-cell${isToday ? " calendar-cell--today" : ""}${
+                          isSelected ? " calendar-cell--selected" : ""
+                        }${dayEvents.length ? " calendar-cell--has-events" : ""}`}
+                        onClick={() => setSelectedDay(day)}
+                      >
+                        <span className="calendar-cell-day">{day}</span>
+                        <span className="calendar-cell-dots">
+                          {dayEvents.slice(0, 4).map((event) => {
+                            const meta = getCategoryMeta(event.category);
+                            return (
+                              <i
+                                key={event.id}
+                                title={event.title ?? meta.label}
+                                style={{ background: meta.color }}
+                              />
+                            );
+                          })}
+                        </span>
+                        {dayEvents[0] ? (
+                          <span className="calendar-cell-preview">{dayEvents[0].title}</span>
+                        ) : null}
+                      </button>
+                    );
+                  })}
+                </div>
+              </>
+            )}
           </div>
         </AnimatedCard>
 
@@ -239,7 +245,9 @@ export default function CalendarPage() {
                   : "Pick a day"}
               </h2>
 
-              {selectedEvents.length === 0 ? (
+              {loading ? (
+                <CalendarDaySkeleton />
+              ) : selectedEvents.length === 0 ? (
                 <div className="empty-state calendar-day-empty">
                   <strong>Nothing on this day</strong>
                   <p className="empty-state-copy">
@@ -250,7 +258,7 @@ export default function CalendarPage() {
                   {selectedDay ? (
                     <button
                       type="button"
-                      className="desk-zone-cta calendar-day-empty-cta"
+                      className="desk-zone-cta empty-state-cta"
                       onClick={focusAddEventForm}
                     >
                       Add event

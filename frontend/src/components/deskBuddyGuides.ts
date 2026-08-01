@@ -63,11 +63,11 @@ export const DESK_BUDDY_GUIDES: DeskBuddyGuide[] = [
     tips: [
       {
         q: "How do I add a role?",
-        a: "Fill the form (title + company at minimum) and save. Status defaults to Applied or Saved for later.",
+        a: "Fill the form (title + company at minimum) and save. Status defaults to Applied or Saved.",
       },
       {
         q: "What do the statuses mean?",
-        a: "Saved for later, Applied, Interview, Offer, Rejected — update them as the process moves.",
+        a: "Saved, Applied, Interview, Offer, Rejected — update them as the process moves.",
       },
       {
         q: "Can I delete a pinned role?",

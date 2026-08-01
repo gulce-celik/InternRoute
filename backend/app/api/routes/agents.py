@@ -1,8 +1,15 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Response, status
 from sqlalchemy.orm import Session
 
 from app.agents.analyzer.service import analyze_job_cv
-from app.agents.hr_mock.service import get_session, list_sessions, start_session, submit_answer
+from app.agents.hr_mock.service import (
+    clear_sessions,
+    delete_session,
+    get_session,
+    list_sessions,
+    start_session,
+    submit_answer,
+)
 from app.agents.llm import gemini_status
 from app.agents.writer.service import generate_cover_letter
 from app.core.database import get_db
@@ -85,6 +92,16 @@ def mock_interview_list(
     return list_sessions(db, current_user, limit=limit)
 
 
+@router.delete("/mock-interview", status_code=status.HTTP_204_NO_CONTENT)
+def mock_interview_clear(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> Response:
+    """Delete all mock interview sessions for the current user."""
+    clear_sessions(db, current_user)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
 @router.get("/mock-interview/{session_id}", response_model=MockInterviewSessionResponse)
 def mock_interview_get(
     session_id: int,
@@ -93,3 +110,14 @@ def mock_interview_get(
 ) -> MockInterviewSessionResponse:
     """Fetch a mock interview session transcript and summary."""
     return get_session(db, current_user, session_id)
+
+
+@router.delete("/mock-interview/{session_id}", status_code=status.HTTP_204_NO_CONTENT)
+def mock_interview_delete(
+    session_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> Response:
+    """Delete one mock interview session owned by the current user."""
+    delete_session(db, current_user, session_id)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
