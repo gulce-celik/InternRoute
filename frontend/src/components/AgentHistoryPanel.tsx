@@ -14,8 +14,8 @@ type Props = {
   items: AgentHistoryItem[];
   activeId: string | null;
   onSelect: (id: string) => void;
-  onRemove: (id: string) => void;
-  onClear: () => void;
+  onRemove?: (id: string) => void;
+  onClear?: () => void;
   /** Nest under another panel without a second card chrome */
   embedded?: boolean;
 };
@@ -36,7 +36,7 @@ export default function AgentHistoryPanel({
     <Wrapper className={`session-rail${embedded ? " session-rail--embedded" : " panel"}`}>
       <div className="session-rail-head">
         <h2>{title}</h2>
-        {items.length > 0 ? (
+        {items.length > 0 && onClear ? (
           <button type="button" className="btn-ghost session-rail-clear" onClick={onClear}>
             Clear
           </button>
@@ -67,14 +67,16 @@ export default function AgentHistoryPanel({
                   <span>{formatHistoryTime(item.createdAt)}</span>
                 </span>
               </button>
-              <button
-                type="button"
-                className="session-rail-remove"
-                aria-label={`Remove ${item.label}`}
-                onClick={() => onRemove(item.id)}
-              >
-                ×
-              </button>
+              {onRemove ? (
+                <button
+                  type="button"
+                  className="session-rail-remove"
+                  aria-label={`Remove ${item.label}`}
+                  onClick={() => onRemove(item.id)}
+                >
+                  ×
+                </button>
+              ) : null}
             </li>
           ))}
         </ul>
