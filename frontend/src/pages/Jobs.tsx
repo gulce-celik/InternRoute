@@ -221,7 +221,7 @@ export default function JobsPage() {
 
       <div className="jobs-layout">
         <AnimatedCard>
-          <article className="panel panel--form">
+          <article className="panel panel--form" id="pin-role-form">
             <h2>New listing</h2>
             <form onSubmit={handleSubmit} className="job-form">
               <label>
@@ -340,7 +340,12 @@ export default function JobsPage() {
             ) : jobs.length === 0 ? (
               <div className="empty-state">
                 <strong>No roles yet</strong>
-                Add your first internship listing and start building your pipeline.
+                <p className="empty-state-copy">
+                  Add your first internship listing and start building your pipeline.
+                </p>
+                <a className="desk-zone-cta empty-state-cta" href="#pin-role-form">
+                  Pin a role
+                </a>
               </div>
             ) : (
               <>
@@ -391,7 +396,7 @@ export default function JobsPage() {
                     {hasActiveFilters ? (
                       <button
                         type="button"
-                        className="btn-ghost board-clear-filters"
+                        className="desk-zone-cta empty-state-cta"
                         onClick={() => {
                           setStatusFilter("all");
                           setSearchQuery("");

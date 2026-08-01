@@ -219,7 +219,7 @@ export default function CVsPage() {
 
       <div className="jobs-layout">
         <AnimatedCard>
-          <article className="panel panel--form">
+          <article className="panel panel--form" id="upload-cv-form">
             <h2>Upload Your CV</h2>
             <form onSubmit={handleUpload} className="job-form">
               <label>
@@ -301,7 +301,12 @@ export default function CVsPage() {
             ) : cvs.length === 0 ? (
               <div className="empty-state">
                 <strong>No CVs yet</strong>
-                Upload your first PDF — you&apos;ll pick it when linking a job application.
+                <p className="empty-state-copy">
+                  Upload your first PDF — you&apos;ll pick it when linking a job application.
+                </p>
+                <a className="desk-zone-cta empty-state-cta" href="#upload-cv-form">
+                  Upload a CV
+                </a>
               </div>
             ) : (
               <ul className="jobs-list">

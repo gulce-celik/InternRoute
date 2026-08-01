@@ -231,7 +231,7 @@ export default function ApplicationsPage() {
 
       <div className="jobs-layout">
         <AnimatedCard>
-          <article className="panel panel--form">
+          <article className="panel panel--form" id="link-application-form">
             <h2>Link job + CV</h2>
             {loading ? (
               <FormSkeleton rows={3} />
@@ -288,9 +288,24 @@ export default function ApplicationsPage() {
             </form>
             )}
             {!loading && (jobs.length === 0 || cvs.length === 0) && (
-              <p className="muted">
-                Pin at least one role on the Board and upload one CV before linking applications.
-              </p>
+              <div className="empty-state">
+                <strong>Need a role and a CV first</strong>
+                <p className="empty-state-copy">
+                  Pin at least one role on the Board and upload one CV before linking applications.
+                </p>
+                <div className="empty-state-actions">
+                  {jobs.length === 0 ? (
+                    <Link className="desk-zone-cta empty-state-cta" to="/jobs">
+                      Open Board
+                    </Link>
+                  ) : null}
+                  {cvs.length === 0 ? (
+                    <Link className="desk-zone-cta empty-state-cta" to="/cvs">
+                      Open CVs
+                    </Link>
+                  ) : null}
+                </div>
+              </div>
             )}
           </article>
         </AnimatedCard>
@@ -304,7 +319,27 @@ export default function ApplicationsPage() {
             ) : applications.length === 0 ? (
               <div className="empty-state">
                 <strong>No applications linked yet</strong>
-                Choose a role and CV above to start tracking which version you sent.
+                <p className="empty-state-copy">
+                  Choose a role and CV above to start tracking which version you sent.
+                </p>
+                {jobs.length > 0 && cvs.length > 0 ? (
+                  <a className="desk-zone-cta empty-state-cta" href="#link-application-form">
+                    Link an application
+                  </a>
+                ) : (
+                  <div className="empty-state-actions">
+                    {jobs.length === 0 ? (
+                      <Link className="desk-zone-cta empty-state-cta" to="/jobs">
+                        Pin a role
+                      </Link>
+                    ) : null}
+                    {cvs.length === 0 ? (
+                      <Link className="desk-zone-cta empty-state-cta" to="/cvs">
+                        Upload a CV
+                      </Link>
+                    ) : null}
+                  </div>
+                )}
               </div>
             ) : (
               <div className="pipeline-preview-grid">
