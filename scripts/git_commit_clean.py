@@ -11,9 +11,9 @@ ROOT = Path(__file__).resolve().parents[1]
 GIT = r"C:\Program Files\Git\cmd\git.exe"
 
 AUTHOR = {
-    "GIT_AUTHOR_NAME": "gulce-celik",
+    "GIT_AUTHOR_NAME": "Gulce Celik",
     "GIT_AUTHOR_EMAIL": "gulcecelik.contact@gmail.com",
-    "GIT_COMMITTER_NAME": "gulce-celik",
+    "GIT_COMMITTER_NAME": "Gulce Celik",
     "GIT_COMMITTER_EMAIL": "gulcecelik.contact@gmail.com",
 }
 

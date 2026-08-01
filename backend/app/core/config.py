@@ -16,6 +16,7 @@ class Settings(BaseSettings):
         env_file=_ENV_FILES,
         env_file_encoding="utf-8",
         extra="ignore",
+        populate_by_name=True,
     )
 
     app_name: str = "InternRoute"
@@ -32,8 +33,11 @@ class Settings(BaseSettings):
 
     cors_origins: str = "http://localhost:5173,http://localhost:3000"
 
-    upload_dir: str = "uploads/cvs"
-    chroma_persist_dir: str = "chroma_data"
+    upload_dir: str = Field(default="uploads/cvs", validation_alias="UPLOAD_DIR")
+    chroma_persist_dir: str = Field(
+        default="chroma_data",
+        validation_alias="CHROMA_PERSIST_DIRECTORY",
+    )
     chroma_collection_interviews: str = Field(
         default="internroute_interviews",
         validation_alias="CHROMA_COLLECTION_INTERVIEWS",
