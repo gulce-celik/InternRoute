@@ -1,4 +1,14 @@
-import type { AnalyzeRequest, AnalyzeResult, CoverLetterRequest, CoverLetterResult } from "../types/agents";
+import type {
+  AnalyzeRequest,
+  AnalyzeResult,
+  CoverLetterRequest,
+  CoverLetterResult,
+  MockInterviewAnswerResult,
+  MockInterviewSession,
+  MockInterviewSessionListItem,
+  MockInterviewStartRequest,
+  MockInterviewStartResult,
+} from "../types/agents";
 import type { Application, ApplicationCreate, ApplicationUpdate } from "../types/application";
 import type {
   ProfileUpdate,
@@ -254,6 +264,41 @@ export async function generateCoverLetter(
     method: "POST",
     body: JSON.stringify(payload),
   });
+}
+
+export async function startMockInterview(
+  token: string,
+  payload: MockInterviewStartRequest,
+): Promise<MockInterviewStartResult> {
+  return authRequest<MockInterviewStartResult>("/agents/mock-interview/start", token, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function answerMockInterview(
+  token: string,
+  payload: { session_id: number; answer: string },
+): Promise<MockInterviewAnswerResult> {
+  return authRequest<MockInterviewAnswerResult>("/agents/mock-interview/answer", token, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function getMockInterview(
+  token: string,
+  sessionId: number,
+): Promise<MockInterviewSession> {
+  return authRequest<MockInterviewSession>(`/agents/mock-interview/${sessionId}`, token);
+}
+
+export async function listMockInterviews(
+  token: string,
+  limit = 20,
+): Promise<MockInterviewSessionListItem[]> {
+  const search = new URLSearchParams({ limit: String(limit) });
+  return authRequest<MockInterviewSessionListItem[]>(`/agents/mock-interview?${search}`, token);
 }
 
 export async function listCalendarEvents(

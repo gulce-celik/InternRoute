@@ -258,12 +258,11 @@ export default function DashboardPage() {
               </article>
             </li>
             <li>
-              <article className="home-ai-tool home-ai-tool--soon">
-                <span className="home-ai-tool-status">Soon</span>
+              <article className="home-ai-tool home-ai-tool--live">
                 <span className="home-ai-tool-title">Interview</span>
                 <span className="home-ai-tool-body">Mock HR chat grounded in your pipeline</span>
                 <Link to="/interview" className="desk-zone-cta">
-                  Preview
+                  Open
                 </Link>
               </article>
             </li>

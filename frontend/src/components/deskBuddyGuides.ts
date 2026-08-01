@@ -44,7 +44,7 @@ export const DESK_BUDDY_GUIDES: DeskBuddyGuide[] = [
       },
       {
         q: "When do Analyze / Interview / Letters work?",
-        a: "Analyze and Letters are live. Interview still shows S3 until that lands.",
+        a: "All three are live. Pin a role + CV first, then open Analyze, Interview, or Letters from the top bar.",
       },
     ],
     quickLinks: [
@@ -101,7 +101,7 @@ export const DESK_BUDDY_GUIDES: DeskBuddyGuide[] = [
       },
       {
         q: "What is “memory”?",
-        a: "Parsed CV text stored for Sprint 3 agents (Analyze, Interview, Letters).",
+        a: "Parsed CV text used by Analyze, Interview, and Letters so answers stay grounded in your file.",
       },
       {
         q: "What if I delete a CV?",
@@ -134,6 +134,10 @@ export const DESK_BUDDY_GUIDES: DeskBuddyGuide[] = [
         a: "Screening questions and your written answers — keep them with the application so they’re easy to reuse.",
       },
       {
+        q: "Can I practice for a role?",
+        a: "Yes. Open Interview, pick the same job + CV (or come from Pipeline), and run a short mock HR chat.",
+      },
+      {
         q: "Job or CV missing in the dropdowns?",
         a: "Pin a role on the Board and upload at least one PDF to the Locker first.",
       },
@@ -141,6 +145,7 @@ export const DESK_BUDDY_GUIDES: DeskBuddyGuide[] = [
     quickLinks: [
       { label: "Pin a role", to: "/jobs" },
       { label: "Upload a CV", to: "/cvs" },
+      { label: "Practice interview", to: "/interview" },
     ],
   },
   {
@@ -153,7 +158,7 @@ export const DESK_BUDDY_GUIDES: DeskBuddyGuide[] = [
     tips: [
       {
         q: "Why fill this in?",
-        a: "Sprint 3 tools use it so tips and letters match your path.",
+        a: "Analyze, Interview, and Letters use it so tips and questions match your path.",
       },
       {
         q: "What are target sectors?",
@@ -195,26 +200,31 @@ export const DESK_BUDDY_GUIDES: DeskBuddyGuide[] = [
   {
     path: "/interview",
     pageLabel: "Interview",
-    title: "Mock chat (soon)",
-    copy: "Sprint 3: practice role-specific questions in a mock HR conversation grounded in your CV.",
+    title: "Mock HR practice",
+    copy: "Pick a pinned role + CV, answer a short chat, get coaching after each turn, then a wrap-up summary.",
     fabHint: "Interview help",
-    tipsTitle: "Get ready",
+    tipsTitle: "How to use it",
     tips: [
       {
-        q: "How do I prep today?",
-        a: "Save written screening answers in Pipeline Q&A and keep your CV versions up to date.",
+        q: "How do I start?",
+        a: "Choose a Board role and a locker CV, then hit Start practice. Prefer a Pipeline match so both are linked.",
       },
       {
-        q: "Will mocks be per company?",
-        a: "Yes — tied to a pinned role so questions match the listing and your background.",
+        q: "How long is a session?",
+        a: "About 5–7 questions — behavioral plus light role-fit. Enter sends; Shift+Enter adds a new line.",
       },
       {
-        q: "Is this live now?",
-        a: "Coming in Sprint 3. Until then use Pipeline notes to rehearse answers yourself.",
+        q: "Where does feedback go?",
+        a: "Under your answer and in the Coaching rail. When you finish, copy the session summary if you want it in notes.",
+      },
+      {
+        q: "Are answers saved?",
+        a: "Yes — turns land in prep memory, and past sessions stay in the list so you can reopen them.",
       },
     ],
     quickLinks: [
-      { label: "Pipeline Q&A", to: "/applications" },
+      { label: "Open Pipeline", to: "/applications" },
+      { label: "Open Analyze", to: "/analyze" },
       { label: "Update Profile", to: "/profile" },
     ],
   },

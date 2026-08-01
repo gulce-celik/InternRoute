@@ -382,6 +382,38 @@ export default function ApplicationsPage() {
               Keep everything for <strong>{selectedApplication.job_title}</strong> in one place. You
               can change the CV later if you picked the wrong version.
             </p>
+
+            <div className="pipeline-ai-actions">
+              <p className="pipeline-ai-kicker">Prep with AI</p>
+              {selectedApplication.cv_id == null ? (
+                <p className="muted pipeline-ai-hint">
+                  Assign a CV above, then jump to Analyze, Letters, or Interview with this match
+                  pre-selected.
+                </p>
+              ) : (
+                <div className="pipeline-ai-links">
+                  <Link
+                    to={`/analyze?application_id=${selectedApplication.id}`}
+                    className="desk-zone-cta"
+                  >
+                    Analyze
+                  </Link>
+                  <Link
+                    to={`/cover-letter?application_id=${selectedApplication.id}`}
+                    className="desk-zone-cta"
+                  >
+                    Cover letter
+                  </Link>
+                  <Link
+                    to={`/interview?application_id=${selectedApplication.id}`}
+                    className="desk-zone-cta"
+                  >
+                    Mock interview
+                  </Link>
+                </div>
+              )}
+            </div>
+
             <form onSubmit={handleSaveDetails} className="job-form">
               <label>
                 CV version

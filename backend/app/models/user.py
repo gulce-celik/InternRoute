@@ -38,6 +38,9 @@ class User(Base):
     calendar_events: Mapped[list["CalendarEvent"]] = relationship(
         back_populates="user", cascade="all, delete-orphan"
     )
+    interview_sessions: Mapped[list["InterviewSession"]] = relationship(
+        back_populates="user", cascade="all, delete-orphan"
+    )
 
 
 class PendingRegistration(Base):
@@ -71,6 +74,7 @@ class Job(Base):
     user: Mapped["User"] = relationship(back_populates="jobs")
     applications: Mapped[list["Application"]] = relationship(back_populates="job")
     calendar_events: Mapped[list["CalendarEvent"]] = relationship(back_populates="job")
+    interview_sessions: Mapped[list["InterviewSession"]] = relationship(back_populates="job")
 
 
 class CV(Base):
@@ -87,6 +91,7 @@ class CV(Base):
 
     user: Mapped["User"] = relationship(back_populates="cvs")
     applications: Mapped[list["Application"]] = relationship(back_populates="cv")
+    interview_sessions: Mapped[list["InterviewSession"]] = relationship(back_populates="cv")
 
 
 class Application(Base):
@@ -114,6 +119,51 @@ class Application(Base):
     job: Mapped["Job"] = relationship(back_populates="applications")
     cv: Mapped["CV | None"] = relationship(back_populates="applications", passive_deletes=True)
     calendar_events: Mapped[list["CalendarEvent"]] = relationship(back_populates="application")
+    interview_sessions: Mapped[list["InterviewSession"]] = relationship(back_populates="application")
+
+
+class InterviewSessionStatus(str, enum.Enum):
+    ACTIVE = "active"
+    COMPLETED = "completed"
+    ABANDONED = "abandoned"
+
+
+class InterviewSession(Base):
+    """Mock HR interview session with JSON transcript turns."""
+
+    __tablename__ = "interview_sessions"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    job_id: Mapped[int] = mapped_column(ForeignKey("jobs.id", ondelete="CASCADE"), index=True)
+    cv_id: Mapped[int] = mapped_column(ForeignKey("cvs.id", ondelete="CASCADE"), index=True)
+    application_id: Mapped[int | None] = mapped_column(
+        ForeignKey("applications.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
+    status: Mapped[InterviewSessionStatus] = mapped_column(
+        Enum(InterviewSessionStatus),
+        default=InterviewSessionStatus.ACTIVE,
+        nullable=False,
+    )
+    question_limit: Mapped[int] = mapped_column(nullable=False, default=6)
+    transcript: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    summary: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+        nullable=False,
+    )
+
+    user: Mapped["User"] = relationship(back_populates="interview_sessions")
+    job: Mapped["Job"] = relationship(back_populates="interview_sessions")
+    cv: Mapped["CV"] = relationship(back_populates="interview_sessions")
+    application: Mapped["Application | None"] = relationship(back_populates="interview_sessions")
 
 
 class CalendarEventCategory(str, enum.Enum):

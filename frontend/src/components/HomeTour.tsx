@@ -42,13 +42,13 @@ const STEPS: TourStep[] = [
   },
   {
     target: "[data-tour='nav-ai']",
-    title: "AI tools (soon)",
-    body: "Analyze, Interview, and Letters unlock in Sprint 3 — tags show what’s coming.",
+    title: "AI tools",
+    body: "Analyze, Interview, and Letters are live — gap scan, mock HR chat, and cover letters from a role + CV.",
   },
   {
     target: "[data-tour='nav-profile']",
     title: "Profile",
-    body: "University, major, and target sectors — later used by AI helpers.",
+    body: "University, major, and target sectors — used by Analyze, Interview, and Letters.",
   },
   {
     target: "[data-tour='desk-board']",
