@@ -3062,6 +3062,39 @@ button:disabled {
   margin-top: 1.5rem;
 }
 
+.pipeline-ai-actions {
+  margin: 1rem 0 1.25rem;
+  padding: 0.9rem 1rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, #efe6d8 0%, var(--paper-deep) 100%);
+  box-shadow: var(--shadow-sm);
+}
+
+.pipeline-ai-kicker {
+  margin: 0 0 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.pipeline-ai-hint {
+  margin: 0;
+  font-size: 0.92rem;
+}
+
+.pipeline-ai-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.pipeline-ai-links .desk-zone-cta {
+  text-decoration: none;
+}
+
 .analyze-mode {
   margin: 0;
   padding: 0.9rem;
