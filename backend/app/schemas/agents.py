@@ -71,3 +71,101 @@ class CoverLetterResponse(BaseModel):
     letter: str
     rag_chunks_used: int = 0
     saved: bool = False
+
+
+# ─── Mock interview ─────────────────────────────────────────────
+
+
+class MockInterviewStartRequest(BaseModel):
+    """Start a role-specific mock HR interview. Pass application_id or job_id+cv_id."""
+
+    job_id: int | None = None
+    cv_id: int | None = None
+    application_id: int | None = None
+    question_limit: int | None = Field(
+        default=None,
+        ge=5,
+        le=7,
+        description="Questions per session (clamped 5–7; default 6)",
+    )
+
+    @model_validator(mode="after")
+    def require_ids(self) -> "MockInterviewStartRequest":
+        if self.application_id is not None:
+            return self
+        if self.job_id is not None and self.cv_id is not None:
+            return self
+        raise ValueError(
+            "Provide application_id, or both job_id and cv_id",
+        )
+
+
+class MockInterviewAnswerRequest(BaseModel):
+    session_id: int
+    answer: str = Field(min_length=1, max_length=8000)
+
+
+class InterviewTurn(BaseModel):
+    role: str  # "interviewer" | "student"
+    content: str
+    feedback: str | None = None
+    created_at: str | None = None
+
+
+class InterviewSummary(BaseModel):
+    overall: str = ""
+    strengths: list[str] = Field(default_factory=list)
+    improvements: list[str] = Field(default_factory=list)
+    practice_tips: list[str] = Field(default_factory=list)
+
+
+class MockInterviewStartResponse(BaseModel):
+    session_id: int
+    job_id: int
+    cv_id: int
+    application_id: int | None = None
+    status: str
+    question_index: int
+    question_limit: int
+    question: str
+    rag_chunks_used: int = 0
+
+
+class MockInterviewAnswerResponse(BaseModel):
+    session_id: int
+    status: str
+    question_index: int
+    question_limit: int
+    feedback: str = ""
+    question: str | None = None
+    completed: bool = False
+    summary: InterviewSummary | None = None
+
+
+class MockInterviewSessionResponse(BaseModel):
+    session_id: int
+    job_id: int
+    cv_id: int
+    application_id: int | None = None
+    job_title: str = ""
+    job_company: str = ""
+    status: str
+    question_index: int
+    question_limit: int
+    transcript: list[InterviewTurn] = Field(default_factory=list)
+    summary: InterviewSummary | None = None
+    created_at: str | None = None
+    updated_at: str | None = None
+
+
+class MockInterviewSessionListItem(BaseModel):
+    session_id: int
+    job_id: int
+    cv_id: int
+    application_id: int | None = None
+    job_title: str = ""
+    job_company: str = ""
+    status: str
+    question_limit: int
+    created_at: str | None = None
+

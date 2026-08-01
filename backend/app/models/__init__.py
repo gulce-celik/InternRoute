@@ -1,3 +1,19 @@
-from app.models.user import Application, CV, Job, PendingRegistration, User
+from app.models.user import (
+    Application,
+    CV,
+    InterviewSession,
+    InterviewSessionStatus,
+    Job,
+    PendingRegistration,
+    User,
+)
 
-__all__ = ["User", "Job", "CV", "Application", "PendingRegistration"]
+__all__ = [
+    "User",
+    "Job",
+    "CV",
+    "Application",
+    "InterviewSession",
+    "InterviewSessionStatus",
+    "PendingRegistration",
+]

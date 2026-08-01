@@ -19,6 +19,7 @@ def chroma(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> ChromaStore:
             (),
             {
                 "chroma_persist_dir": str(tmp_path / "chroma"),
+                "chroma_collection_interviews": "internroute_interviews",
                 "google_api_key": None,
             },
         )(),
@@ -109,3 +110,62 @@ def test_retrieve_and_build_agent_context(chroma: ChromaStore):
     assert "CV excerpt 1" in context
     assert "Docker" in context
     assert build_agent_context([]) == ""
+
+
+def test_upsert_interview_turn_and_count(chroma: ChromaStore):
+    assert chroma.count_user_interview_turns(4) == 0
+
+    written = chroma.upsert_interview_turn(
+        user_id=4,
+        session_id=12,
+        job_id=3,
+        cv_id=8,
+        turn_index=1,
+        question="Why do you want this internship?",
+        answer="I want to build APIs with FastAPI and grow as a backend engineer.",
+        feedback="Good motivation; add a concrete project example.",
+    )
+    assert written == 1
+    assert chroma.count_user_interview_turns(4) == 1
+
+    # Idempotent upsert for the same turn id
+    chroma.upsert_interview_turn(
+        user_id=4,
+        session_id=12,
+        job_id=3,
+        cv_id=8,
+        turn_index=1,
+        question="Why do you want this internship?",
+        answer="Updated answer about FastAPI and SQLAlchemy.",
+        feedback="Clearer.",
+    )
+    assert chroma.count_user_interview_turns(4) == 1
+
+    chroma.upsert_interview_turn(
+        user_id=4,
+        session_id=12,
+        job_id=3,
+        cv_id=8,
+        turn_index=2,
+        question="Tell me about a team conflict.",
+        answer="We disagreed on API design and compromised with a spike.",
+    )
+    assert chroma.count_user_interview_turns(4) == 2
+
+    chroma.delete_interview_session_turns(user_id=4, session_id=12)
+    assert chroma.count_user_interview_turns(4) == 0
+
+
+def test_upsert_interview_turn_skips_empty(chroma: ChromaStore):
+    assert (
+        chroma.upsert_interview_turn(
+            user_id=1,
+            session_id=1,
+            job_id=1,
+            cv_id=1,
+            turn_index=0,
+            question="  ",
+            answer="",
+        )
+        == 0
+    )

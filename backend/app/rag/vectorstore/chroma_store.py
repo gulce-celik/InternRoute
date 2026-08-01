@@ -9,6 +9,7 @@ from app.core.config import get_settings
 from app.rag.embeddings.embedder import get_embedder
 
 CV_COLLECTION = "internroute_cv"
+DEFAULT_INTERVIEW_COLLECTION = "internroute_interviews"
 
 
 class ChromaStore:
@@ -18,10 +19,20 @@ class ChromaStore:
         persist_dir.mkdir(parents=True, exist_ok=True)
         self._client = chromadb.PersistentClient(path=str(persist_dir))
         self._embedder = get_embedder(settings.google_api_key)
+        self._interview_collection_name = (
+            getattr(settings, "chroma_collection_interviews", None)
+            or DEFAULT_INTERVIEW_COLLECTION
+        )
 
     def _cv_collection(self) -> Collection:
         return self._client.get_or_create_collection(
             name=CV_COLLECTION,
+            metadata={"hnsw:space": "cosine"},
+        )
+
+    def _interview_collection(self) -> Collection:
+        return self._client.get_or_create_collection(
+            name=self._interview_collection_name,
             metadata={"hnsw:space": "cosine"},
         )
 
@@ -149,6 +160,67 @@ class ChromaStore:
 
     def count_user_chunks(self, user_id: int) -> int:
         collection = self._cv_collection()
+        results = collection.get(where={"user_id": str(user_id)}, include=[])
+        return len(results.get("ids") or [])
+
+    def upsert_interview_turn(
+        self,
+        *,
+        user_id: int,
+        session_id: int,
+        job_id: int,
+        cv_id: int,
+        turn_index: int,
+        question: str,
+        answer: str,
+        feedback: str | None = None,
+    ) -> int:
+        """Persist one mock-interview Q&A turn into the interviews collection."""
+        q = (question or "").strip()
+        a = (answer or "").strip()
+        if not q and not a:
+            return 0
+
+        parts = [f"Q: {q}", f"A: {a}"]
+        fb = (feedback or "").strip()
+        if fb:
+            parts.append(f"Feedback: {fb}")
+        document = "\n".join(parts)
+
+        collection = self._interview_collection()
+        doc_id = f"user-{user_id}-session-{session_id}-turn-{turn_index}"
+        embedding = self._embedder.embed_texts([document])[0]
+        collection.upsert(
+            ids=[doc_id],
+            documents=[document],
+            embeddings=[embedding],
+            metadatas=[
+                {
+                    "user_id": str(user_id),
+                    "session_id": str(session_id),
+                    "job_id": str(job_id),
+                    "cv_id": str(cv_id),
+                    "turn_index": str(turn_index),
+                }
+            ],
+        )
+        return 1
+
+    def delete_interview_session_turns(self, *, user_id: int, session_id: int) -> None:
+        collection = self._interview_collection()
+        existing = collection.get(
+            where={
+                "$and": [
+                    {"user_id": str(user_id)},
+                    {"session_id": str(session_id)},
+                ]
+            },
+        )
+        if existing["ids"]:
+            collection.delete(ids=existing["ids"])
+
+    def count_user_interview_turns(self, user_id: int) -> int:
+        collection = self._interview_collection()
         results = collection.get(where={"user_id": str(user_id)}, include=[])
         return len(results.get("ids") or [])
 

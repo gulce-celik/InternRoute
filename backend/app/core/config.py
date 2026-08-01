@@ -34,6 +34,10 @@ class Settings(BaseSettings):
 
     upload_dir: str = "uploads/cvs"
     chroma_persist_dir: str = "chroma_data"
+    chroma_collection_interviews: str = Field(
+        default="internroute_interviews",
+        validation_alias="CHROMA_COLLECTION_INTERVIEWS",
+    )
     google_api_key: str | None = Field(default=None, validation_alias="GEMINI_API_KEY")
     gemini_model: str = Field(
         default="gemini-flash-lite-latest",
