@@ -26,24 +26,14 @@ const STEPS: TourStep[] = [
     body: "Your hub. Live counts and the Board → Locker → Pipeline flow live here.",
   },
   {
-    target: "[data-tour='nav-board']",
-    title: "Board (top bar)",
-    body: "Jump here anytime to pin and manage internship roles.",
-  },
-  {
-    target: "[data-tour='nav-cvs']",
-    title: "CVs (top bar)",
-    body: "Your locker — upload, view, and swap PDF versions.",
-  },
-  {
-    target: "[data-tour='nav-pipeline']",
-    title: "Pipeline (top bar)",
-    body: "Applications desk: match job + CV, notes, and written answers.",
+    target: "[data-tour='nav-workspace']",
+    title: "Workspace",
+    body: "Hover or tap here for Board, CVs, and Pipeline — your day-to-day desk tools.",
   },
   {
     target: "[data-tour='nav-ai']",
-    title: "AI tools",
-    body: "Analyze, Interview, and Letters are live — gap scan, mock HR chat, and cover letters from a role + CV.",
+    title: "Get Ready with AI",
+    body: "Hover or tap for Analyze, Interview, and Letters — gap scan, mock HR chat, and cover letters.",
   },
   {
     target: "[data-tour='nav-profile']",
