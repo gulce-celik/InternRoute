@@ -1,5 +1,5 @@
 # Render Blueprint — one Web Service = full working InternRoute URL
-# Dashboard: New → Blueprint → connect this repo
+# Free tier: no persistent disk (data resets on redeploy/sleep wake — re-seed if needed)
 
 services:
   - type: web
@@ -15,18 +15,14 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: DATABASE_URL
-        value: sqlite:////data/internroute.db
+        value: sqlite:///./data/internroute.db
       - key: CHROMA_PERSIST_DIRECTORY
-        value: /data/chroma_data
+        value: ./data/chroma_data
       - key: UPLOAD_DIR
-        value: /data/uploads
+        value: ./data/uploads
       - key: GEMINI_MODEL
         value: gemini-flash-lite-latest
       - key: CORS_ORIGINS
         value: "*"
       - key: GEMINI_API_KEY
         sync: false
-    disk:
-      name: internroute-data
-      mountPath: /data
-      sizeGB: 1
