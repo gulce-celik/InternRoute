@@ -711,8 +711,12 @@ export default function InterviewPage() {
               label: session.job_title
                 ? `${session.job_title} · ${session.job_company}`
                 : `Session ${session.session_id}`,
-              subtitle: session.status,
-              badge: session.status === "completed" ? "Done" : "Open",
+              badge:
+                session.status === "completed"
+                  ? "Completed"
+                  : session.status === "abandoned"
+                    ? "Abandoned"
+                    : "Active",
             }))}
             activeId={sessionId != null ? String(sessionId) : null}
             onSelect={(id) => void handleSelectSession(id)}

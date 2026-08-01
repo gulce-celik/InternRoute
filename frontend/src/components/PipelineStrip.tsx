@@ -6,7 +6,8 @@ const STAGES = [
 ] as const;
 
 interface PipelineStripProps {
-  activeStage?: (typeof STAGES)[number]["key"];
+  /** Null / undefined with noProgress: show empty track (e.g. rejected applications). */
+  activeStage?: (typeof STAGES)[number]["key"] | null;
 }
 
 function StageMarker({ marker }: { marker: string }) {
@@ -14,20 +15,33 @@ function StageMarker({ marker }: { marker: string }) {
 }
 
 export default function PipelineStrip({ activeStage = "saved" }: PipelineStripProps) {
-  const activeIndex = STAGES.findIndex((stage) => stage.key === activeStage);
+  const hasProgress = activeStage != null;
+  const activeIndex = hasProgress
+    ? STAGES.findIndex((stage) => stage.key === activeStage)
+    : -1;
 
   return (
-    <div className="pipeline-strip" aria-label="Application pipeline">
+    <div
+      className={`pipeline-strip${hasProgress ? "" : " pipeline-strip--empty"}`}
+      aria-label="Application pipeline"
+    >
       <div className="pipeline-track">
         <span
           className="pipeline-progress"
-          style={{ width: `${((activeIndex + 1) / STAGES.length) * 100}%` }}
+          style={{
+            width: hasProgress ? `${((activeIndex + 1) / STAGES.length) * 100}%` : "0%",
+          }}
         />
       </div>
       <ol className="pipeline-stages">
         {STAGES.map((stage, index) => {
-          const state =
-            index < activeIndex ? "done" : index === activeIndex ? "active" : "upcoming";
+          const state = !hasProgress
+            ? "upcoming"
+            : index < activeIndex
+              ? "done"
+              : index === activeIndex
+                ? "active"
+                : "upcoming";
 
           return (
             <li key={stage.key} className={`pipeline-stage pipeline-stage--${state}`}>

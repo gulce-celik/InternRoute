@@ -2699,6 +2699,14 @@ button:disabled {
   gap: 0.5rem;
 }
 
+.pipeline-strip--empty .pipeline-progress {
+  width: 0 !important;
+}
+
+.pipeline-strip--empty .pipeline-stage {
+  opacity: 0.55;
+}
+
 .pipeline-stage {
   display: flex;
   flex-direction: column;

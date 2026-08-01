@@ -18,15 +18,11 @@ import {
 import type { Application, ApplicationQAItem, ApplicationStatus } from "../types/application";
 import type { CV } from "../types/cv";
 import type { Job } from "../types/job";
-import { mapJobStatusToPipelineStage } from "../utils/jobStatus";
-
-const STATUS_OPTIONS: { value: ApplicationStatus; label: string }[] = [
-  { value: "draft", label: "Saved for later" },
-  { value: "applied", label: "Applied" },
-  { value: "interview", label: "Interview" },
-  { value: "offer", label: "Offer" },
-  { value: "rejected", label: "Rejected" },
-];
+import {
+  getStatusLabel,
+  mapStatusToPipelineStage,
+  STATUS_OPTIONS,
+} from "../utils/jobStatus";
 
 const emptyQaItem = (): ApplicationQAItem => ({ question: "", answer: "" });
 
@@ -36,16 +32,6 @@ function formatDate(iso: string): string {
     month: "short",
     day: "numeric",
   });
-}
-
-function mapApplicationStatusToPipelineStage(status: ApplicationStatus) {
-  if (status === "draft") {
-    return "saved" as const;
-  }
-  if (status === "rejected") {
-    return "applied" as const;
-  }
-  return mapJobStatusToPipelineStage(status);
 }
 
 export default function ApplicationsPage() {
@@ -128,7 +114,7 @@ export default function ApplicationsPage() {
   }, [selectedApplication]);
 
   const pipelineStage = selectedApplication
-    ? mapApplicationStatusToPipelineStage(selectedApplication.status)
+    ? mapStatusToPipelineStage(selectedApplication.status)
     : "saved";
 
   async function handleCreate(event: FormEvent) {
@@ -395,7 +381,7 @@ export default function ApplicationsPage() {
                             </select>
                           </label>
                           <span className="job-date">
-                            {mapApplicationStatusToPipelineStage(application.status)} · Linked{" "}
+                            {getStatusLabel(application.status)} · Linked{" "}
                             {formatDate(application.created_at)}
                           </span>
                         </div>

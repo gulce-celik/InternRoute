@@ -11,14 +11,7 @@ import { createCalendarEvent, createJob, deleteJob, listJobs, updateJob } from "
 import type { CalendarEventCategory } from "../types/calendar";
 import { CALENDAR_CATEGORIES } from "../types/calendar";
 import type { Job, JobCreate, JobUpdate } from "../types/job";
-
-const STATUS_OPTIONS = [
-  { value: "applied", label: "Applied" },
-  { value: "interview", label: "Interview" },
-  { value: "offer", label: "Offer" },
-  { value: "rejected", label: "Rejected" },
-  { value: "draft", label: "Saved for later" },
-] as const;
+import { getStatusLabel, STATUS_OPTIONS } from "../utils/jobStatus";
 
 const emptyForm: JobCreate = {
   title: "",
@@ -513,8 +506,7 @@ export default function JobsPage() {
                                       </p>
                                     </div>
                                     <span className={`status-badge status-badge--${job.status}`}>
-                                      {STATUS_OPTIONS.find((option) => option.value === job.status)
-                                        ?.label ?? job.status}
+                                      {getStatusLabel(job.status)}
                                     </span>
                                   </div>
                                   <p className="job-description">{job.description}</p>
