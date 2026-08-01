@@ -20,7 +20,14 @@ sys.path.insert(0, str(BACKEND_DIR))
 
 from app.core.database import Base, SessionLocal, engine  # noqa: E402
 from app.core.security import hash_password  # noqa: E402
-from app.models.user import Application, ApplicationStatus, CV, Job, User  # noqa: E402
+from app.models.user import (  # noqa: E402
+    Application,
+    ApplicationStatus,
+    CV,
+    InterviewSession,
+    Job,
+    User,
+)
 
 DEMO_EMAIL = "demo@internroute.app"
 DEMO_PASSWORD = "DemoStudent2026!"
@@ -66,6 +73,7 @@ def seed() -> None:
     try:
         existing = db.query(User).filter(User.email == DEMO_EMAIL).first()
         if existing:
+            db.query(InterviewSession).filter(InterviewSession.user_id == existing.id).delete()
             db.query(Application).filter(Application.user_id == existing.id).delete()
             db.query(CV).filter(CV.user_id == existing.id).delete()
             db.query(Job).filter(Job.user_id == existing.id).delete()
@@ -234,6 +242,11 @@ def seed() -> None:
         for app in applications:
             db.add(app)
         db.commit()
+        for app in applications:
+            db.refresh(app)
+
+        # Primary demo match: Trendyol SE intern (interview stage) + general CV.
+        demo_app = applications[0]
 
         print("Demo user ready.")
         print(f"  email:    {DEMO_EMAIL}")
@@ -241,6 +254,12 @@ def seed() -> None:
         print(f"  jobs:     {len(jobs)}")
         print(f"  cvs:      {len(cvs)}")
         print(f"  apps:     {len(applications)}")
+        print()
+        print("Agent demo path (Pipeline -> Prep with AI):")
+        print(f"  application_id={demo_app.id}  ({jobs[0].title} @ {jobs[0].company})")
+        print(f"  /analyze?application_id={demo_app.id}")
+        print(f"  /cover-letter?application_id={demo_app.id}")
+        print(f"  /interview?application_id={demo_app.id}")
     finally:
         db.close()
 
