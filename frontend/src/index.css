@@ -1030,7 +1030,7 @@ button:disabled {
 }
 
 .panel {
-  background: #fffdf9;
+  background: var(--surface);
   border: 2px solid var(--border);
   border-radius: calc(var(--radius) + 2px);
   padding: 1.25rem;
@@ -1052,10 +1052,69 @@ button:disabled {
   align-items: start;
 }
 
-.jobs-layout--with-sessions {
-  grid-template-columns: minmax(240px, 300px) minmax(0, 1.45fr) minmax(200px, 240px);
-  gap: 1rem;
+.jobs-layout--with-sessions,
+.studio-layout {
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1.4fr) minmax(220px, 270px);
+  gap: 1.25rem;
   width: 100%;
+  align-items: start;
+}
+
+.studio-layout > * {
+  min-width: 0;
+}
+
+.studio-result-panel {
+  min-height: 18rem;
+}
+
+.studio-busy-copy {
+  margin: 0.35rem 0 0;
+}
+
+.studio-layout .session-rail.panel {
+  position: sticky;
+  top: 5.5rem;
+  max-height: calc(100vh - 6.5rem);
+  overflow: auto;
+}
+
+.studio-layout .panel--form,
+.studio-layout .studio-result-panel,
+.studio-layout .session-rail.panel {
+  height: 100%;
+}
+
+/* Interview setup: match Start practice + How it works panel heights */
+.interview-page .studio-layout {
+  align-items: stretch;
+}
+
+.interview-page .studio-layout > .animated-card:nth-child(1),
+.interview-page .studio-layout > .animated-card:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.interview-page .studio-layout > .animated-card:nth-child(1) > .panel,
+.interview-page .studio-layout > .animated-card:nth-child(2) > .panel {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  height: auto;
+  box-sizing: border-box;
+}
+
+.interview-page .studio-layout > .animated-card:nth-child(2) .interview-howto-list {
+  flex: 1 1 auto;
+}
+
+.interview-page .studio-layout > .animated-card:nth-child(3) {
+  align-self: start;
+  height: auto;
 }
 
 .job-form {
@@ -3166,15 +3225,28 @@ button:disabled {
   cursor: inherit;
 }
 
-.job-form > button[type="submit"] {
-  margin-top: 0.2rem;
+.job-form > button[type="submit"],
+.job-form > .studio-primary-cta {
+  margin-top: 0.35rem;
   width: 100%;
   letter-spacing: 0.02em;
-  font-size: 0.95rem;
-  padding: 0.85rem 1.1rem;
+  font-size: 0.98rem;
+  padding: 0.9rem 1.15rem;
+  border-width: 2px;
 }
 
-.job-form > button[type="submit"]:not(:disabled) {
+.job-form > button[type="submit"]:not(:disabled),
+.job-form > .studio-primary-cta:not(:disabled) {
+  background: linear-gradient(180deg, #d4573b 0%, var(--accent) 100%);
+  box-shadow: var(--shadow-sm);
+}
+
+.job-form > button[type="submit"]:not(:disabled):hover,
+.job-form > .studio-primary-cta:not(:disabled):hover {
+  background: var(--accent-hover);
+}
+
+.interview-composer-actions .studio-primary-cta:not(:disabled) {
   background: linear-gradient(180deg, #d4573b 0%, var(--accent) 100%);
 }
 
@@ -3193,14 +3265,6 @@ button:disabled {
 
 .analyze-prereq-empty .desk-zone-cta {
   margin-top: 0;
-}
-
-.analyze-sessions-block {
-  margin-top: 1.25rem;
-  padding-top: 1.15rem;
-  border-top: 2px dashed rgba(20, 17, 15, 0.16);
-  min-width: 0;
-  overflow: hidden;
 }
 
 .session-rail--embedded {
@@ -3252,7 +3316,8 @@ button:disabled {
   width: 100%;
 }
 
-.session-rail-item {
+.session-rail-item,
+button.session-rail-item {
   display: grid;
   gap: 0.2rem;
   min-width: 0;
@@ -3260,19 +3325,35 @@ button:disabled {
   padding: 0.65rem 0.7rem;
   border: 2px solid var(--border);
   border-radius: var(--radius);
-  background: #fffdf9;
+  background: var(--surface);
   color: var(--ink);
   box-shadow: none;
   cursor: pointer;
 }
 
-.session-rail-item:hover {
-  border-color: rgba(20, 17, 15, 0.45);
+button.session-rail-item:hover:not(:disabled),
+button.session-rail-item:active:not(:disabled) {
+  transform: none;
+  box-shadow: none;
+  background: var(--paper-deep);
+  border-color: var(--ink);
+  color: var(--ink);
 }
 
-.session-rail-item--active {
-  border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 10%, #fffdf9);
+.session-rail-item--active,
+button.session-rail-item--active {
+  border-color: var(--ink);
+  background: var(--surface);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+button.session-rail-item--active:hover:not(:disabled),
+button.session-rail-item--active:active:not(:disabled) {
+  transform: none;
+  box-shadow: inset 3px 0 0 var(--accent);
+  background: var(--paper-deep);
+  border-color: var(--ink);
+  color: var(--ink);
 }
 
 .session-rail-item-label {
@@ -3282,6 +3363,7 @@ button:disabled {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: var(--ink);
 }
 
 .session-rail-item-sub {
@@ -3304,10 +3386,16 @@ button:disabled {
   min-width: 0;
 }
 
-.session-rail-remove {
+.session-rail-item-meta strong {
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.session-rail-remove,
+button.session-rail-remove {
   border: 2px solid var(--border);
   border-radius: var(--radius);
-  background: #fffdf9;
+  background: var(--surface);
   color: var(--ink-soft);
   box-shadow: none;
   padding: 0 0.45rem;
@@ -3318,7 +3406,10 @@ button:disabled {
   align-self: stretch;
 }
 
-.session-rail-remove:hover {
+button.session-rail-remove:hover:not(:disabled),
+button.session-rail-remove:active:not(:disabled) {
+  transform: none;
+  box-shadow: none;
   background: #9b1c1c;
   color: #fff;
   border-color: #9b1c1c;
@@ -3625,12 +3716,13 @@ button:disabled {
 }
 
 .interview-howto-list {
-  margin: 0 0 1rem;
+  margin: 0;
   padding-left: 1.15rem;
   display: grid;
   gap: 0.55rem;
   color: var(--ink-soft);
   line-height: 1.45;
+  align-content: start;
 }
 
 .letter-studio {
@@ -4128,8 +4220,21 @@ button:disabled {
   }
 
   .jobs-layout,
-  .jobs-layout--with-sessions {
+  .jobs-layout--with-sessions,
+  .studio-layout {
     grid-template-columns: 1fr;
+  }
+
+  .interview-page .studio-layout > .animated-card:nth-child(1),
+  .interview-page .studio-layout > .animated-card:nth-child(2),
+  .interview-page .studio-layout > .animated-card:nth-child(3) {
+    height: auto;
+    align-self: stretch;
+  }
+
+  .studio-layout .session-rail.panel {
+    position: static;
+    max-height: none;
   }
 
   .analyze-report-grid {

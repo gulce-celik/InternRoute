@@ -304,6 +304,25 @@ def list_sessions(
     return items
 
 
+def delete_session(db: Session, user: User, session_id: int) -> None:
+    session = _get_owned_session(db, user, session_id, with_job=False)
+    db.delete(session)
+    db.commit()
+
+
+def clear_sessions(db: Session, user: User) -> int:
+    rows = (
+        db.query(InterviewSession)
+        .filter(InterviewSession.user_id == user.id)
+        .all()
+    )
+    count = len(rows)
+    for session in rows:
+        db.delete(session)
+    db.commit()
+    return count
+
+
 # ─── helpers ────────────────────────────────────────────────────
 
 

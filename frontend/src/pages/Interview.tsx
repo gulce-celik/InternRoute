@@ -15,6 +15,8 @@ import { useToast } from "../components/ToastProvider";
 import { useAuth } from "../hooks/useAuth";
 import {
   answerMockInterview,
+  clearMockInterviews,
+  deleteMockInterview,
   getMockInterview,
   listApplications,
   listCVs,
@@ -335,6 +337,44 @@ export default function InterviewPage() {
     }
   }
 
+  async function handleRemoveSession(id: string) {
+    if (!token) {
+      return;
+    }
+    const numericId = Number(id);
+    if (!Number.isFinite(numericId)) {
+      return;
+    }
+
+    try {
+      await deleteMockInterview(token, numericId);
+      setSessions((prev) => prev.filter((session) => session.session_id !== numericId));
+      if (sessionId === numericId) {
+        handleBackToSetup();
+      }
+      toast.success("Practice session removed.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not remove session");
+    }
+  }
+
+  async function handleClearSessions() {
+    if (!token) {
+      return;
+    }
+
+    try {
+      await clearMockInterviews(token);
+      setSessions([]);
+      if (sessionId != null) {
+        handleBackToSetup();
+      }
+      toast.success("Past practice sessions cleared.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not clear sessions");
+    }
+  }
+
   function handleBackToSetup() {
     setPhase("setup");
     setSessionId(null);
@@ -474,7 +514,7 @@ export default function InterviewPage() {
                         disabled={sending}
                       />
                       <div className="interview-composer-actions">
-                        <button type="submit" disabled={!canSend}>
+                        <button type="submit" className="studio-primary-cta" disabled={!canSend}>
                           {sending ? "Sending..." : "Send answer"}
                         </button>
                       </div>
@@ -549,9 +589,9 @@ export default function InterviewPage() {
         </h1>
       </div>
 
-      <div className="jobs-layout">
+      <div className="jobs-layout jobs-layout--with-sessions studio-layout">
         <AnimatedCard>
-          <article className="panel panel--form">
+          <article className="panel panel--form" id="interview-form">
             <h2>Start practice</h2>
 
             {loading ? (
@@ -639,47 +679,46 @@ export default function InterviewPage() {
                   </p>
                 ) : null}
 
-                <button type="submit" disabled={!canStart || starting}>
+                <button type="submit" className="studio-primary-cta" disabled={!canStart || starting}>
                   {starting ? "Starting..." : "Start practice"}
                 </button>
               </form>
             )}
-
-            <div className="analyze-sessions-block">
-              <AgentHistoryPanel
-                embedded
-                title="Past sessions"
-                emptyText="Completed practice rounds will show up here."
-                items={sessions.map((session) => ({
-                  id: String(session.session_id),
-                  createdAt: session.created_at ?? new Date().toISOString(),
-                  label: session.job_title
-                    ? `${session.job_title} · ${session.job_company}`
-                    : `Session ${session.session_id}`,
-                  subtitle: session.status,
-                  badge: session.status === "completed" ? "Done" : "Open",
-                }))}
-                activeId={sessionId != null ? String(sessionId) : null}
-                onSelect={(id) => void handleSelectSession(id)}
-              />
-            </div>
           </article>
         </AnimatedCard>
 
-        <AnimatedCard delay={100}>
-          <div className="panel">
-            <h2>How it works</h2>
+        <AnimatedCard delay={80}>
+          <div className="panel studio-result-panel">
+            <div className="letter-studio-head">
+              <h2>How it works</h2>
+            </div>
             <ul className="interview-howto-list">
               <li>Pick the role you are preparing for and the CV you would send.</li>
               <li>Answer 5–7 short HR-style questions with light role-fit follow-ups.</li>
               <li>Get coaching after each turn, then a summary you can copy and reuse.</li>
               <li>Answers are saved to your prep memory for smarter practice next time.</li>
             </ul>
-            <p className="muted">
-              Tip: open this page from Pipeline with a linked application so the role and CV are
-              pre-selected.
-            </p>
           </div>
+        </AnimatedCard>
+
+        <AnimatedCard delay={140}>
+          <AgentHistoryPanel
+            title="Past sessions"
+            emptyText="Completed practice rounds will show up here."
+            items={sessions.map((session) => ({
+              id: String(session.session_id),
+              createdAt: session.created_at ?? new Date().toISOString(),
+              label: session.job_title
+                ? `${session.job_title} · ${session.job_company}`
+                : `Session ${session.session_id}`,
+              subtitle: session.status,
+              badge: session.status === "completed" ? "Done" : "Open",
+            }))}
+            activeId={sessionId != null ? String(sessionId) : null}
+            onSelect={(id) => void handleSelectSession(id)}
+            onRemove={(id) => void handleRemoveSession(id)}
+            onClear={() => void handleClearSessions()}
+          />
         </AnimatedCard>
       </div>
     </section>

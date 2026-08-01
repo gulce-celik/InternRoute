@@ -268,9 +268,9 @@ export default function CoverLetterPage() {
         </h1>
       </div>
 
-      <div className="jobs-layout">
+      <div className="jobs-layout jobs-layout--with-sessions studio-layout">
         <AnimatedCard>
-          <article className="panel panel--form">
+          <article className="panel panel--form" id="letter-form">
             <h2>Draft settings</h2>
 
             {loading ? (
@@ -389,35 +389,16 @@ export default function CoverLetterPage() {
                   </p>
                 ) : null}
 
-                <button type="submit" disabled={!canSubmit || drafting}>
+                <button type="submit" className="studio-primary-cta" disabled={!canSubmit || drafting}>
                   {drafting ? "Drafting..." : letter ? "Regenerate draft" : "Draft letter"}
                 </button>
               </form>
             )}
-
-            <div className="analyze-sessions-block">
-              <AgentHistoryPanel
-                embedded
-                title="Past sessions"
-                emptyText="Past letter drafts will show up here."
-                items={history.map((entry) => ({
-                  id: entry.id,
-                  createdAt: entry.createdAt,
-                  label: entry.label,
-                  subtitle: entry.subtitle,
-                  badge: entry.meta.saved ? "Saved" : undefined,
-                }))}
-                activeId={activeSessionId}
-                onSelect={handleSelectSession}
-                onRemove={handleRemoveSession}
-                onClear={handleClearSessions}
-              />
-            </div>
           </article>
         </AnimatedCard>
 
-        <AnimatedCard delay={100}>
-          <div className="panel">
+        <AnimatedCard delay={80}>
+          <div className="panel studio-result-panel">
             <div className="letter-studio-head">
               <h2>Draft</h2>
               {letter ? (
@@ -442,11 +423,16 @@ export default function CoverLetterPage() {
             </div>
 
             {drafting ? (
-              <p className="muted">Writing from the listing and your CV memory...</p>
+              <p className="muted studio-busy-copy">Writing from the listing and your CV memory...</p>
             ) : !letter ? (
               <div className="empty-state">
                 <strong>No draft yet</strong>
-                Choose a role and CV, then draft a letter.
+                <p className="empty-state-copy">Choose a role and CV, then draft a letter.</p>
+                {jobs.length > 0 && cvs.length > 0 ? (
+                  <a className="desk-zone-cta empty-state-cta" href="#letter-form">
+                    Set up draft
+                  </a>
+                ) : null}
               </div>
             ) : (
               <div className={`letter-studio${editing ? " letter-studio--editing" : ""}`}>
@@ -485,6 +471,24 @@ export default function CoverLetterPage() {
               </div>
             )}
           </div>
+        </AnimatedCard>
+
+        <AnimatedCard delay={140}>
+          <AgentHistoryPanel
+            title="Past sessions"
+            emptyText="Past letter drafts will show up here."
+            items={history.map((entry) => ({
+              id: entry.id,
+              createdAt: entry.createdAt,
+              label: entry.label,
+              subtitle: entry.subtitle,
+              badge: entry.meta.saved ? "Saved" : undefined,
+            }))}
+            activeId={activeSessionId}
+            onSelect={handleSelectSession}
+            onRemove={handleRemoveSession}
+            onClear={handleClearSessions}
+          />
         </AnimatedCard>
       </div>
     </section>

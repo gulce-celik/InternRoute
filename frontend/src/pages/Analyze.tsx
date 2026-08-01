@@ -244,9 +244,9 @@ export default function AnalyzePage() {
         </h1>
       </div>
 
-      <div className="jobs-layout">
+      <div className="jobs-layout jobs-layout--with-sessions studio-layout">
         <AnimatedCard>
-          <article className="panel panel--form">
+          <article className="panel panel--form" id="analyze-form">
             <h2>Run analysis</h2>
 
             {loading ? (
@@ -334,35 +334,16 @@ export default function AnalyzePage() {
                   </p>
                 ) : null}
 
-                <button type="submit" disabled={!canSubmit || analyzing}>
+                <button type="submit" className="studio-primary-cta" disabled={!canSubmit || analyzing}>
                   {analyzing ? "Scanning..." : "Run gap scan"}
                 </button>
               </form>
             )}
-
-            <div className="analyze-sessions-block">
-              <AgentHistoryPanel
-                embedded
-                title="Past sessions"
-                emptyText="Past gap scans will show up here."
-                items={history.map((entry) => ({
-                  id: entry.id,
-                  createdAt: entry.createdAt,
-                  label: entry.label,
-                  subtitle: entry.subtitle,
-                  badge: `Fit ${entry.result.fit_score}`,
-                }))}
-                activeId={activeSessionId}
-                onSelect={handleSelectSession}
-                onRemove={handleRemoveSession}
-                onClear={handleClearSessions}
-              />
-            </div>
           </article>
         </AnimatedCard>
 
-        <AnimatedCard delay={100}>
-          <div className="panel">
+        <AnimatedCard delay={80}>
+          <div className="panel studio-result-panel">
             <div className="letter-studio-head">
               <h2>Report</h2>
               {result && !analyzing ? (
@@ -377,11 +358,18 @@ export default function AnalyzePage() {
             </div>
 
             {analyzing ? (
-              <p className="muted">Comparing the listing to your CV memory...</p>
+              <p className="muted studio-busy-copy">Comparing the listing to your CV memory...</p>
             ) : !result ? (
               <div className="empty-state">
                 <strong>No report yet</strong>
-                Choose a role and CV, then run a gap scan.
+                <p className="empty-state-copy">
+                  Choose a role and CV, then run a gap scan.
+                </p>
+                {jobs.length > 0 && cvs.length > 0 ? (
+                  <a className="desk-zone-cta empty-state-cta" href="#analyze-form">
+                    Set up scan
+                  </a>
+                ) : null}
               </div>
             ) : (
               <div className="analyze-report">
@@ -424,6 +412,24 @@ export default function AnalyzePage() {
               </div>
             )}
           </div>
+        </AnimatedCard>
+
+        <AnimatedCard delay={140}>
+          <AgentHistoryPanel
+            title="Past sessions"
+            emptyText="Past gap scans will show up here."
+            items={history.map((entry) => ({
+              id: entry.id,
+              createdAt: entry.createdAt,
+              label: entry.label,
+              subtitle: entry.subtitle,
+              badge: `Fit ${entry.result.fit_score}`,
+            }))}
+            activeId={activeSessionId}
+            onSelect={handleSelectSession}
+            onRemove={handleRemoveSession}
+            onClear={handleClearSessions}
+          />
         </AnimatedCard>
       </div>
     </section>
