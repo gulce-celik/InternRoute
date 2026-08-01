@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 import AnimatedCard from "../components/AnimatedCard";
@@ -49,6 +49,19 @@ export default function CalendarPage() {
   const [loading, setLoading] = useState(true);
   const [linkJobId, setLinkJobId] = useState("");
   const [linkApplicationId, setLinkApplicationId] = useState("");
+  const addEventPanelRef = useRef<HTMLElement | null>(null);
+
+  function focusAddEventForm() {
+    const panel = addEventPanelRef.current;
+    if (!panel) {
+      return;
+    }
+    panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    const focusTarget = panel.querySelector<HTMLElement>(
+      "select, input:not([type='hidden']), textarea, button[type='submit']",
+    );
+    focusTarget?.focus();
+  }
 
   const loadMonth = useCallback(async () => {
     if (!token) {
@@ -131,38 +144,35 @@ export default function CalendarPage() {
   return (
     <section className="page-section calendar-page">
       <div className="calendar-hero">
-        <div>
-          <p className="page-kicker">Deadlines & tests</p>
-          <h1>
-            Your <em>calendar</em>
-          </h1>
-          <p className="page-description">
-            One month at a time — aptitude tests, interviews, and case days color-coded so you can
-            skim what matters.
-          </p>
-        </div>
-        <div className="calendar-month-nav">
-          <button type="button" className="btn-ghost" onClick={() => shiftMonth(-1)}>
-            ← Prev
-          </button>
-          <h2>{monthLabel(cursor.year, cursor.month)}</h2>
-          <button type="button" className="btn-ghost" onClick={() => shiftMonth(1)}>
-            Next →
-          </button>
-        </div>
-      </div>
-
-      <div className="calendar-legend">
-        {CALENDAR_CATEGORIES.map((item) => (
-          <span key={item.value} className="calendar-legend-item">
-            <i style={{ background: item.color }} />
-            {item.label}
-          </span>
-        ))}
+        <p className="page-kicker">Deadlines & tests</p>
+        <h1>
+          Your <em>calendar</em>
+        </h1>
       </div>
 
       <div className="calendar-shell">
-        <AnimatedCard>
+        <div className="calendar-controls">
+          <div className="calendar-month-nav">
+            <button type="button" className="btn-ghost" onClick={() => shiftMonth(-1)}>
+              ← Prev
+            </button>
+            <h2>{monthLabel(cursor.year, cursor.month)}</h2>
+            <button type="button" className="btn-ghost" onClick={() => shiftMonth(1)}>
+              Next →
+            </button>
+          </div>
+
+          <div className="calendar-legend">
+            {CALENDAR_CATEGORIES.map((item) => (
+              <span key={item.value} className="calendar-legend-item">
+                <i style={{ background: item.color }} />
+                {item.label}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <AnimatedCard className="calendar-grid-card">
           <div className="calendar-grid-wrap panel">
             <div className="calendar-weekdays">
               {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
@@ -230,9 +240,22 @@ export default function CalendarPage() {
               </h2>
 
               {selectedEvents.length === 0 ? (
-                <div className="empty-state">
-                  <strong>No events</strong>
-                  Add a deadline for this day, or link one from Board / Pipeline.
+                <div className="empty-state calendar-day-empty">
+                  <strong>Nothing on this day</strong>
+                  <p className="empty-state-copy">
+                    {selectedDay
+                      ? "No deadlines or tests yet — add one below for this date."
+                      : "Pick a day on the calendar, then add an event."}
+                  </p>
+                  {selectedDay ? (
+                    <button
+                      type="button"
+                      className="desk-zone-cta calendar-day-empty-cta"
+                      onClick={focusAddEventForm}
+                    >
+                      Add event
+                    </button>
+                  ) : null}
                 </div>
               ) : (
                 <ul className="calendar-day-list">
@@ -269,7 +292,7 @@ export default function CalendarPage() {
           </AnimatedCard>
 
           <AnimatedCard delay={120}>
-            <article className="panel panel--form">
+            <article className="panel panel--form" ref={addEventPanelRef} id="calendar-add-event">
               <h2>Add event</h2>
               <p className="muted">
                 Or add while pinning a role on the <Link to="/jobs">Board</Link> / updating the{" "}

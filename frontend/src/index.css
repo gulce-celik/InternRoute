@@ -103,6 +103,14 @@ button:disabled {
   font-weight: 600;
 }
 
+.field-error {
+  margin: 0;
+  color: #9b1c1c;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
 /* Auth */
 .auth-page {
   min-height: 100vh;
@@ -970,6 +978,11 @@ button:disabled {
   margin-bottom: 0.55rem;
 }
 
+.job-card-header > div,
+.job-card-header > .cv-card-heading {
+  min-width: 0;
+}
+
 .job-card h3 {
   margin: 0;
   font-family: var(--font-display);
@@ -1328,22 +1341,88 @@ button:disabled {
   color: #fffdf9;
 }
 
-.home-sprint3-note {
-  margin-top: 0.25rem;
-  padding: 1rem 1.15rem;
-  border: 2px dashed rgba(20, 17, 15, 0.22);
-  border-radius: var(--radius);
-  background: rgba(255, 253, 249, 0.7);
-}
-
-.home-sprint3-note--wide {
+.home-ai-strip {
   margin-top: 0;
+  padding: 1.15rem 1.2rem 1.25rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: #fffdf9;
+  box-shadow: var(--shadow-sm);
 }
 
-.home-sprint3-note p:last-child {
-  margin: 0.35rem 0 0;
+.home-ai-strip-header {
+  margin-bottom: 0.9rem;
+}
+
+.home-ai-tools {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.home-ai-tool {
+  display: grid;
+  gap: 0.35rem;
+  height: 100%;
+  padding: 0.9rem 0.95rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  color: inherit;
+  background: var(--paper);
+}
+
+.home-ai-tool .desk-zone-cta {
+  margin-top: 0.55rem;
+  padding-left: 0.65rem;
+  padding-right: 0.65rem;
+  width: fit-content;
+  justify-self: start;
+}
+
+.home-ai-tool--live {
+  background: rgba(47, 93, 74, 0.08);
+}
+
+.home-ai-tool--soon {
+  background: rgba(232, 184, 74, 0.16);
+}
+
+.home-ai-tool-status {
+  display: inline-flex;
+  width: fit-content;
+  padding: 0.12rem 0.45rem;
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.home-ai-tool--soon .home-ai-tool-status {
+  background: var(--mustard);
+  color: var(--ink);
+}
+
+.home-ai-tool-title {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  line-height: 1.1;
+}
+
+.home-ai-tool-body {
   color: var(--ink-soft);
-  font-size: 0.92rem;
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 900px) {
+  .home-ai-tools {
+    grid-template-columns: 1fr;
+  }
 }
 
 @keyframes desk-orb-drift {
@@ -2783,10 +2862,200 @@ button:disabled {
   gap: 0.75rem;
 }
 
+.job-card--editing {
+  background: #fffdf9;
+}
+
+.job-form--inline-edit {
+  margin: 0;
+}
+
+.job-edit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  align-items: center;
+}
+
+.job-edit-actions > button[type="submit"] {
+  width: auto;
+}
+
+.board-toolbar {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0 0 1rem;
+}
+
+.board-search input {
+  width: 100%;
+}
+
+.board-filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.board-filter-chip {
+  background: #fffdf9;
+  color: var(--ink);
+  border: 2px solid var(--border);
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.board-filter-chip:hover:not(:disabled) {
+  background: var(--paper-deep);
+  transform: none;
+  box-shadow: none;
+}
+
+.board-filter-chip--active {
+  background: var(--forest);
+  color: #fffdf9;
+  border-color: var(--ink);
+}
+
+.board-clear-filters {
+  display: block;
+  margin: 0.85rem auto 0;
+  width: fit-content;
+}
+
+.empty-state-copy {
+  margin: 0;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .cv-card-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+}
+
+.cv-upload-field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.cv-upload-label {
+  font-weight: 700;
+  font-size: 0.88rem;
+  letter-spacing: 0.02em;
+}
+
+.cv-dropzone {
+  position: relative;
+  display: grid;
+  gap: 0.55rem;
+  padding: 1rem 0.95rem;
+  border: 2px dashed rgba(20, 17, 15, 0.28);
+  border-radius: var(--radius);
+  background: rgba(255, 253, 249, 0.85);
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.cv-dropzone--active {
+  border-color: var(--forest);
+  background: rgba(47, 93, 74, 0.1);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.cv-dropzone--filled {
+  border-style: solid;
+  border-color: var(--border);
+  background: var(--paper-deep);
+}
+
+.cv-dropzone-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.cv-dropzone-body {
+  display: grid;
+  gap: 0.2rem;
+  cursor: pointer;
+  font-weight: 400;
+}
+
+.cv-dropzone-body strong {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 400;
+}
+
+.cv-dropzone-filename {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cv-dropzone-meta,
+.cv-dropzone-hint,
+.cv-upload-constraints {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.cv-dropzone-clear {
+  width: fit-content;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.78rem;
+}
+
+.cv-card-heading {
+  min-width: 0;
+  width: 100%;
+}
+
+.cv-card-name,
+.cv-card-filename {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cv-card-filename {
+  display: inline-block;
+  max-width: min(100%, 18rem);
+  vertical-align: bottom;
+}
+
+.job-card-header .cv-card-heading h3.cv-card-name {
+  margin: 0;
 }
 
 .memory-panel {
@@ -2876,6 +3145,34 @@ button:disabled {
   font-size: 0.85rem;
 }
 
+.analyze-prereq-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.55rem;
+  margin-top: 0.9rem;
+}
+
+.analyze-prereq-empty .desk-zone-cta {
+  margin-top: 0;
+}
+
+.analyze-sessions-block {
+  margin-top: 1.25rem;
+  padding-top: 1.15rem;
+  border-top: 2px dashed rgba(20, 17, 15, 0.16);
+  min-width: 0;
+  overflow: hidden;
+}
+
+.session-rail--embedded {
+  min-width: 0;
+}
+
+.session-rail--embedded .session-rail-head h2 {
+  font-size: 1.15rem;
+}
+
 .session-rail-head {
   display: flex;
   align-items: center;
@@ -2891,6 +3188,7 @@ button:disabled {
 .session-rail-clear {
   padding: 0.3rem 0.55rem;
   font-size: 0.78rem;
+  flex-shrink: 0;
 }
 
 .session-rail-empty {
@@ -2904,18 +3202,22 @@ button:disabled {
   padding: 0;
   display: grid;
   gap: 0.55rem;
+  min-width: 0;
 }
 
 .session-rail-row {
   display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 0.25rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.35rem;
   align-items: stretch;
+  min-width: 0;
+  width: 100%;
 }
 
 .session-rail-item {
   display: grid;
   gap: 0.2rem;
+  min-width: 0;
   text-align: left;
   padding: 0.65rem 0.7rem;
   border: 2px solid var(--border);
@@ -2939,12 +3241,18 @@ button:disabled {
   font-weight: 800;
   font-size: 0.84rem;
   line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .session-rail-item-sub {
   font-size: 0.76rem;
   color: var(--ink-soft);
   font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .session-rail-item-meta {
@@ -2955,6 +3263,7 @@ button:disabled {
   font-size: 0.72rem;
   color: var(--ink-soft);
   font-weight: 600;
+  min-width: 0;
 }
 
 .session-rail-remove {
@@ -2967,11 +3276,14 @@ button:disabled {
   font-size: 1.1rem;
   line-height: 1;
   cursor: pointer;
+  flex-shrink: 0;
+  align-self: stretch;
 }
 
 .session-rail-remove:hover {
-  color: var(--accent);
-  border-color: var(--accent);
+  background: #9b1c1c;
+  color: #fff;
+  border-color: #9b1c1c;
 }
 
 .analyze-report {
@@ -3124,11 +3436,8 @@ button:disabled {
 }
 
 .calendar-hero {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 1rem;
-  flex-wrap: wrap;
+  display: grid;
+  gap: 0.35rem;
 }
 
 .calendar-hero h1 {
@@ -3144,9 +3453,27 @@ button:disabled {
   color: var(--accent);
 }
 
+.calendar-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(280px, 360px);
+  grid-template-rows: auto auto;
+  gap: 0.75rem 1.1rem;
+  align-items: start;
+}
+
+.calendar-controls {
+  grid-column: 1;
+  grid-row: 1;
+  display: grid;
+  gap: 0.75rem;
+  width: 100%;
+  min-width: 0;
+}
+
 .calendar-month-nav {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.65rem;
 }
 
@@ -3162,6 +3489,7 @@ button:disabled {
 .calendar-legend {
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-start;
   gap: 0.45rem 0.75rem;
 }
 
@@ -3181,11 +3509,18 @@ button:disabled {
   border: 1.5px solid var(--border);
 }
 
-.calendar-shell {
+.calendar-grid-card {
+  grid-column: 1;
+  grid-row: 2;
+  min-width: 0;
+}
+
+.calendar-side {
+  grid-column: 2;
+  grid-row: 2;
   display: grid;
-  grid-template-columns: minmax(0, 1.7fr) minmax(280px, 360px);
-  gap: 1.1rem;
-  align-items: start;
+  gap: 1rem;
+  min-width: 0;
 }
 
 .calendar-grid-wrap {
@@ -3294,9 +3629,9 @@ button:disabled {
   margin: 0;
 }
 
-.calendar-side {
-  display: grid;
-  gap: 1rem;
+.calendar-day-empty-cta {
+  display: inline-flex;
+  margin: 0.85rem auto 0;
 }
 
 .calendar-day-list {
@@ -3555,6 +3890,14 @@ button:disabled {
 
   .calendar-shell {
     grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  .calendar-controls,
+  .calendar-grid-card,
+  .calendar-side {
+    grid-column: 1;
+    grid-row: auto;
   }
 
   .calendar-grid {
