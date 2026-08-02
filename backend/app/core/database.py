@@ -41,7 +41,6 @@ def init_db() -> None:
         CalendarEvent,
         InterviewSession,
         Job,
-        PendingRegistration,
         User,
     )
 

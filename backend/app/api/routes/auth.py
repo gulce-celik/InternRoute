@@ -6,37 +6,19 @@ from app.core.database import get_db
 from app.core.dependencies import get_current_user
 from app.models.user import User
 from app.schemas.auth import (
-    RegisterResend,
-    RegisterVerify,
     TokenResponse,
     UserCreate,
     UserLogin,
     UserResponse,
-    VerificationStarted,
 )
-from app.services.auth_service import (
-    login_user,
-    resend_registration_code,
-    start_registration,
-    verify_registration,
-)
+from app.services.auth_service import login_user, register_user
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-@router.post("/register/start", response_model=VerificationStarted)
-def register_start(data: UserCreate, db: Session = Depends(get_db)) -> VerificationStarted:
-    return start_registration(db, data)
-
-
-@router.post("/register/verify", response_model=UserResponse, status_code=201)
-def register_verify(data: RegisterVerify, db: Session = Depends(get_db)) -> User:
-    return verify_registration(db, data)
-
-
-@router.post("/register/resend", response_model=VerificationStarted)
-def register_resend(data: RegisterResend, db: Session = Depends(get_db)) -> VerificationStarted:
-    return resend_registration_code(db, data.email)
+@router.post("/register", response_model=UserResponse, status_code=201)
+def register(data: UserCreate, db: Session = Depends(get_db)) -> User:
+    return register_user(db, data)
 
 
 @router.post("/login", response_model=TokenResponse)

@@ -12,21 +12,17 @@ import { markHomeTourPending } from "../components/HomeTour";
 import {
   getProfile,
   loginUser,
-  resendRegistrationCode,
-  startRegistration,
+  registerUser,
   updateProfile,
-  verifyRegistration,
 } from "../services/api";
-import type { ProfileUpdate, RegisterPayload, User, VerificationStarted } from "../types/auth";
+import type { ProfileUpdate, RegisterPayload, User } from "../types/auth";
 
 interface AuthContextValue {
   user: User | null;
   token: string | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  startRegister: (payload: RegisterPayload) => Promise<VerificationStarted>;
-  completeRegister: (email: string, code: string, password: string) => Promise<void>;
-  resendRegisterCode: (email: string) => Promise<VerificationStarted>;
+  register: (payload: RegisterPayload) => Promise<User>;
   logout: () => void;
   refreshUser: () => Promise<void>;
   updateUserProfile: (payload: ProfileUpdate) => Promise<User>;
@@ -104,21 +100,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [token],
   );
 
-  const startRegister = useCallback(async (payload: RegisterPayload) => {
-    return startRegistration(payload);
-  }, []);
-
-  const completeRegister = useCallback(
-    async (email: string, code: string, password: string) => {
-      await verifyRegistration({ email, code });
-      markHomeTourPending();
-      await login(email, password);
-    },
-    [login],
-  );
-
-  const resendRegisterCode = useCallback(async (email: string) => {
-    return resendRegistrationCode(email);
+  const register = useCallback(async (payload: RegisterPayload) => {
+    const created = await registerUser(payload);
+    markHomeTourPending();
+    return created;
   }, []);
 
   const logout = useCallback(() => {
@@ -133,25 +118,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       token,
       loading,
       login,
-      startRegister,
-      completeRegister,
-      resendRegisterCode,
+      register,
       logout,
       refreshUser,
       updateUserProfile,
     }),
-    [
-      user,
-      token,
-      loading,
-      login,
-      startRegister,
-      completeRegister,
-      resendRegisterCode,
-      logout,
-      refreshUser,
-      updateUserProfile,
-    ],
+    [user, token, loading, login, register, logout, refreshUser, updateUserProfile],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

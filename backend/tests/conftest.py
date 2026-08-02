@@ -6,7 +6,6 @@ from sqlalchemy.pool import StaticPool
 
 from app.core.database import Base, get_db
 from app.main import app
-from app.models.user import PendingRegistration  # noqa: F401
 
 SQLALCHEMY_DATABASE_URL = "sqlite://"
 
@@ -19,20 +18,14 @@ TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engin
 
 
 @pytest.fixture(autouse=True)
-def _isolate_email_delivery(monkeypatch):
-    """Never hit real Brevo/Resend during pytest — keep debug_code available."""
+def _isolate_external_services(monkeypatch):
+    """Avoid real email / LLM providers during pytest."""
     monkeypatch.setenv("SMTP_HOST", "")
     monkeypatch.setenv("SMTP_FROM", "")
     monkeypatch.setenv("SMTP_USERNAME", "")
     monkeypatch.setenv("SMTP_PASSWORD", "")
     monkeypatch.setenv("RESEND_API_KEY", "")
     monkeypatch.setenv("GEMINI_API_KEY", "")
-
-    def _fake_send(_to_email: str, _code: str) -> bool:
-        return False
-
-    monkeypatch.setattr("app.services.email_service.send_verification_email", _fake_send)
-    monkeypatch.setattr("app.services.auth_service.send_verification_email", _fake_send)
 
     import app.rag.vectorstore.chroma_store as chroma_store
 
@@ -48,19 +41,11 @@ def register_verified_user(
     password: str = "securepass",
     full_name: str = "Test User",
 ) -> dict[str, str]:
-    start = client.post(
-        "/api/v1/auth/register/start",
+    register = client.post(
+        "/api/v1/auth/register",
         json={"email": email, "password": password, "full_name": full_name},
     )
-    assert start.status_code == 200, start.text
-    code = start.json()["debug_code"]
-    assert code, "Expected debug_code in test mode"
-
-    verify = client.post(
-        "/api/v1/auth/register/verify",
-        json={"email": email, "code": code},
-    )
-    assert verify.status_code == 201, verify.text
+    assert register.status_code == 201, register.text
 
     login_response = client.post(
         "/api/v1/auth/login",

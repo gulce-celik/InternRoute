@@ -4,26 +4,17 @@ def test_health_check(client):
     assert response.json() == {"status": "ok"}
 
 
-def test_register_verify_and_login(client):
-    start = client.post(
-        "/api/v1/auth/register/start",
+def test_register_and_login(client):
+    register = client.post(
+        "/api/v1/auth/register",
         json={
             "email": "student@example.com",
             "password": "securepass",
             "full_name": "Test Student",
         },
     )
-    assert start.status_code == 200
-    body = start.json()
-    assert body["email"] == "student@example.com"
-    assert body["debug_code"]
-
-    verify = client.post(
-        "/api/v1/auth/register/verify",
-        json={"email": "student@example.com", "code": body["debug_code"]},
-    )
-    assert verify.status_code == 201
-    assert verify.json()["email"] == "student@example.com"
+    assert register.status_code == 201
+    assert register.json()["email"] == "student@example.com"
 
     login_response = client.post(
         "/api/v1/auth/login",
@@ -40,38 +31,23 @@ def test_register_verify_and_login(client):
     assert me_response.json()["full_name"] == "Test Student"
 
 
-def test_register_rejects_bad_code(client):
-    start = client.post(
-        "/api/v1/auth/register/start",
-        json={
-            "email": "badcode@example.com",
-            "password": "securepass",
-            "full_name": "Bad Code",
-        },
-    )
-    assert start.status_code == 200
+def test_register_rejects_duplicate_email(client):
+    payload = {
+        "email": "dup@example.com",
+        "password": "securepass",
+        "full_name": "First",
+    }
+    first = client.post("/api/v1/auth/register", json=payload)
+    assert first.status_code == 201
 
-    verify = client.post(
-        "/api/v1/auth/register/verify",
-        json={"email": "badcode@example.com", "code": "000000"},
-    )
-    assert verify.status_code == 400
-    assert "Invalid verification code" in verify.json()["detail"]
+    second = client.post("/api/v1/auth/register", json=payload)
+    assert second.status_code == 400
+    assert "already registered" in second.json()["detail"].lower()
 
 
-def test_login_before_verify_fails(client):
-    start = client.post(
-        "/api/v1/auth/register/start",
-        json={
-            "email": "pending@example.com",
-            "password": "securepass",
-            "full_name": "Pending",
-        },
-    )
-    assert start.status_code == 200
-
+def test_login_unknown_user_fails(client):
     login_response = client.post(
         "/api/v1/auth/login",
-        data={"username": "pending@example.com", "password": "securepass"},
+        data={"username": "missing@example.com", "password": "securepass"},
     )
     assert login_response.status_code == 401
