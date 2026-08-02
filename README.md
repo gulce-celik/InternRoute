@@ -11,9 +11,11 @@
 </p>
 
 <p align="center">
-  <a href="https://internroute.onrender.com"><strong>https://internroute.onrender.com</strong></a><br/>
-  Open the link to try the full product (UI + API + Gemini agents).<br/>
-  Free tier may take ~30–60s on first wake.
+  <a href="https://internroute.onrender.com"><strong>https://internroute.onrender.com</strong></a>
+</p>
+
+<p align="center">
+  <em>Note: Render free tier — first open may take ~30–60s. Without a persistent disk, accounts and uploads can reset after the service sleeps or redeploys.</em>
 </p>
 
 📋 **Scrum Board:** [InternRoute Bootcamp 2026 on Trello](https://trello.com/b/yTUmFEoB/internroutebootcamp2026)
