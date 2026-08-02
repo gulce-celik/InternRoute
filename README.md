@@ -11,7 +11,9 @@
 </p>
 
 <p align="center">
-  <a href="https://internroute.onrender.com"><strong>https://internroute.onrender.com</strong></a>
+  <a href="https://internroute.onrender.com"><strong>https://internroute.onrender.com</strong></a><br/>
+  Open the link to try the full product (UI + API + Gemini agents).<br/>
+  <strong>🎥 Demo video:</strong> <a href="https://youtu.be/V5xFgpXODWc">https://youtu.be/V5xFgpXODWc</a>
 </p>
 
 <p align="center">
@@ -25,6 +27,7 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=black)](https://react.dev/)
 [![Live](https://img.shields.io/badge/Live-internroute.onrender.com-success)](https://internroute.onrender.com)
+[![Demo Video](https://img.shields.io/badge/Demo_Video-YouTube-FF0000?logo=youtube&logoColor=white)](https://youtu.be/V5xFgpXODWc)
 
 > Built with Scrum during **YZTA Bootcamp 2026** — 3 sprints × 2 weeks
 
@@ -116,6 +119,7 @@ The goal is simple: **stop losing applications in random notes** and walk into e
 | **Interview Calendar** | Month view + categories (HR/tech/AI interview, aptitude, language, case study) |
 | **UI polish** | Unified agent pages, Board edit/search, status labels, dashboard AI links |
 | **Deploy** | Live URL on Render — [https://internroute.onrender.com](https://internroute.onrender.com) |
+| **Demo video** | Final project walkthrough — [https://youtu.be/V5xFgpXODWc](https://youtu.be/V5xFgpXODWc) |
 
 ---
 
@@ -339,7 +343,7 @@ The goal is simple: **stop losing applications in random notes** and walk into e
   **Story → task split:** Blue-label stories break into red-label tasks (shared Gemini LLM client, `/agents/analyze`, gap report UI, cover-letter API/studio/PDF, mock-interview sessions + coaching UI, calendar API/month UI, Render Docker deploy, tests). Process cards (Review, Retro, GitHub evidence) tracked alongside delivery.
 
 - **Daily Scrum:**  
-  We ran dailies throughout Sprint 3 (20 Jul – 2 Aug) in **WhatsApp** and **voice calls** when schedules allowed — same rhythm as Sprints 1–2. We tracked US-3.1–US-3.5 (analyzer, writer, mock interview, calendar, deploy/polish), broke work into Trello tasks, and prepared the **Sprint Review** and **Retrospective**. WhatsApp screenshot evidence will be added under [`ProjectManagement/Sprint3Documents/dailyscrum-ss-whatsapp`](ProjectManagement/Sprint3Documents/dailyscrum-ss-whatsapp).
+  We ran dailies throughout Sprint 3 (20 Jul – 2 Aug) in **WhatsApp** and **voice calls** when schedules allowed — same rhythm as Sprints 1–2. We tracked US-3.1–US-3.5 (analyzer, writer, mock interview, calendar, deploy/polish), broke work into Trello tasks, and prepared the **Sprint Review** and **Retrospective**. WhatsApp screenshot evidence are added under [`ProjectManagement/Sprint3Documents/dailyscrum-ss-whatsapp`](ProjectManagement/Sprint3Documents/dailyscrum-ss-whatsapp).
 
 - **Sprint board update:**
 
@@ -459,9 +463,9 @@ The goal is simple: **stop losing applications in random notes** and walk into e
   - **Writer (US-3.2):** `/agents/cover-letter`; Letter studio (tone, analyzer summary, notes); Pipeline-aware drafts; session history; edit mode + Save PDF; writer tests.  
   - **HR Mock Interview (US-3.3):** Interview session models + API (`start` / `answer` / list / get); Interview page with coaching rail; Pipeline deep link; Desk Buddy interview guidance; session/schema tests; Interview removed from “coming soon”.  
   - **Calendar (US-3.5):** Calendar API + month UI; event categories (aptitude, language, case study, AI/HR/tech/team interview); Board / Pipeline event forms; navbar Calendar.  
-  - **Deploy & polish (US-3.4):** UI unify (agent pages, loading/empty states, status labels); Board edit + search; Dashboard AI tool links; single-service **Docker deploy on Render** (UI + API same origin); README + Sprint 3 evidence.  
-  **Demo outcome:** Live URL opens the full product; Analyzer → Writer → Interview → Calendar path runs without critical blockers (Gemini free-tier rate limits may apply).  
-  **Still optional / ceremony:** 3-minute YouTube demo video upload, product delivery form submit, formal Sprint 3 Review + Retro notes if not yet filed.  
+  - **Deploy & polish (US-3.4):** UI unify (agent pages, loading/empty states, status labels); Board edit + search; Dashboard AI tool links; single-service **Docker deploy on Render** (UI + API same origin); README + Sprint 3 evidence; **demo video** — [https://youtu.be/V5xFgpXODWc](https://youtu.be/V5xFgpXODWc).  
+  **Demo outcome:** Live URL opens the full product; Analyzer → Writer → Interview → Calendar path runs without critical blockers (Gemini free-tier rate limits may apply). Demo video published on YouTube.  
+  **Still optional / ceremony:** Product delivery form submit, formal Sprint 3 Review + Retro notes if not yet filed.  
   **Participants:** Gülce Çelik, Muhammed Enes Andiç
 
 - **Sprint Retrospective:**  
@@ -469,7 +473,7 @@ The goal is simple: **stop losing applications in random notes** and walk into e
   - **Keep:** Blue story / red task cards on Trello and WhatsApp async dailies.  
   - **Improve:** Gemini env / rate-limit checks earlier in planning (local `.env` vs `backend/.env` override surprised us once).  
   - **Improve:** Free-tier Render has no persistent disk — re-seed demo data after cold redeploys; warm the live URL before jury demos.  
-  - **Team:** Two-person active unit shipped agents + calendar + live URL; delivery form / demo video are the last ceremony checklist items.
+  - **Team:** Two-person active unit shipped agents + calendar + live URL + [demo video](https://youtu.be/V5xFgpXODWc); delivery form is the last ceremony checklist item.
 
 ### Sprint 3 — technical summary
 
@@ -479,7 +483,7 @@ The goal is simple: **stop losing applications in random notes** and walk into e
 | **API** | `/agents/analyze`, `/agents/cover-letter`, `/agents/mock-interview/*`, `/calendar`, `/agents/status` |
 | **RAG** | Retriever feeds Analyzer (+ memory context from Sprint 2 ChromaDB) |
 | **Frontend** | Analyze, Cover Letter, Interview, Calendar pages · agent history panels · PDF export |
-| **Deploy** | Docker (Vite build + FastAPI static) · Render free web service · [live URL](https://internroute.onrender.com) |
+| **Deploy** | Docker (Vite build + FastAPI static) · Render free web service · [live URL](https://internroute.onrender.com) · [demo video](https://youtu.be/V5xFgpXODWc) |
 | **Testing** | pytest (analyzer, writer, interview, LLM status) · Vitest |
 
 ---
@@ -551,7 +555,8 @@ InternRoute/
 
 Further reading: [`docs/architecture.md`](docs/architecture.md) · [`docs/api-design.md`](docs/api-design.md) · [`docs/sprint-plan.md`](docs/sprint-plan.md) · [`DEPLOY.md`](DEPLOY.md)
 
-**Live demo:** [https://internroute.onrender.com](https://internroute.onrender.com)
+**Live demo:** [https://internroute.onrender.com](https://internroute.onrender.com)  
+**Demo video:** [https://youtu.be/V5xFgpXODWc](https://youtu.be/V5xFgpXODWc)
 
 ---
 
