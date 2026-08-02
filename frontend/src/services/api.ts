@@ -13,10 +13,8 @@ import type { Application, ApplicationCreate, ApplicationUpdate } from "../types
 import type {
   ProfileUpdate,
   RegisterPayload,
-  RegisterVerifyPayload,
   TokenResponse,
   User,
-  VerificationStarted,
 } from "../types/auth";
 import type { CalendarEvent, CalendarEventCreate } from "../types/calendar";
 import type { DashboardStats, MemoryContext } from "../types/dashboard";
@@ -69,24 +67,10 @@ async function authRequest<T>(path: string, token: string, options: RequestInit 
   });
 }
 
-export async function startRegistration(payload: RegisterPayload): Promise<VerificationStarted> {
-  return request<VerificationStarted>("/auth/register/start", {
+export async function registerUser(payload: RegisterPayload): Promise<User> {
+  return request<User>("/auth/register", {
     method: "POST",
     body: JSON.stringify(payload),
-  });
-}
-
-export async function verifyRegistration(payload: RegisterVerifyPayload): Promise<User> {
-  return request<User>("/auth/register/verify", {
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
-}
-
-export async function resendRegistrationCode(email: string): Promise<VerificationStarted> {
-  return request<VerificationStarted>("/auth/register/resend", {
-    method: "POST",
-    body: JSON.stringify({ email }),
   });
 }
 

@@ -26,16 +26,3 @@ export interface RegisterPayload {
   password: string;
   full_name?: string;
 }
-
-export interface VerificationStarted {
-  email: string;
-  message: string;
-  expires_in_minutes: number;
-  emailed: boolean;
-  debug_code?: string | null;
-}
-
-export interface RegisterVerifyPayload {
-  email: string;
-  code: string;
-}

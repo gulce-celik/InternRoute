@@ -4,7 +4,6 @@ from app.models.user import (
     InterviewSession,
     InterviewSessionStatus,
     Job,
-    PendingRegistration,
     User,
 )
 
@@ -15,5 +14,4 @@ __all__ = [
     "Application",
     "InterviewSession",
     "InterviewSessionStatus",
-    "PendingRegistration",
 ]
